@@ -68,7 +68,7 @@ BOOL daAlink_c::checkNoLandDamageSlidePolygon() {
         cM3dGPla poly;
         dComIfG_Bgsp().GetTriPla(mLinkAcch.m_gnd, &poly);
 
-        if (poly.mNormal.y < field_0x3470) {
+        if (poly.mNormal.y < mSlideLimit) {
             return true;
         }
     }

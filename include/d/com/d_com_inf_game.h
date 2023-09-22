@@ -929,6 +929,7 @@ void dComIfGs_offZoneSwitch(int i_swBit, int i_roomNo);
 void dComIfGs_offOneZoneSwitch(int i_swBit, int i_roomNo);
 s8 dComIfGp_getReverb(int i_roomNo);
 void dComIfGs_gameStart();
+u32 dComIfG_getTrigA(u32 i_padNo);
 BOOL dComIfGs_wolfeye_effect_check();
 BOOL dComIfGs_Wolf_Change_Check();
 void dComIfGs_onVisitedRoom(int param_0);

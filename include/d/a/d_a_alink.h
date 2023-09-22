@@ -3246,6 +3246,8 @@ public:
         return var_r4;
     }
 
+    bool checkSpinnerReady() const { return mProcID == PROC_SPINNER_READY; }
+
     MtxP getCopyRodMtx() {
         if (mHeldItemModel != NULL) {
             return mHeldItemModel->i_getAnmMtx(0);
@@ -3256,6 +3258,7 @@ public:
     cXyz* getRootPosP() { return &field_0x3834; }
     const cXyz& getBoomerangCatchPos() const { return field_0x3534; }
     f32 getCopyRodBallDisFlyMax() const { return mSearchBallScale; }
+    f32 getSlideLimit() const { return mSlideLimit; }
 
     void clearIronBallActor() { field_0x173c.SetActor(this); }
     BOOL checkCanoeRideOwn(const fopAc_ac_c* param_0) const { return checkCanoeRide() && mRideAcKeep.getActorConst() == param_0; }
@@ -3275,7 +3278,13 @@ public:
 
     bool checkCopyRodRevive() const { return mProcID == PROC_COPY_ROD_REVIVE; }
 
+    bool checkGameOverWindow() const { return mProcID == PROC_DEAD && field_0x3478 < 0.01f; }
+
     BOOL i_checkRideOn() const { return mRideStatus != 0; }
+
+    bool checkSpinnerRideOwn(fopAc_ac_c* i_this) const { return checkSpinnerRide() != 0 && i_this == mRideAcKeep.getActorConst(); }
+
+    bool checkDemoSpinnerKeep() const { return mDemo.getDemoMode() == 0xE && mDemo.getParam0() == 1; }
 
     bool checkSwimDashMode() const { return i_checkNoResetFlg1(FLG1_DASH_MODE); }
 
@@ -3891,7 +3900,7 @@ private:
     /* 0x03464 */ f32 field_0x3464;
     /* 0x03468 */ f32 field_0x3468;
     /* 0x0346C */ f32 field_0x346c;
-    /* 0x03470 */ f32 field_0x3470;
+    /* 0x03470 */ f32 mSlideLimit;
     /* 0x03474 */ f32 mSwordUpColorIntensity;
     /* 0x03478 */ f32 field_0x3478;
     /* 0x0347C */ f32 field_0x347c;

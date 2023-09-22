@@ -105,12 +105,12 @@ public:
     /* 8008523C */ virtual ~dCcD_GStts() {}
     void ClrAt() { mAt = 0; }
     void ClrTg() { mTg = 0; }
-    void SetAtApid(unsigned int id) { mAtApid = id; }
-    void SetTgApid(unsigned int id) { mTgApid = id; }
+    void SetAtApid(u32 id) { mAtApid = id; }
+    void SetTgApid(u32 id) { mTgApid = id; }
     u8 GetRoomId() { return mRoomId; }
     void SetRoomId(int id) { mRoomId = id; }
-    unsigned int GetAtOldApid() { return mAtOldApid; }
-    unsigned int GetTgOldApid() { return mTgOldApid; }
+    u32 GetAtOldApid() { return mAtOldApid; }
+    u32 GetTgOldApid() { return mTgOldApid; }
     bool ChkNoActor() { return field_0x1C & 1;}
     bool ChkNoneActorPerfTblId() { return field_0x08 == 0xFFFF; }
     dCcG_At_Spl GetAtSpl() { return (dCcG_At_Spl)mAt; }
@@ -163,7 +163,7 @@ public:
     dCcD_GAtTgCoCommonBase() { ct(); }
     /* 8008364C */ void ClrActorInfo();
     /* 80083660 */ void ct();
-    /* 80083678 */ void SetHitApid(unsigned int);
+    /* 80083678 */ void SetHitApid(u32);
     /* 80083688 */ fopAc_ac_c* GetAc();
     /* 80083704 */ void Set(dCcD_SrcGAtTgCoCommonBase const&);
     /* 80083718 */ void SetEffCounterTimer();
@@ -193,6 +193,7 @@ class dCcD_GObjAt : public dCcD_GAtTgCoCommonBase {
 public:
     /* 80083944 */ void Set(dCcD_SrcGObjAt const&);
     /* 80083C44 */ virtual ~dCcD_GObjAt() {}
+    cXyz* GetHitPosP() { return &mHitPos; }
     void SetVec(cXyz& vec) { mVec = vec; }
     cXyz& GetVec() { return mVec; }
     cXyz* GetVecP() { return &mVec; }
@@ -300,6 +301,7 @@ public:
     void SetTgMtrl(u8 mtrl) { mGObjTg.SetMtrl(mtrl); }
     fopAc_ac_c* GetAtHitAc() { return mGObjAt.GetAc(); }
     bool ChkAtShieldHit() { return mGObjAt.ChkRPrm(1); }
+    cXyz* GetAtHitPosP() { return mGObjAt.GetHitPosP(); }
     cXyz* GetAtVecP() { return mGObjAt.GetVecP(); }
     cXyz* GetTgVecP() { return mGObjTg.GetVecP(); }
     void SetAtSpl(dCcG_At_Spl spl) { mGObjAt.SetAtSpl(spl); }
@@ -322,6 +324,7 @@ public:
     void OnTgShieldFrontRange() { mGObjTg.OnSPrm(0x8); }
     void OffTgShieldFrontRange() { mGObjTg.OffSPrm(0x8); }
     bool ChkTgIronBallRebound() { return mGObjTg.ChkSPrm(0x100); }
+    bool ChkTgSpinnerReflect() { return mGObjTg.ChkSPrm(0x200); }
     s16* GetTgShieldFrontRangeYAngle() { return mGObjTg.GetShieldFrontRangeYAngle(); }
     s16 GetTgShieldRange() { return mGObjTg.GetShieldRange(); }
     bool ChkTgShield() { return mGObjTg.ChkSPrm(1); }
@@ -336,9 +339,9 @@ public:
     dCcD_HitCallback GetCoHitCallback() { return mGObjCo.GetHitCallback(); }
     dCcD_HitCallback GetAtHitCallback() { return mGObjAt.GetHitCallback(); }
     dCcD_HitCallback GetTgHitCallback() { return mGObjTg.GetHitCallback(); }
-    void SetCoHitApid(unsigned int apid) { mGObjCo.SetHitApid(apid); }
-    void SetAtHitApid(unsigned int apid) { mGObjAt.SetHitApid(apid); }
-    void SetTgHitApid(unsigned int apid) { mGObjTg.SetHitApid(apid); }
+    void SetCoHitApid(u32 apid) { mGObjCo.SetHitApid(apid); }
+    void SetAtHitApid(u32 apid) { mGObjAt.SetHitApid(apid); }
+    void SetTgHitApid(u32 apid) { mGObjTg.SetHitApid(apid); }
     void OnCoHitNoActor() { mGObjCo.OnRPrm(1); }
     void OffCoHitNoActor() { mGObjCo.OffRPrm(1); }
     void OnAtHitNoActor() { mGObjAt.OnRPrm(2); }

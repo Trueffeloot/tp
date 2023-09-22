@@ -1085,6 +1085,251 @@ COMPILER_STRIP_GATE(0x804D4E94, &lit_5680);
 #pragma pop
 
 /* 804D3F8C-804D4B94 0026EC 0C08+00 1/1 0/0 0/0 .text            execute__11daSpinner_cFv */
+#ifdef NONMATCHING
+int daSpinner_c::execute() {
+    f32 stickValue;
+    s16 stickAngle;
+    cXyz pos;
+    
+    
+
+    if (mDeleteFlg != 0) {
+        clearSpreadEffect();
+        fopAcM_delete(this);
+        return 1;
+    }
+    mButtonJump = 0;
+    daAlink_c* link = daAlink_getAlinkActorClass();
+    if (!link->checkGameOverWindow() && field_0xa78 != 0) {
+        field_0xa78 -= 1;
+    }
+    if (i_dComIfGp_event_runCheck() != 0) {
+        stickValue = 0.0f;
+        stickAngle = 0;
+        field_0xa75 = 0;    
+    } else {
+       if (mSpinnerTag != 0 || mpPathMove != NULL || mJumpFlg != 0) {
+            if (daAlink_c::checkStageName("D_MN10A") != 0) {
+                if (dComIfGs_isZoneSwitch(6, dComIfGp_roomControl_getStayNo()) != 0) {
+                    if (dComIfGs_isZoneSwitch(7, dComIfGp_roomControl_getStayNo()) != 0) {
+                        stickValue = 0.0f;
+                    } else {
+                        stickValue = mDoCPd_c::getStickValue(0);
+                    }
+                }
+            }
+        } 
+        stickAngle = mDoCPd_c::getStickAngle3D(0) + dCam_getControledAngleY(dComIfGp_getCamera(i_dComIfGp_getPlayerCameraID(0))) + 0x8000;
+        if (dComIfG_getTrigA(PAD_1) != 0) {
+            field_0xa75 = 1;
+        } else {
+            field_0xa75 = 0;
+        }
+        if (fopAcM_GetParam(this) != 0 && mSpinnerTag == 0) {
+            setAnm();
+        } 
+    } 
+    if (mPathForceRemove != 0) {
+        if (mpPathMove != NULL) {
+            mpPathMove = NULL;
+            mAcch.ClrWallHit();
+        }
+        mPathForceRemove = 0;
+    }
+    
+    bool check = link->checkSpinnerRideOwn(this);
+
+    if (check != 0) {
+        field_0xa7e += field_0xa82 * field_0xa76;
+    }
+    field_0xa7e += field_0xa76 * 2000;
+    mBck.play();
+    field_0x8cc.framework(0, field_0xa6e);
+    if (fopAcM_GetParam(this) == 0) {
+        s16 math = (cM_rndF(0.3f) + 0.85f) * 2330.0f;
+        field_0xa7c += math;
+        f32 sine = cM_ssin(field_0xa7c);
+        field_0xa84 = sine * 5.0f;
+        field_0xa98 = current.pos;
+        if (check != 0) {
+            current.angle.y = link->current.angle.y;
+        } else if (link->checkSpinnerReady() == 0) {
+            clearSpreadEffect();
+            fopAcM_delete(this);
+            return 1;
+            
+        }
+    } else if (mSpinnerTag != 0) { 
+        field_0xa7a = link->getSpinnerRideMoveTime();
+        speedF = link->getSpinnerRideSpeedF();
+        mJumpFlg = 0;
+        field_0xa76 = 1;
+        if (mSpinnerTag == 1) {
+            mpPathMove = NULL;
+            f32 posY = current.pos.y;
+            if (cLib_chasePosXZ(&current.pos, field_0xaa4, speedF)) {
+                mSpinnerTag = 2;
+                speed.y = 0.0f;
+                field_0xa84 = 0.0f;
+                current.pos.y = posY;
+            }
+        } else if (mSpinnerTag == 2) {
+            speed.y += mGravity;
+            if (speed.y < mMaxFallSpeed) {
+                speed.y = mMaxFallSpeed;
+            }
+            if (cLib_chaseF(&current.pos.y, field_0xaa4.y, fabsf(speed.y))) {
+                mSpinnerTag = 3;
+                field_0xa82 = 0x800;
+                dComIfGp_particle_setPolyColor(0xe7, 0, mAcch.m_gnd, &current.pos, &mTevStr, NULL, NULL, 0, NULL, -1, NULL);
+                dComIfGp_getVibration().StartShock(4, 1, cXyz(0.0f, 1.0f, 0.0f));
+            }
+        } else {
+            current.pos = field_0xaa4;
+            if (mSpinnerTag != 5) {
+                if (i_dComIfGp_event_runCheck() == 0 && field_0xa75 != 0) {
+                    field_0xa82 += 0x200;
+                    if (field_0xa82 > 5000) {
+                        field_0xa82 = 5000;
+                    }
+                    mSpinnerTag = 4;
+                } else {
+                    field_0xa82 -= 0x40;
+                    if (field_0xa82 < 0) {
+                        field_0xa82 = 0;
+                    }
+                    mSpinnerTag = 3;
+                }
+            } else {
+                field_0xa82 = 0x82f;
+        cLib_chaseF(&field_0xa84, 0.0f, 0.5f);
+        if (field_0xa7a == 0) {
+            f32 speedMin = link->getSpinnerRideDecSpeedMin();
+            f32 speedMax = link->getSpinnerRideDecSpeedMax(); 
+            f32 speedRate = link->getSpinnerRideDecSpeedRate();
+            stickValue = cLib_addCalc(&speedF, 0.0f, speedRate, speedMax, speedMin);
+            if (stickValue < 0.1f) {
+                mDeleteFlg = 1;
+                return 1;
+            }
+        } else {
+            if (link->checkDemoSpinnerKeep() == 0 && mpPathMove == NULL) {
+                field_0xa7a--;
+            }
+        }
+        cM3dGPla plane;
+        s16 atan;
+        if (mAcch.ChkGroundHit() == 0) {
+            dComIfG_Bgsp().GetTriPla(mAcch.m_gnd, &plane);
+            atan = plane.mNormal.atan2sX_Z();
+        }
+        if (checkPathMove() == 0) {
+            if (mAcch.ChkWallHit() == 0 || field_0xa74 != 0) {
+                for (int i = 0; i < 3; i++) {
+                    if (mAcchCir[i].ChkWallHit() != 0) {
+                        setWallHit(mAcchCir[i].GetWallAngleY(), dKy_pol_sound_get(&mAcchCir[i]));
+                    }
+                }
+            }
+        } 
+        if (mAcch.ChkGroundHit() || link->getSlideLimit() < plane.mNormal.y) {
+        if (dComIfG_Bgsp().GetSpecialCode(mAcch.m_gnd) == 2 && abs(atan - current.angle.y) > 0x4000) {
+            setWallHit(atan, dKy_pol_sound_get(&mAcch.m_gnd));
+        }
+         else if (mCyl.ChkAtHit() == 0 || mCyl.ChkAtShieldHit() == 0) { 
+            setWallHit(atan, dKy_pol_sound_get(&mAcch.m_gnd));
+        } else if (mCyl.GetAtHitGObj() == NULL || mCyl.ChkTgSpinnerReflect() == 0 || mCyl.GetAtHitAc() == NULL) { 
+            pos = current.pos - mCyl.GetAc()->current.pos;
+        } else {
+            pos = current.pos - *mCyl.GetAtHitPosP();
+        } 
+        field_0xa80 = pos.atan2sX_Z();
+        setReflectAngle();
+    }
+    else if (check != 0 && stickValue > 0.300000011920929f) {
+        s16 rotAngleMin = link->getSpinnerRideRotAngleMin();
+        s16 rotAngleMax = link->getSpinnerRideRotAngleMax();
+        cLib_addCalcAngleS(&current.angle.y, stickAngle, 4, rotAngleMax, rotAngleMin);
+        }
+        if (check == 0) {
+            mCyl.OnCoSPrmBit(0x10);
+        } else {
+            mCyl.OffCoSPrmBit(0x10);
+        }
+            }
+        }
+         
+        field_0xa74 = 0;
+    }  
+    s16 angle = mSpinnerTag == 0 && mpPathMove == NULL ? 0 : shape_angle.y - current.angle.y / link->getSpinnerRideRotAngleMax() * 0x5dc;
+    cLib_addCalcAngleS(&shape_angle.z, angle, 3, 300, 0x32);
+    s16 rideSpeed;
+    if (mSpinnerTag == 0 && mpPathMove != NULL) {
+        rideSpeed = 0;
+    } else {
+        rideSpeed = speedF / link->getSpinnerRideSpeedF() * 2000.0f;
+        if (rideSpeed > 2000) {
+            rideSpeed = 2000;
+        }
+    }
+    cLib_addCalcAngleS(&shape_angle.x, rideSpeed, 3, 300, 0x32);
+    shape_angle.y = current.angle.y;
+    if (mSpinnerTag == 0) {
+        if (!link->checkGameOverWindow() && posMove() == 0) {
+            return 1;
+        } else if (i_dComIfGp_event_runCheck() == 0 && speedF > 3.0f) {
+            if (field_0xa98.abs2XZ(current.pos) < 9.0f) {
+                field_0xa79++;
+                if (field_0xa79 > 0x1e) {
+                    mDeleteFlg = 1;
+                }
+                
+            }
+            } else {
+                field_0xa79 = 0;
+                field_0xa98 = current.pos;
+            }
+        } else {
+            field_0xa79 = 0;
+            field_0xa98 = current.pos;
+            cXyz tmp = speed;
+            mAcch.CrrPos(dComIfG_Bgsp());
+            current.pos = field_0xa98;
+            speed = tmp;
+        }
+        setRoomInfo();
+        setMatrix();
+        setEffect();
+        if (mpPathMove == NULL) {
+            if (mAcch.ChkGroundHit() != 0) {
+                current.angle.x = fopAcM_getPolygonAngle(mAcch.m_gnd, current.angle.y);
+            } else {
+                current.angle.x = 0;
+            }
+        }
+        mCyl.MoveCAt(current.pos);
+        dComIfG_Ccsp()->Set(&mCyl);
+        dComIfG_Ccsp()->SetMass(&mCyl, 1);
+        if (reflectAccept() != 0) {
+            if (mpPathMove != NULL) {
+                mAcchCir[0].SetWallR(58.0f);
+                mCyl.SetR(58.0f);
+            } else {
+                mAcchCir[0].SetWallR(100.0f);
+                mCyl.SetR(100.0f);
+                mCyl.SetAtAtp(2);
+            }
+        } else {
+            mAcchCir[0].SetWallR(58.0f);
+            mCyl.SetR(58.0f);
+            mCyl.SetAtAtp(1);
+        }
+        
+         
+    setSpreadEffect();
+    return 1;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -1093,6 +1338,7 @@ asm int daSpinner_c::execute() {
 #include "asm/rel/d/a/d_a_spinner/d_a_spinner/execute__11daSpinner_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 804D4B94-804D4BB4 0032F4 0020+00 1/0 0/0 0/0 .text            daSpinner_Execute__FP11daSpinner_c
  */
