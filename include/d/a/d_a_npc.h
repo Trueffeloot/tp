@@ -232,10 +232,10 @@ public:
     /* 0x974 */ dMsgFlow_c mFlow;
     /* 0x9C0 */ dPaPoT_c field_0x9c0;
     /* 0xA40 */ dCcD_Stts field_0xa40;
-    /* 0xA7C */ u8 field_0xa7c[4];
+    /* 0xA7C */ s32 field_0xa7c;
     /* 0xA80 */ f32 field_0xa80;
     /* 0xA84 */ f32 field_0xa84;
-    /* 0xA89 */ u8 field_0xa88;
+    /* 0xA88 */ u8 field_0xa88;
     /* 0xA89 */ u8 field_0xa89;
     /* 0xA8C */ dBgS_GndChk field_0xa8c;
     /* 0xAE0 */ dBgS_LinChk field_0xae0;
@@ -375,9 +375,9 @@ public:
     /* 8014CC4C */ virtual s32 getHeadJointNo();
     /* 8014CC90 */ virtual s32 getFootLJointNo();
     /* 8014CC88 */ virtual s32 getFootRJointNo();
-    /* 8014D0A8 */ virtual bool getEyeballLMaterialNo();
-    /* 8014D0B0 */ virtual bool getEyeballRMaterialNo();
-    /* 8014D0B8 */ virtual bool getEyeballMaterialNo();
+    /* 8014D0A8 */ virtual s32 getEyeballLMaterialNo();
+    /* 8014D0B0 */ virtual s32 getEyeballRMaterialNo();
+    /* 8014D0B8 */ virtual s32 getEyeballMaterialNo();
     /* 8014951C */ virtual void ctrlJoint(J3DJoint*, J3DModel*);
     /* 8014CC48 */ virtual void afterJntAnm(int);
     /* 8014CC24 */ virtual void setParam();

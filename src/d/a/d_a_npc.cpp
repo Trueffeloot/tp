@@ -3084,20 +3084,20 @@ extern "C" asm void __dt__8daNpcT_cFv() {
 
 /* 8014D0A8-8014D0B0 1479E8 0008+00 1/0 1/0 0/0 .text            getEyeballLMaterialNo__8daNpcT_cFv
  */
-bool daNpcT_c::getEyeballLMaterialNo() {
-    return false;
+s32 daNpcT_c::getEyeballLMaterialNo() {
+    return 0;
 }
 
 /* 8014D0B0-8014D0B8 1479F0 0008+00 1/0 1/0 0/0 .text            getEyeballRMaterialNo__8daNpcT_cFv
  */
-bool daNpcT_c::getEyeballRMaterialNo() {
-    return false;
+s32 daNpcT_c::getEyeballRMaterialNo() {
+    return 0;
 }
 
 /* 8014D0B8-8014D0C0 1479F8 0008+00 1/0 1/0 0/0 .text            getEyeballMaterialNo__8daNpcT_cFv
  */
-bool daNpcT_c::getEyeballMaterialNo() {
-    return false;
+s32 daNpcT_c::getEyeballMaterialNo() {
+    return 0;
 }
 
 /* 8014D0C0-8014D108 147A00 0048+00 1/0 0/0 0/0 .text            __dt__22daNpcT_MotionSeqMngr_cFv */
