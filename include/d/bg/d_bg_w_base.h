@@ -19,6 +19,7 @@ class dBgW_Base : public cBgW_BgId {
 public:
     enum PushPullLabel {
         PUSHPULL_LABEL1 = 1,
+        PUSHPULL_LABEL3 = 3,
     };
 
     enum PRIORITY {

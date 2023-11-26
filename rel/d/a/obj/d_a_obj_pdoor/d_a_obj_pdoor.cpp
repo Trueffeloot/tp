@@ -5,107 +5,45 @@
 
 #include "rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor.h"
 #include "dol2asm.h"
+#include "f_op/f_op_actor_mng.h"
+#include "d/bg/d_bg_s_movebg_actor.h"
+#include "d/bg/d_bg_w.h"
+#include "d/com/d_com_inf_game.h"
+#include "d/d_procname.h"
+#include "JSystem/JKernel/JKRHeap.h"
 
-//
-// Types:
-//
-
-struct request_of_phase_process_class {};
-
-struct Vec {};
-
-struct cXyz {
-    /* 80266B34 */ void operator-(Vec const&) const;
-};
-
-struct mDoMtx_stack_c {
-    /* 8000CD64 */ void transS(cXyz const&);
-
-    static u8 now[48];
-};
-
-struct fopAc_ac_c {};
-
-struct daObjPDoor_c {
+class daObjPDoor_c : public dBgS_MoveBgActor {
+public:
     /* 80CA9F9C */ void initBaseMtx();
     /* 80CA9FD8 */ void setBaseMtx();
-    /* 80CAA03C */ void Create();
-    /* 80CAA14C */ void CreateHeap();
-    /* 80CAA1BC */ void create1st();
-    /* 80CAA23C */ void Execute(f32 (**)[3][4]);
+    /* 80CAA03C */ int Create();
+    /* 80CAA14C */ int CreateHeap();
+    /* 80CAA1BC */ int create1st();
+    /* 80CAA23C */ int Execute(Mtx**);
     /* 80CAA290 */ void mode_proc_call();
     /* 80CAA31C */ void init_modeWait();
     /* 80CAA354 */ void modeWait();
     /* 80CAA698 */ void init_modeRotate();
     /* 80CAA6B4 */ void modeRotate();
-    /* 80CAA968 */ void Draw();
-    /* 80CAAA0C */ void Delete();
+    /* 80CAA968 */ int Draw();
+    /* 80CAAA0C */ int Delete();
+
+    u32 getSwbit() { return fopAcM_GetParamBit(this, 0, 8); }
+    u32 getSwbit2() { return fopAcM_GetParamBit(this, 8, 8); }
+
+    /* 0x5A0 */ request_of_phase_process_class mPhaseReq;
+    /* 0x5A8 */ J3DModel* mpModel;
+    /* 0x5AC */ s8 field_0x5ac;
+    /* 0x5AD */ u8 field_0x5ad;
+    /* 0x5B0 */ s32 field_0x5b0;
+    /* 0x5B4 */ u8 field_0x5b4;
+    /* 0x5B5 */ u8 field_0x5b5;
+    /* 0x5B6 */ u8 field_0x5b6[2];
+    /* 0x5B8 */ s16 field_0x5b8;
+    /* 0x5BA */ s16 field_0x5ba;
+    /* 0x5BC */ s16 field_0x5bc;
+    /* 0x5C0 */ s32 field_0x5c0;
 };
-
-struct dVibration_c {
-    /* 8006FA24 */ void StartShock(int, int, cXyz);
-};
-
-struct dSv_info_c {
-    /* 80035200 */ void onSwitch(int, int);
-    /* 800352B0 */ void offSwitch(int, int);
-    /* 80035360 */ void isSwitch(int, int) const;
-};
-
-struct dKy_tevstr_c {};
-
-struct J3DModelData {};
-
-struct dScnKy_env_light_c {
-    /* 801A37C4 */ void settingTevStruct(int, cXyz*, dKy_tevstr_c*);
-    /* 801A4DA0 */ void setLightTevColorType_MAJI(J3DModelData*, dKy_tevstr_c*);
-};
-
-struct dRes_info_c {};
-
-struct dRes_control_c {
-    /* 8003C2EC */ void getRes(char const*, s32, dRes_info_c*, int);
-};
-
-struct dBgW_Base {
-    struct PushPullLabel {};
-};
-
-struct dBgW {};
-
-struct cBgS_PolyInfo {};
-
-struct csXyz {};
-
-struct dBgS_MoveBgActor {
-    /* 80078624 */ dBgS_MoveBgActor();
-    /* 800786B0 */ bool IsDelete();
-    /* 800786B8 */ bool ToFore();
-    /* 800786C0 */ bool ToBack();
-    /* 800787BC */ void MoveBGCreate(char const*, int,
-                                     void (*)(dBgW*, void*, cBgS_PolyInfo const&, bool, cXyz*,
-                                              csXyz*, csXyz*),
-                                     u32, f32 (*)[3][4]);
-    /* 800788DC */ void MoveBGDelete();
-    /* 80078950 */ void MoveBGExecute();
-};
-
-struct JAISoundID {};
-
-struct Z2SeMgr {
-    /* 802AB984 */ void seStart(JAISoundID, Vec const*, u32, s8, f32, f32, f32, f32, u8);
-    /* 802AC50C */ void seStartLevel(JAISoundID, Vec const*, u32, s8, f32, f32, f32, f32, u8);
-};
-
-struct Z2AudioMgr {
-    static u8 mAudioMgrPtr[4 + 4 /* padding */];
-};
-
-struct JMath {
-    static u8 sincosTable_[65536];
-};
-
-struct J3DModel {};
 
 //
 // Forward References:
@@ -164,19 +102,12 @@ extern "C" void cLib_addCalcAngleS__FPsssss();
 extern "C" void cLib_addCalcAngleS2__FPssss();
 extern "C" void seStart__7Z2SeMgrF10JAISoundIDPC3VecUlScffffUc();
 extern "C" void seStartLevel__7Z2SeMgrF10JAISoundIDPC3VecUlScffffUc();
-extern "C" void PSMTXCopy();
-extern "C" void PSMTXMultVec();
 extern "C" void __ptmf_scall();
 extern "C" void _savegpr_28();
 extern "C" void _savegpr_29();
 extern "C" void _restgpr_28();
 extern "C" void _restgpr_29();
-extern "C" extern void* g_fopAc_Method[8];
-extern "C" extern void* g_fpcLf_Method[5 + 1 /* padding */];
 extern "C" u8 now__14mDoMtx_stack_c[48];
-extern "C" extern u8 g_dComIfG_gameInfo[122384];
-extern "C" extern u8 g_env_light[4880];
-extern "C" extern u8 j3dSys[284];
 extern "C" u8 sincosTable___5JMath[65536];
 extern "C" u8 mAudioMgrPtr__10Z2AudioMgr[4 + 4 /* padding */];
 extern "C" extern u8 data_80CAAC30[4];
@@ -185,7 +116,6 @@ extern "C" extern u8 data_80CAAC30[4];
 // Declarations:
 //
 
-/* ############################################################################################## */
 /* 80CAAB20-80CAAB24 000000 0004+00 3/3 0/0 0/0 .rodata          @3695 */
 SECTION_RODATA static u8 const lit_3695[4] = {
     0x00,
@@ -197,45 +127,61 @@ COMPILER_STRIP_GATE(0x80CAAB20, &lit_3695);
 
 /* 80CA9E98-80CA9F9C 000078 0104+00 1/1 0/0 0/0 .text
  * PPCallBack__FP10fopAc_ac_cP10fopAc_ac_csQ29dBgW_Base13PushPullLabel */
+#ifdef NONMATCHING
+static fopAc_ac_c* PPCallBack(fopAc_ac_c* i_this, fopAc_ac_c* param_1, s16 param_2,
+                           dBgW_Base::PushPullLabel param_3) {
+    daObjPDoor_c* l_this = (daObjPDoor_c*)i_this;
+    s32 bit = cLib_checkBit(param_3, dBgW_Base::PUSHPULL_LABEL3);
+    if (bit != 0) {
+        cXyz sub = param_1->current.pos - l_this->current.pos;
+        mDoMtx_stack_c::YrotS(-l_this->shape_angle.y);
+        mDoMtx_stack_c::multVec(&sub, &sub);
+        
+        if (sub.z > 0.0f) {
+            bit = cLib_checkBit(bit, dBgW_Base::PUSHPULL_LABEL1) ^ 1;
+        } else {
+            bit = cLib_checkBit(bit, dBgW_Base::PUSHPULL_LABEL1);
+        }
+        for (int i = 0; i < 2; i++) {
+            if (i == bit) {
+                l_this->field_0x5b6[i]++;
+            } else {
+                l_this->field_0x5b6[i] = 0;
+            }
+        }
+        l_this->field_0x5b5 = 1;
+        l_this->field_0x5c0 = param_3;
+    }
+    return i_this;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-static asm void PPCallBack(fopAc_ac_c* param_0, fopAc_ac_c* param_1, s16 param_2,
+static asm void PPCallBack(fopAc_ac_c* i_this, fopAc_ac_c* param_1, s16 param_2,
                            dBgW_Base::PushPullLabel param_3) {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/PPCallBack__FP10fopAc_ac_cP10fopAc_ac_csQ29dBgW_Base13PushPullLabel.s"
 }
 #pragma pop
+#endif
 
 /* 80CA9F9C-80CA9FD8 00017C 003C+00 1/1 0/0 0/0 .text            initBaseMtx__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::initBaseMtx() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/initBaseMtx__12daObjPDoor_cFv.s"
+void daObjPDoor_c::initBaseMtx() {
+    mpModel->setBaseScale(mScale);
+    setBaseMtx();
 }
-#pragma pop
 
 /* 80CA9FD8-80CAA03C 0001B8 0064+00 2/2 0/0 0/0 .text            setBaseMtx__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::setBaseMtx() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/setBaseMtx__12daObjPDoor_cFv.s"
+void daObjPDoor_c::setBaseMtx() {
+    mDoMtx_stack_c::transS(current.pos);
+    mDoMtx_stack_c::YrotM(shape_angle.y);
+    mpModel->i_setBaseTRMtx(mDoMtx_stack_c::get());
+    MTXCopy(mDoMtx_stack_c::get(), mBgMtx);
 }
-#pragma pop
-
-/* ############################################################################################## */
-/* 80CAAB40-80CAAB40 000020 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
-#pragma push
-#pragma force_active on
-SECTION_DEAD static char const* const stringBase_80CAAB40 = "V_OsuDoor";
-#pragma pop
 
 /* 80CAAB4C-80CAAB58 000000 000C+00 1/1 0/0 0/0 .data            cNullVec__6Z2Calc */
-SECTION_DATA static u8 cNullVec__6Z2Calc[12] = {
+static u8 cNullVec__6Z2Calc[12] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
@@ -253,56 +199,63 @@ SECTION_DATA static u32 lit_1787[1 + 4 /* padding */] = {
 #pragma pop
 
 /* 80CAAB6C-80CAAB70 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
-SECTION_DATA static void* l_arcName = (void*)&d_a_obj_pdoor__stringBase0;
+static char* l_arcName = "V_OsuDoor";
 
 /* 80CAAB70-80CAAB88 000024 0018+00 1/1 0/0 0/0 .data            l_cull_box */
-SECTION_DATA static u8 l_cull_box[24] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC4, 0x16, 0x00, 0x00,
-    0x44, 0x16, 0x00, 0x00, 0x44, 0x7A, 0x00, 0x00, 0x44, 0x16, 0x00, 0x00,
+static Vec l_cull_box[2] = {
+    {0.0f, 0.0f, -600.0f},
+    {600.0f, 1000.0f, 600.0f},
 };
 
 /* 80CAA03C-80CAA14C 00021C 0110+00 1/0 0/0 0/0 .text            Create__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::Create() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/Create__12daObjPDoor_cFv.s"
+int daObjPDoor_c::Create() {
+    s32 swBit = i_fopAcM_isSwitch(this, getSwbit());
+    s32 swBit2 = i_fopAcM_isSwitch(this, getSwbit2());
+    if (!swBit && !swBit2) {
+        field_0x5ac = 0;
+    } else if (swBit) {
+        field_0x5ac = 1;
+        shape_angle.y = orig.angle.y + 0x1555;
+    } else if (swBit2) {
+        field_0x5ac = -1;
+        shape_angle.y = orig.angle.y + -0x1555;
+    }
+    initBaseMtx();
+    fopAcM_SetMtx(this, mpModel->getBaseTRMtx());
+    mpBgW->SetPushPullCallback((dBgW_Base::PushPull_CallBack)PPCallBack);
+    fopAcM_setCullSizeBox(this, l_cull_box[0].x, l_cull_box[0].y, l_cull_box[0].z, l_cull_box[1].x, l_cull_box[1].y, l_cull_box[1].z);
+    return 1;
 }
-#pragma pop
 
 /* 80CAA14C-80CAA1BC 00032C 0070+00 1/0 0/0 0/0 .text            CreateHeap__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::CreateHeap() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/CreateHeap__12daObjPDoor_cFv.s"
+int daObjPDoor_c::CreateHeap() {
+    J3DModelData* modelData = (J3DModelData*)dComIfG_getObjectRes(l_arcName, 5);
+    mpModel = mDoExt_J3DModel__create(modelData, 0x80000, 0x11000084);
+    return mpModel != NULL ? 1 : 0;
 }
-#pragma pop
 
 /* 80CAA1BC-80CAA23C 00039C 0080+00 1/1 0/0 0/0 .text            create1st__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::create1st() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/create1st__12daObjPDoor_cFv.s"
+int daObjPDoor_c::create1st() {
+    int phase = dComIfG_resLoad(&mPhaseReq, l_arcName);
+    if (phase == cPhs_COMPLEATE_e) {
+        phase = MoveBGCreate(l_arcName, 8, NULL, 0x4230, NULL);
+        if (phase == cPhs_ERROR_e) {
+            return phase;
+        }
+    }
+    return phase;
 }
-#pragma pop
 
 /* 80CAA23C-80CAA290 00041C 0054+00 1/0 0/0 0/0 .text            Execute__12daObjPDoor_cFPPA3_A4_f
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::Execute(f32 (**param_0)[3][4]) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/Execute__12daObjPDoor_cFPPA3_A4_f.s"
+int daObjPDoor_c::Execute(Mtx** i_mtx) {
+    mode_proc_call();
+    *i_mtx = &mBgMtx;
+    setBaseMtx();
+    field_0x5b5 = 0;
+    return 1;
 }
-#pragma pop
 
-/* ############################################################################################## */
 /* 80CAAB88-80CAAB94 -00001 000C+00 0/1 0/0 0/0 .data            @3781 */
 #pragma push
 #pragma force_active on
@@ -333,6 +286,17 @@ SECTION_DATA static u8 l_func[24] = {
 #pragma pop
 
 /* 80CAA290-80CAA31C 000470 008C+00 1/1 0/0 0/0 .text            mode_proc_call__12daObjPDoor_cFv */
+#ifdef NONMATCHING
+// Matches with ptmf
+void daObjPDoor_c::mode_proc_call() {
+    typedef void (daObjPDoor_c::*modeFunc)();
+    static modeFunc l_func[] = {
+        &daObjPDoor_c::modeWait,
+        &daObjPDoor_c::modeRotate,
+    };
+    (this->*l_func[field_0x5ad])();
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -341,8 +305,19 @@ asm void daObjPDoor_c::mode_proc_call() {
 #include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/mode_proc_call__12daObjPDoor_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80CAA31C-80CAA354 0004FC 0038+00 1/1 0/0 0/0 .text            init_modeWait__12daObjPDoor_cFv */
+#ifndef NONMATCHING
+void daObjPDoor_c::init_modeWait() {
+    field_0x5ba = 0;
+    field_0x5b0 = -1;
+    for (int i = 0; i < 2; i++) {
+        field_0x5b6[i] = 0;
+    }
+    field_0x5ad = 0;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -351,6 +326,7 @@ asm void daObjPDoor_c::init_modeWait() {
 #include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/init_modeWait__12daObjPDoor_cFv.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80CAAB24-80CAAB28 000004 0004+00 1/1 0/0 0/0 .rodata          @3942 */
@@ -375,16 +351,13 @@ asm void daObjPDoor_c::modeWait() {
 
 /* 80CAA698-80CAA6B4 000878 001C+00 1/1 0/0 0/0 .text            init_modeRotate__12daObjPDoor_cFv
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::init_modeRotate() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/init_modeRotate__12daObjPDoor_cFv.s"
+void daObjPDoor_c::init_modeRotate() {
+    field_0x5bc = 0;
+    field_0x5b4 = 0;
+    field_0x5b8 = 0;
+    field_0x5ad = 1;
 }
-#pragma pop
 
-/* ############################################################################################## */
 /* 80CAAB30-80CAAB34 000010 0004+00 0/1 0/0 0/0 .rodata          @4051 */
 #pragma push
 #pragma force_active on
@@ -424,26 +397,22 @@ asm void daObjPDoor_c::modeRotate() {
 #pragma pop
 
 /* 80CAA968-80CAAA0C 000B48 00A4+00 1/0 0/0 0/0 .text            Draw__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::Draw() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/Draw__12daObjPDoor_cFv.s"
+int daObjPDoor_c::Draw() {
+    g_env_light.settingTevStruct(0x10, &current.pos, &mTevStr);
+    g_env_light.setLightTevColorType_MAJI(mpModel, &mTevStr);
+    dComIfGd_setListBG();
+    mDoExt_modelUpdateDL(mpModel);
+    dComIfGd_setList();
+    return 1;
 }
-#pragma pop
 
 /* 80CAAA0C-80CAAA4C 000BEC 0040+00 1/0 0/0 0/0 .text            Delete__12daObjPDoor_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjPDoor_c::Delete() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/Delete__12daObjPDoor_cFv.s"
+int daObjPDoor_c::Delete() {
+    mpBgW->SetPushPullCallback(NULL);
+    dComIfG_resDelete(&mPhaseReq, l_arcName);
+    return 1;
 }
-#pragma pop
 
-/* ############################################################################################## */
 /* 80CAABB8-80CAABD8 -00001 0020+00 1/0 0/0 0/0 .data            daObjPDoor_METHODS */
 SECTION_DATA static void* daObjPDoor_METHODS[8] = {
     (void*)daObjPDoor_create1st__FP12daObjPDoor_c,
@@ -481,44 +450,23 @@ SECTION_DATA extern void* __vt__12daObjPDoor_c[10] = {
 };
 
 /* 80CAAA4C-80CAAAAC 000C2C 0060+00 1/0 0/0 0/0 .text daObjPDoor_create1st__FP12daObjPDoor_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjPDoor_create1st(daObjPDoor_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/daObjPDoor_create1st__FP12daObjPDoor_c.s"
+static int daObjPDoor_create1st(daObjPDoor_c* i_this) {
+    fopAcM_SetupActor(i_this, daObjPDoor_c);
+    return i_this->create1st();
 }
-#pragma pop
 
 /* 80CAAAAC-80CAAACC 000C8C 0020+00 1/0 0/0 0/0 .text daObjPDoor_MoveBGDelete__FP12daObjPDoor_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjPDoor_MoveBGDelete(daObjPDoor_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/daObjPDoor_MoveBGDelete__FP12daObjPDoor_c.s"
+static int daObjPDoor_MoveBGDelete(daObjPDoor_c* i_this) {
+    return i_this->MoveBGDelete();
 }
-#pragma pop
 
 /* 80CAAACC-80CAAAEC 000CAC 0020+00 1/0 0/0 0/0 .text daObjPDoor_MoveBGExecute__FP12daObjPDoor_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjPDoor_MoveBGExecute(daObjPDoor_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/daObjPDoor_MoveBGExecute__FP12daObjPDoor_c.s"
+static int daObjPDoor_MoveBGExecute(daObjPDoor_c* i_this) {
+    return i_this->MoveBGExecute();
 }
-#pragma pop
 
 /* 80CAAAEC-80CAAB18 000CCC 002C+00 1/0 0/0 0/0 .text daObjPDoor_MoveBGDraw__FP12daObjPDoor_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjPDoor_MoveBGDraw(daObjPDoor_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_pdoor/d_a_obj_pdoor/daObjPDoor_MoveBGDraw__FP12daObjPDoor_c.s"
+static int daObjPDoor_MoveBGDraw(daObjPDoor_c* i_this) {
+    return i_this->MoveBGDraw();
 }
-#pragma pop
-
-/* 80CAAB40-80CAAB40 000020 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
