@@ -3,61 +3,10 @@
 // Translation Unit: d_a_obj_crope
 //
 
-// #include "rel/d/a/obj/d_a_obj_crope/d_a_obj_crope.h"
-#include "d/cc/d_cc_d.h"
+#include "rel/d/a/obj/d_a_obj_crope/d_a_obj_crope.h"
+#include "JSystem/JKernel/JKRHeap.h"
+#include "d/d_procname.h"
 #include "dol2asm.h"
-
-//
-// Types:
-//
-
-struct request_of_phase_process_class {};
-
-struct mDoExt_3DlineMat_c {};
-
-struct mDoExt_3DlineMatSortPacket {
-    /* 80014738 */ void setMat(mDoExt_3DlineMat_c*);
-};
-
-struct ResTIMG {};
-
-struct _GXColor {};
-
-struct dKy_tevstr_c {};
-
-struct mDoExt_3DlineMat1_c {
-    /* 80013360 */ void init(u16, u16, ResTIMG*, int);
-    /* 8001373C */ void update(int, f32, _GXColor&, u16, dKy_tevstr_c*);
-};
-
-struct fopAc_ac_c {
-    /* 80018B64 */ fopAc_ac_c();
-    /* 80018C8C */ ~fopAc_ac_c();
-};
-
-struct daObjCrope_c {
-    /* 80BCCCD8 */ void createHeap();
-    /* 80BCCD64 */ void create();
-    /* 80BCD524 */ ~daObjCrope_c();
-    /* 80BCD6C4 */ void setNormalRopePos();
-    /* 80BCD9EC */ void setRideRopePos();
-    /* 80BCE4FC */ void execute();
-    /* 80BCE9BC */ void draw();
-};
-
-struct dScnKy_env_light_c {
-    /* 801A37C4 */ void settingTevStruct(int, cXyz*, dKy_tevstr_c*);
-};
-
-struct dRes_info_c {};
-
-struct dRes_control_c {
-    /* 8003C2EC */ void getRes(char const*, s32, dRes_info_c*, int);
-};
-
-struct cCcS {
-    /* 80264BA8 */ void Set(cCcD_Obj*);
-};
 
 //
 // Forward References:
@@ -119,7 +68,6 @@ extern "C" void cM3d_Len2dSqPntAndSegLine__FffffffPfPfPf();
 extern "C" void __ct__8cM3dGLinFRC4cXyzRC4cXyz();
 extern "C" void SetC__8cM3dGSphFRC4cXyz();
 extern "C" void __dl__FPv();
-extern "C" void PSMTXTrans();
 extern "C" void __destroy_arr();
 extern "C" void __construct_array();
 extern "C" void _savegpr_23();
@@ -129,54 +77,28 @@ extern "C" void _restgpr_23();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_27();
 extern "C" extern void* __vt__19mDoExt_3DlineMat1_c[5];
-extern "C" extern void* g_fopAc_Method[8];
-extern "C" extern void* g_fpcLf_Method[5 + 1 /* padding */];
 extern "C" extern void* __vt__8dCcD_Sph[36];
 extern "C" extern void* __vt__9dCcD_Stts[11];
 extern "C" extern void* __vt__12cCcD_SphAttr[25];
 extern "C" extern void* __vt__14cCcD_ShapeAttr[22];
 extern "C" extern void* __vt__9cCcD_Stts[8];
-extern "C" extern u8 g_dComIfG_gameInfo[122384];
-extern "C" extern u8 g_env_light[4880];
 
-//
-// Declarations:
-//
-
-/* ############################################################################################## */
 /* 80BCEACC-80BCEAD4 000000 0006+02 6/6 0/0 0/0 .rodata          l_arcName */
-SECTION_RODATA static u8 const l_arcName[6 + 2 /* padding */] = {
-    0x43,
-    0x72,
-    0x6F,
-    0x70,
-    0x65,
-    0x00,
-    /* padding */
-    0x00,
-    0x00,
-};
-COMPILER_STRIP_GATE(0x80BCEACC, &l_arcName);
+static const char l_arcName[] = "Crope";
 
 /* 80BCCCD8-80BCCD44 000078 006C+00 1/1 0/0 0/0 .text            createHeap__12daObjCrope_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCrope_c::createHeap() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/createHeap__12daObjCrope_cFv.s"
+int daObjCrope_c::createHeap() {
+    ResTIMG* texImg = (ResTIMG*)dComIfG_getObjectRes(l_arcName, 3);
+    if (mLineMat.init(1, 100, texImg, 0)) {
+        return 1;
+    }
+    return 0;
 }
-#pragma pop
 
 /* 80BCCD44-80BCCD64 0000E4 0020+00 1/1 0/0 0/0 .text daObjCrope_createHeap__FP10fopAc_ac_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCrope_createHeap(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/daObjCrope_createHeap__FP10fopAc_ac_c.s"
+static int daObjCrope_createHeap(fopAc_ac_c* i_this) {
+    return static_cast<daObjCrope_c*>(i_this)->createHeap();
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BCEAD4-80BCEAD8 000008 0004+00 0/1 0/0 0/0 .rodata          @3870 */
@@ -295,12 +217,7 @@ static dCcD_SrcSph l_sphSrc = {
 };
 
 /* 80BCEB7C-80BCEB80 000040 0004+00 1/1 0/0 0/0 .data            color$4550 */
-SECTION_DATA static u8 color[4] = {
-    0x00,
-    0x00,
-    0x00,
-    0xFF,
-};
+static GXColor color = {0, 0, 0, 255};
 
 /* 80BCEB80-80BCEBA0 -00001 0020+00 1/0 0/0 0/0 .data            l_daObjCrope_Method */
 SECTION_DATA static void* l_daObjCrope_Method[8] = {
@@ -368,7 +285,7 @@ SECTION_DATA extern void* __vt__8cM3dGAab[3] = {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCrope_c::create() {
+asm int daObjCrope_c::create() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/create__12daObjCrope_cFv.s"
 }
@@ -426,16 +343,17 @@ extern "C" asm void __dt__4cXyzFv() {
 
 /* 80BCD504-80BCD524 0008A4 0020+00 1/0 0/0 0/0 .text            daObjCrope_Create__FP10fopAc_ac_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCrope_Create(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/daObjCrope_Create__FP10fopAc_ac_c.s"
+static int daObjCrope_Create(fopAc_ac_c* i_this) {
+    return static_cast<daObjCrope_c*>(i_this)->create();
 }
-#pragma pop
 
 /* 80BCD524-80BCD69C 0008C4 0178+00 1/1 0/0 0/0 .text            __dt__12daObjCrope_cFv */
+// Matches with vtable
+#ifdef NONMATCHING
+daObjCrope_c::~daObjCrope_c() {
+    dComIfG_resDelete(&mPhase, l_arcName);
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -444,17 +362,14 @@ asm daObjCrope_c::~daObjCrope_c() {
 #include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/__dt__12daObjCrope_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BCD69C-80BCD6C4 000A3C 0028+00 1/0 0/0 0/0 .text            daObjCrope_Delete__FP12daObjCrope_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCrope_Delete(daObjCrope_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/daObjCrope_Delete__FP12daObjCrope_c.s"
+static int daObjCrope_Delete(daObjCrope_c* i_this) {
+    i_this->~daObjCrope_c();
+    return 1;
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BCEB14-80BCEB18 000048 0004+00 0/1 0/0 0/0 .rodata          @4115 */
@@ -542,7 +457,7 @@ asm void daObjCrope_c::setRideRopePos() {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCrope_c::execute() {
+asm int daObjCrope_c::execute() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/execute__12daObjCrope_cFv.s"
 }
@@ -560,35 +475,35 @@ extern "C" asm void __dt__8cM3dGLinFv() {
 #pragma pop
 
 /* 80BCE99C-80BCE9BC 001D3C 0020+00 1/0 0/0 0/0 .text daObjCrope_Execute__FP12daObjCrope_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCrope_Execute(daObjCrope_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/daObjCrope_Execute__FP12daObjCrope_c.s"
+static int daObjCrope_Execute(daObjCrope_c* i_this) {
+    return i_this->execute();
 }
-#pragma pop
 
 /* 80BCE9BC-80BCEA5C 001D5C 00A0+00 1/1 0/0 0/0 .text            draw__12daObjCrope_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+int daObjCrope_c::draw() {
+    g_env_light.settingTevStruct(0, &current.pos, &tevStr);
+    mLineMat.update(100, 5.0f, color, 0, &tevStr);
+    dComIfGd_set3DlineMat(&mLineMat);
+    return 1;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCrope_c::draw() {
+asm int daObjCrope_c::draw() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/draw__12daObjCrope_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BCEA5C-80BCEA7C 001DFC 0020+00 1/0 0/0 0/0 .text            daObjCrope_Draw__FP12daObjCrope_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCrope_Draw(daObjCrope_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/daObjCrope_Draw__FP12daObjCrope_c.s"
+static int daObjCrope_Draw(daObjCrope_c* i_this) {
+    return i_this->draw();
 }
-#pragma pop
 
 /* 80BCEA7C-80BCEAC4 001E1C 0048+00 1/0 0/0 0/0 .text            __dt__10cCcD_GSttsFv */
 #pragma push
