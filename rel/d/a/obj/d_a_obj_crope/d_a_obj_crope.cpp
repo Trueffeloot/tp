@@ -6,6 +6,7 @@
 #include "rel/d/a/obj/d_a_obj_crope/d_a_obj_crope.h"
 #include "JSystem/JKernel/JKRHeap.h"
 #include "d/d_procname.h"
+#include "d/d_path.h"
 #include "dol2asm.h"
 
 //
@@ -282,6 +283,76 @@ SECTION_DATA extern void* __vt__8cM3dGAab[3] = {
 };
 
 /* 80BCCD64-80BCD3D8 000104 0674+00 1/1 0/0 0/0 .text            create__12daObjCrope_cFv */
+// Matches with literals and vtable
+#ifdef NONMATCHING
+int daObjCrope_c::create() {
+    fopAcM_SetupActor(this, daObjCrope_c);
+
+    int phase = dComIfG_resLoad(&mPhase, l_arcName);
+    if (phase == cPhs_COMPLEATE_e) {
+        if (!fopAcM_entrySolidHeap(this, daObjCrope_createHeap, 0x2900)) {
+            return cPhs_ERROR_e;
+        }
+        attention_info.position = home.pos;
+        eyePos = home.pos;
+        mCcStts.Init(0, 0xFF, this);
+        mCcStts.SetRoomId(fopAcM_GetRoomNo(this));
+        mCollider.Set(l_sphSrc);
+        mCollider.SetStts(&mCcStts);
+        tevStr.mRoomNo = fopAcM_GetRoomNo(this);
+        gravity = -5.0f;
+        cXyz point0;
+        cXyz point1;
+
+        if (fopAcM_GetParam(this) == 0xFF) {
+            return cPhs_ERROR_e;
+        }
+
+        dPath* roomPath = dPath_GetRoomPath(fopAcM_GetParam(this), fopAcM_GetRoomNo(this));
+
+        if (roomPath == NULL || roomPath->m_num != 2) {
+            return cPhs_ERROR_e;
+        }
+
+        point0 = roomPath->m_points[0].m_position;
+        point1 = roomPath->m_points[1].m_position;
+        current.pos = (point0 + point1) * 0.5f;
+        mRopeVec = point1 - point0;
+
+        if (fabsf(mRopeVec.x) > fabsf(mRopeVec.z)) {
+            field_0x724 = 1.0f / mRopeVec.x;
+            field_0x714 = 1;
+        } else {
+            field_0x724 = 1.0f / mRopeVec.z;
+            field_0x714 = 0;
+        }
+        shape_angle.y = mRopeVec.atan2sX_Z();
+        shape_angle.x = mRopeVec.atan2sY_XZ();
+        mDoMtx_trans(field_0x6e4, current.pos.x, current.pos.y, current.pos.z);
+        mDoMtx_ZXYrotM(field_0x6e4, shape_angle.x, shape_angle.y, 0);
+        f32 rope_absXZ = mRopeVec.absXZ() * 0.5f + 3.0f;
+        fopAcM_SetMtx(this, field_0x6e4);
+        fopAcM_SetMax(this, 75.0f, 50.0f, rope_absXZ);
+        fopAcM_SetMin(this, -75.0f, -200.0f, -rope_absXZ);
+        f32 ropeAbs = mRopeVec.abs();
+        field_0x720 = ropeAbs * 0.01010101f;
+        f32 div = field_0x720 / ropeAbs; 
+        cXyz newRopeVec(mRopeVec.x * div, mRopeVec.y * div, mRopeVec.z * div);
+        cXyz* lineMatPos = mLineMat.getPos(0);
+        cXyz* p_points = field_0xbd8;
+        *lineMatPos = point0;
+        lineMatPos++;
+        for (int i = 1; i < 99; i++, lineMatPos++, p_points++) {
+            *lineMatPos = lineMatPos[-1] + newRopeVec;
+            *p_points = *lineMatPos;
+        }
+        *lineMatPos = point1;
+        offRide();
+        setNormalRopePos();
+    }
+    return phase;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -290,6 +361,7 @@ asm int daObjCrope_c::create() {
 #include "asm/rel/d/a/obj/d_a_obj_crope/d_a_obj_crope/create__12daObjCrope_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BCD3D8-80BCD3DC 000778 0004+00 1/1 0/0 0/0 .text            __ct__4cXyzFv */
 // cXyz::cXyz() {

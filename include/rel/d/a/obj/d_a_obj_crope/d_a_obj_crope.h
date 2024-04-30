@@ -28,6 +28,11 @@ public:
                              field_0x724 * (param_0->z - getRopeStartPos()->z);
     }
 
+    void offRide() {
+        setFrontJoint(-1);
+        setBackJoint(-1);
+    }
+
     void rideKeep() {
         setFrontJoint(-2);
         setBackJoint(-1);

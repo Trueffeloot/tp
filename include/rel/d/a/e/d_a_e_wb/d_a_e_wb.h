@@ -8,6 +8,7 @@ enum daE_wb_ACT {
     /* 0x00 */ ACT_WAIT,
     /* 0x15 */ ACT_S_DAMAGE = 0x15,
     /* 0x65 */ ACT_PL_RIDE = 0x65,
+    /* 0x66 */ ACT_PL_X66 = 0x66,
     /* 0x67 */ ACT_PL_RIDE_NOW = 0x67,
 };
 
@@ -39,7 +40,6 @@ public:
         return NULL;
     }
 
-private:
     /* 0x05AC */ request_of_phase_process_class mPhase;
     /* 0x05B4 */ s16 field_0x5b4;
     /* 0x05B8 */ char* mResName;

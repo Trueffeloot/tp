@@ -6,122 +6,49 @@
 #include "rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down.h"
 #include "d/cc/d_cc_d.h"
 #include "dol2asm.h"
+#include "d/bg/d_bg_s_movebg_actor.h"
+#include "f_op/f_op_actor_mng.h"
+#include "d/d_procname.h"
+#include "JSystem/JKernel/JKRHeap.h"
+#include "d/com/d_com_inf_game.h"
+#include "d/bg/d_bg_w.h"
+#include "rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up.h"
+#include "d/cc/d_cc_uty.h"
+#include "rel/d/a/e/d_a_e_wb/d_a_e_wb.h"
 
-//
-// Types:
-//
-
-struct request_of_phase_process_class {};
-
-struct csXyz {
-    /* 802673F4 */ csXyz(s16, s16, s16);
-};
-
-struct mDoMtx_stack_c {
-    /* 8000CD64 */ void transS(cXyz const&);
-    /* 8000CF44 */ void ZXYrotM(csXyz const&);
-
-    static u8 now[48];
-};
-
-struct fopAc_ac_c {};
-
-struct fopAcM_gc_c {
-    /* 8001DCBC */ void gndCheck(cXyz const*);
-
-    static f32 mGroundY;
-};
-
-struct daObjCRVLH_UP_c {
-    /* 80BD4F1C */ void HakaiSet();
-};
-
-struct daObjCRVLH_DW_c {
+class daObjCRVLH_DW_c : public dBgS_MoveBgActor {
+public:
     /* 80BD4138 */ void initCcCylinder();
     /* 80BD41A4 */ void SetCcSyl();
     /* 80BD4268 */ void BgRelease();
     /* 80BD42D8 */ void Break();
     /* 80BD45A4 */ void Obj_Hit();
     /* 80BD4644 */ void setBaseMtx();
-    /* 80BD46EC */ void CreateHeap();
-    /* 80BD4764 */ void create();
-    /* 80BD4A84 */ void Create();
-    /* 80BD4AC8 */ void Execute(f32 (**)[3][4]);
-    /* 80BD4C44 */ void Draw();
-    /* 80BD4CC8 */ void Delete();
+    /* 80BD46EC */ int CreateHeap();
+    /* 80BD4764 */ int create();
+    /* 80BD4A84 */ int Create();
+    /* 80BD4AC8 */ int Execute(Mtx**);
+    /* 80BD4C44 */ int Draw();
+    /* 80BD4CC8 */ int Delete();
+
+    /* 0x5A0 */ u32 mActorChild;
+    /* 0x5A4 */ s32 mChildID;
+    /* 0x5A8 */ cXyz field_0x5a8;
+    /* 0x5B4 */ f32 mActorGroundY;
+    /* 0x5B8 */ u8 field_0x5b8;
+    /* 0x5B9 */ u8 field_0x5B9[0x5BB - 0x5B9];
+    /* 0x5BB */ u8 field_0x5bb;
+    /* 0x5BC */ u8 field_0x5bc;
+    /* 0x5BD */ u8 field_0x5BD[0x5C4 - 0x5BD];
+    /* 0x5C4 */ J3DModel* mpModel;
+    /* 0x5C8 */ request_of_phase_process_class mPhaseReq;
+    /* 0x5D0 */ dCcD_Stts mStts;
+    /* 0x60C */ dCcD_Cyl mCollider;
 };
 
-struct daObjCRVHAHEN_c {
+struct daObjCRVHAHEN_c : public fopAc_ac_c {
     /* 80BD342C */ void HahenSet(cXyz, cXyz, cXyz, cXyz, f32);
 };
-
-struct dVibration_c {
-    /* 8006FA24 */ void StartShock(int, int, cXyz);
-};
-
-struct dSv_info_c {
-    /* 80035200 */ void onSwitch(int, int);
-    /* 80035360 */ void isSwitch(int, int) const;
-};
-
-struct dKy_tevstr_c {};
-
-struct J3DModelData {};
-
-struct dScnKy_env_light_c {
-    /* 801A37C4 */ void settingTevStruct(int, cXyz*, dKy_tevstr_c*);
-    /* 801A4DA0 */ void setLightTevColorType_MAJI(J3DModelData*, dKy_tevstr_c*);
-};
-
-struct dRes_info_c {};
-
-struct dRes_control_c {
-    /* 8003C37C */ void getRes(char const*, char const*, dRes_info_c*, int);
-    /* 8003C6B8 */ void getObjectResName2Index(char const*, char const*);
-};
-
-struct dPa_levelEcallBack {};
-
-struct _GXColor {};
-
-struct dPa_control_c {
-    /* 8004CA90 */ void set(u8, u16, cXyz const*, dKy_tevstr_c const*, csXyz const*, cXyz const*,
-                            u8, dPa_levelEcallBack*, s8, _GXColor const*, _GXColor const*,
-                            cXyz const*, f32);
-};
-
-struct dBgW_Base {};
-
-struct dBgW {};
-
-struct cBgS_PolyInfo {};
-
-struct dBgS_MoveBgActor {
-    /* 80078624 */ dBgS_MoveBgActor();
-    /* 800786B0 */ bool IsDelete();
-    /* 800786B8 */ bool ToFore();
-    /* 800786C0 */ bool ToBack();
-    /* 800787BC */ void MoveBGCreate(char const*, int,
-                                     void (*)(dBgW*, void*, cBgS_PolyInfo const&, bool, cXyz*,
-                                              csXyz*, csXyz*),
-                                     u32, f32 (*)[3][4]);
-    /* 800788DC */ void MoveBGDelete();
-    /* 80078950 */ void MoveBGExecute();
-};
-
-struct cCcS {
-    /* 80264BA8 */ void Set(cCcD_Obj*);
-};
-
-struct cBgW_BgId {
-    /* 802681D4 */ void ChkUsed() const;
-};
-
-struct cBgS {
-    /* 80074250 */ void Release(dBgW_Base*);
-};
-
-struct J3DModel {};
 
 //
 // Forward References:
@@ -200,20 +127,14 @@ extern "C" void SetC__8cM3dGCylFRC4cXyz();
 extern "C" void SetR__8cM3dGCylFf();
 extern "C" void seStart__7Z2SeMgrF10JAISoundIDPC3VecUlScffffUc();
 extern "C" void __dl__FPv();
-extern "C" void PSMTXCopy();
 extern "C" void _savegpr_29();
 extern "C" void _restgpr_29();
-extern "C" extern void* g_fopAc_Method[8];
-extern "C" extern void* g_fpcLf_Method[5 + 1 /* padding */];
 extern "C" extern void* __vt__8dCcD_Cyl[36];
 extern "C" extern void* __vt__9dCcD_Stts[11];
 extern "C" extern void* __vt__12cCcD_CylAttr[25];
 extern "C" extern void* __vt__14cCcD_ShapeAttr[22];
 extern "C" extern void* __vt__9cCcD_Stts[8];
 extern "C" u8 now__14mDoMtx_stack_c[48];
-extern "C" extern u8 g_dComIfG_gameInfo[122384];
-extern "C" extern u8 g_env_light[4880];
-extern "C" extern u8 j3dSys[284];
 extern "C" f32 mGroundY__11fopAcM_gc_c;
 extern "C" u8 mAudioMgrPtr__10Z2AudioMgr[4 + 4 /* padding */];
 extern "C" void HahenSet__15daObjCRVHAHEN_cF4cXyz4cXyz4cXyz4cXyzf();
@@ -241,71 +162,46 @@ const static dCcD_SrcCyl ccCylSrc = {
 
 /* 80BD4138-80BD41A4 000078 006C+00 1/1 0/0 0/0 .text            initCcCylinder__15daObjCRVLH_DW_cFv
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::initCcCylinder() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/initCcCylinder__15daObjCRVLH_DW_cFv.s"
+void daObjCRVLH_DW_c::initCcCylinder() {
+    mStts.Init(0xFF, 0xFF, this);
+    mCollider.Set(ccCylSrc);
+    mCollider.SetStts(&mStts);
+    mCollider.SetC(current.pos);
+    mCollider.OnTgIronBallRebound();
 }
-#pragma pop
-
-/* ############################################################################################## */
-/* 80BD4D48-80BD4D4C 000044 0004+00 1/3 0/0 0/0 .rodata          @3670 */
-SECTION_RODATA static f32 const lit_3670 = 100.0f;
-COMPILER_STRIP_GATE(0x80BD4D48, &lit_3670);
-
-/* 80BD4D4C-80BD4D50 000048 0004+00 1/1 0/0 0/0 .rodata          @3671 */
-SECTION_RODATA static f32 const lit_3671 = 200.0f;
-COMPILER_STRIP_GATE(0x80BD4D4C, &lit_3671);
 
 /* 80BD41A4-80BD4224 0000E4 0080+00 1/1 0/0 0/0 .text            SetCcSyl__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::SetCcSyl() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/SetCcSyl__15daObjCRVLH_DW_cFv.s"
+void daObjCRVLH_DW_c::SetCcSyl() {
+    cXyz curr_pos = current.pos;
+    curr_pos.y += 100.0f;
+    mCollider.SetC(curr_pos);
+    mCollider.SetR(200.0f);
+    dComIfG_Ccsp()->Set(&mCollider);
 }
-#pragma pop
 
 /* 80BD4224-80BD4244 000164 0020+00 1/0 0/0 0/0 .text daObjCRVLH_DW_Create__FP10fopAc_ac_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_DW_Create(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/daObjCRVLH_DW_Create__FP10fopAc_ac_c.s"
+static int daObjCRVLH_DW_Create(fopAc_ac_c* i_this) {
+    return static_cast<daObjCRVLH_DW_c*>(i_this)->create();
 }
-#pragma pop
 
 /* 80BD4244-80BD4268 000184 0024+00 1/0 0/0 0/0 .text daObjCRVLH_DW_Delete__FP15daObjCRVLH_DW_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_DW_Delete(daObjCRVLH_DW_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/daObjCRVLH_DW_Delete__FP15daObjCRVLH_DW_c.s"
+static int daObjCRVLH_DW_Delete(daObjCRVLH_DW_c* i_this) {
+    i_this->MoveBGDelete();
+    return 1;
 }
-#pragma pop
 
-/* ############################################################################################## */
-/* 80BD4D88-80BD4D88 000084 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
-#pragma push
-#pragma force_active on
-SECTION_DEAD static char const* const stringBase_80BD4D88 = "CrvLH_Dw";
-SECTION_DEAD static char const* const stringBase_80BD4D91 = "Release Error\n";
-#pragma pop
+/* 80BD4DC4-80BD4DC8 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
+static char* l_arcName = "CrvLH_Dw";
 
 /* 80BD4268-80BD42D8 0001A8 0070+00 1/1 0/0 0/0 .text            BgRelease__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::BgRelease() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/BgRelease__15daObjCRVLH_DW_cFv.s"
+void daObjCRVLH_DW_c::BgRelease() {
+    if (mpBgW != NULL && mpBgW->ChkUsed()) {
+        u8 released = dComIfG_Bgsp().Release(mpBgW);
+        if (released != 0) {
+            OSReport("Release Error\n");
+        }
+    }
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BD4D50-80BD4D54 00004C 0004+00 0/1 0/0 0/0 .rodata          @3754 */
@@ -335,6 +231,28 @@ COMPILER_STRIP_GATE(0x80BD4D58, &lit_3756);
 #pragma pop
 
 /* 80BD42D8-80BD45A4 000218 02CC+00 1/1 0/0 0/0 .text            Break__15daObjCRVLH_DW_cFv */
+// some issues
+#ifdef NONMATCHING
+void daObjCRVLH_DW_c::Break() {
+    csXyz angle(0x0, fopAcM_searchPlayerAngleY(this) + 0x8000, 0x0);
+    dComIfGp_particle_set(0x861B, &current.pos, &tevStr, &shape_angle, NULL);
+    dComIfGp_particle_set(0x861C, &current.pos, &tevStr, &shape_angle, NULL);
+    dComIfGp_particle_set(0x861D, &current.pos, &tevStr, &shape_angle, NULL);
+    dComIfGp_particle_set(0x861E, &current.pos, &tevStr, &shape_angle, NULL);
+    dComIfGp_particle_set(0x861F, &current.pos, &tevStr, &shape_angle, NULL);
+
+    dComIfGp_getVibration().StartShock(5, 0x1F, cXyz(0.0f, 1.0f, 0.0f));
+
+    mChildID = fopAcM_createChild(PROC_Obj_CRVHAHEN, fopAcM_GetID(this), 1, &current.pos, fopAcM_GetRoomNo(this), &angle, NULL, -1, NULL);
+    fopAc_ac_c* up;
+    if (fopAcM_SearchByID(mChildID, &up) && up != NULL) {
+        static_cast<daObjCRVLH_UP_c*>(up)->HakaiSet();
+    }
+    BgRelease();
+    field_0x5b8 = 1;
+    fopAcM_seStartCurrent(this, Z2SE_OBJ_YAGURA_BREAK, 0);
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -343,67 +261,54 @@ asm void daObjCRVLH_DW_c::Break() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/Break__15daObjCRVLH_DW_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BD45A4-80BD4644 0004E4 00A0+00 1/1 0/0 0/0 .text            Obj_Hit__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::Obj_Hit() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/Obj_Hit__15daObjCRVLH_DW_cFv.s"
+void daObjCRVLH_DW_c::Obj_Hit() {
+    if (field_0x5b8 == 0) {
+        if (mCollider.ChkCoHit() ) {
+            e_wb_class* acActor = (e_wb_class*)dCc_GetAc(mCollider.GetCoHitObj()->GetAc());
+            if (fopAcM_GetName(acActor) == PROC_E_WB && acActor->mActionID == ACT_PL_X66) {
+                Break();
+            }
+        } else {
+            if (mCollider.ChkTgHit() && mCollider.GetTgHitObj()->ChkAtType(AT_TYPE_IRON_BALL)) {
+                Break();
+            }
+        }
+    } 
 }
-#pragma pop
 
 /* 80BD4644-80BD46A0 000584 005C+00 1/1 0/0 0/0 .text            setBaseMtx__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::setBaseMtx() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/setBaseMtx__15daObjCRVLH_DW_cFv.s"
+void daObjCRVLH_DW_c::setBaseMtx() {
+    mDoMtx_stack_c::transS(current.pos);
+    mDoMtx_stack_c::ZXYrotM(shape_angle);
+    mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
+    MTXCopy(mDoMtx_stack_c::get(), mBgMtx);
 }
-#pragma pop
 
 /* 80BD46A0-80BD46CC 0005E0 002C+00 1/0 0/0 0/0 .text daObjCRVLH_DW_Draw__FP15daObjCRVLH_DW_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_DW_Draw(daObjCRVLH_DW_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/daObjCRVLH_DW_Draw__FP15daObjCRVLH_DW_c.s"
+static int daObjCRVLH_DW_Draw(daObjCRVLH_DW_c* i_this) {
+    return i_this->MoveBGDraw();
 }
-#pragma pop
 
 /* 80BD46CC-80BD46EC 00060C 0020+00 2/1 0/0 0/0 .text daObjCRVLH_DW_Execute__FP15daObjCRVLH_DW_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_DW_Execute(daObjCRVLH_DW_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/daObjCRVLH_DW_Execute__FP15daObjCRVLH_DW_c.s"
+static int daObjCRVLH_DW_Execute(daObjCRVLH_DW_c* i_this) {
+    return i_this->MoveBGExecute();
 }
-#pragma pop
 
-/* ############################################################################################## */
-/* 80BD4D88-80BD4D88 000084 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
-#pragma push
-#pragma force_active on
-SECTION_DEAD static char const* const stringBase_80BD4DA0 = "U_CrvLH_Down.bmd";
-#pragma pop
 
-/* 80BD4DC4-80BD4DC8 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
-SECTION_DATA static void* l_arcName = (void*)&d_a_obj_crvlh_down__stringBase0;
 
 /* 80BD46EC-80BD4764 00062C 0078+00 1/0 0/0 0/0 .text            CreateHeap__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::CreateHeap() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/CreateHeap__15daObjCRVLH_DW_cFv.s"
+int daObjCRVLH_DW_c::CreateHeap() {
+    J3DModelData* modelData = (J3DModelData*)dComIfG_getObjectRes(l_arcName, "U_CrvLH_Down.bmd");
+    mpModel = mDoExt_J3DModel__create(modelData, 0x80000, 0x11000084);
+    if (mpModel != NULL) {
+        return 1;
+    }
+    return 0;
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BD4D5C-80BD4D60 000058 0004+00 0/1 0/0 0/0 .rodata          @3911 */
@@ -491,14 +396,47 @@ SECTION_DATA extern void* __vt__15daObjCRVLH_DW_c[10] = {
 };
 
 /* 80BD4764-80BD49EC 0006A4 0288+00 1/1 0/0 0/0 .text            create__15daObjCRVLH_DW_cFv */
+// Matches with literals and vtable
+#ifdef NONMATCHING
+int daObjCRVLH_DW_c::create() {
+    fopAcM_SetupActor(this, daObjCRVLH_DW_c);
+
+    int phase = dComIfG_resLoad(&mPhaseReq, l_arcName);
+    if (phase == cPhs_COMPLEATE_e) {
+        field_0x5bc = fopAcM_GetParam(this);
+        if (field_0x5bc != 0xff && dComIfGs_isSwitch(field_0x5bc, fopAcM_GetRoomNo(this))) {
+            return cPhs_ERROR_e;
+        }
+        gravity = -9.0f;
+        int dzb_id = dComIfG_getObjctResName2Index(l_arcName, "U_CrvLH_Down.dzb");
+        phase = MoveBGCreate(l_arcName, dzb_id, dBgS_MoveBGProc_TypicalRotY, 0xB40, NULL);
+        if (phase == cPhs_ERROR_e) {
+            return phase;
+        }
+        initCcCylinder();
+        fopAcM_SetMtx(this, mpModel->getBaseTRMtx());
+        cXyz groundPos(current.pos.x, current.pos.y + 100.0f, current.pos.z);
+        if (fopAcM_gc_c::gndCheck(&groundPos)) {
+            mActorGroundY = fopAcM_gc_c::getGroundY();
+            current.pos.y = mActorGroundY;
+        }
+        fopAcM_setCullSizeFar(this, 100.0f);
+        fopAcM_setCullSizeBox(this, -500.0f, -500.0f, -500.0f, 500.0f, 1000.0f, 500.0f);
+        daObjCRVLH_DW_Execute(this);
+        mActorChild = fopAcM_createChild(PROC_Obj_CRVLH_UP, fopAcM_GetID(this), 1, &current.pos, fopAcM_GetRoomNo(this), &shape_angle, NULL, -1, NULL);
+    }
+    return phase;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::create() {
+asm int daObjCRVLH_DW_c::create() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/create__15daObjCRVLH_DW_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BD49EC-80BD4A34 00092C 0048+00 1/0 0/0 0/0 .text            __dt__8cM3dGCylFv */
 #pragma push
@@ -524,8 +462,8 @@ extern "C" asm void __dt__8cM3dGAabFv() {
 
 /* 80BD4A7C-80BD4A84 0009BC 0008+00 1/0 0/0 0/0 .text daObjCRVLH_DW_IsDelete__FP15daObjCRVLH_DW_c
  */
-static bool daObjCRVLH_DW_IsDelete(daObjCRVLH_DW_c* param_0) {
-    return true;
+static int daObjCRVLH_DW_IsDelete(daObjCRVLH_DW_c* i_this) {
+    return 1;
 }
 
 /* ############################################################################################## */
@@ -537,14 +475,22 @@ COMPILER_STRIP_GATE(0x80BD4D6C, &lit_3990);
 #pragma pop
 
 /* 80BD4A84-80BD4AC8 0009C4 0044+00 1/0 0/0 0/0 .text            Create__15daObjCRVLH_DW_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+int daObjCRVLH_DW_c::Create() {
+    fopAcM_setCullSizeBox(this, -1000.0f, -500.0f, -1000.0f, 1000.0f, 500.0f, 1000.0f);
+    return cPhs_COMPLEATE_e;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::Create() {
+asm int daObjCRVLH_DW_c::Create() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/func_80BD4A84.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80BD4D70-80BD4D74 00006C 0004+00 0/1 0/0 0/0 .rodata          @4039 */
@@ -590,33 +536,52 @@ COMPILER_STRIP_GATE(0x80BD4D84, &lit_4044);
 #pragma pop
 
 /* 80BD4AC8-80BD4C44 000A08 017C+00 1/0 0/0 0/0 .text Execute__15daObjCRVLH_DW_cFPPA3_A4_f */
+// Matches with literals
+#ifdef NONMATCHING
+int daObjCRVLH_DW_c::Execute(Mtx** i_mtx) {
+    if (field_0x5bb != 0) {
+        if (field_0x5bc != 0xff && !dComIfGs_isSwitch(field_0x5bc, fopAcM_GetRoomNo(this))) {
+            dComIfGs_onSwitch(field_0x5bc, fopAcM_GetRoomNo(this));
+        }
+        fopAcM_delete(this);
+    }
+    Obj_Hit();
+    fopAc_ac_c* hahen;
+    if (field_0x5b8 != 0 && fopAcM_SearchByID(mChildID, &hahen) != 0 && hahen != 0) {
+        cXyz arg0(100.0f, 250.0f, 80.0f);
+        cXyz arg1(0.0f, 100.0f, 0.0f);
+        cXyz arg2(10.0f, 30.0f, 10.0f);
+        cXyz arg3(10.0f, 20.0f, 20.0f);
+        static_cast<daObjCRVHAHEN_c*>(hahen)->HahenSet(arg0, arg1, arg2, arg3, 3000.0f);
+        field_0x5bb = 1;
+    }
+    SetCcSyl();
+    *i_mtx = &mBgMtx;
+    setBaseMtx();
+    return 1;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::Execute(f32 (**param_0)[3][4]) {
+asm int daObjCRVLH_DW_c::Execute(Mtx** i_mtx) {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/Execute__15daObjCRVLH_DW_cFPPA3_A4_f.s"
 }
 #pragma pop
+#endif
 
 /* 80BD4C44-80BD4CC8 000B84 0084+00 1/0 0/0 0/0 .text            Draw__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::Draw() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/Draw__15daObjCRVLH_DW_cFv.s"
+int daObjCRVLH_DW_c::Draw() {
+    g_env_light.settingTevStruct(0x10, &current.pos, &tevStr);
+    g_env_light.setLightTevColorType_MAJI(mpModel, &tevStr);
+    dComIfGd_setListBG();
+    mDoExt_modelUpdateDL(mpModel);
+    return 1;
 }
-#pragma pop
 
 /* 80BD4CC8-80BD4CFC 000C08 0034+00 1/0 0/0 0/0 .text            Delete__15daObjCRVLH_DW_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm void daObjCRVLH_DW_c::Delete() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_down/d_a_obj_crvlh_down/Delete__15daObjCRVLH_DW_cFv.s"
+int daObjCRVLH_DW_c::Delete() {
+    dComIfG_resDelete(&mPhaseReq, l_arcName);
+    return 1;
 }
-#pragma pop
-
-/* 80BD4D88-80BD4D88 000084 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
