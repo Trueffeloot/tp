@@ -20,11 +20,11 @@ public:
     /* 80BD59C0 */ int Delete();
 
     /* 0x5A0 */ u8 field_0x5A0[0x5A4 - 0x5A0];
-    /* 0x5A4 */ s32 mActor;
-    /* 0x5A8 */ s32 mActor2;
+    /* 0x5A4 */ s32 mCrvlhHahenID;
+    /* 0x5A8 */ s32 mCrvlhHahenID2;
     /* 0x5AC */ cXyz field_0x5ac[3];
     /* 0x5D0 */ f32 field_0x5d0;
-    /* 0x5D4 */ u8 field_0x5d4;
+    /* 0x5D4 */ u8 mHahenIsSet;
     /* 0x5D5 */ u8 field_0x5D5[0x5D6 - 0x5D5];
     /* 0x5D6 */ s16 field_0x5d6;
     /* 0x5D8 */ s16 field_0x5d8;

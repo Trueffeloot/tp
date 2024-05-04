@@ -901,6 +901,10 @@ inline void* dComIfG_getObjectRes(const char* arcName, int param_1) {
     return g_dComIfG_gameInfo.mResControl.getObjectRes(arcName, param_1);
 }
 
+inline int dComIfG_getObjectResName2Index(const char* arcName, const char* resName) {
+    return g_dComIfG_gameInfo.mResControl.getObjectResName2Index(arcName, resName);
+}
+
 inline dBgS& dComIfG_Bgsp() {
     return g_dComIfG_gameInfo.play.mBgs;
 }

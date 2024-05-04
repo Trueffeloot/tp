@@ -5,17 +5,11 @@
 
 #include "rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up.h"
 #include "dol2asm.h"
-
+#include "SSystem/SComponent/c_math.h"
 #include "d/d_procname.h"
 #include "JSystem/JKernel/JKRHeap.h"
-
+#include "rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen.h"
 #include "d/bg/d_bg_w.h"
-
-
-
-struct daObjCRVHAHEN_c {
-    /* 80BD342C */ void HahenSet(cXyz, cXyz, cXyz, cXyz, f32);
-};
 
 //
 // Forward References:
@@ -102,38 +96,43 @@ extern "C" void HahenSet__15daObjCRVHAHEN_cF4cXyz4cXyz4cXyz4cXyzf();
 //
 
 /* 80BD4ED8-80BD4EF8 000078 0020+00 1/0 0/0 0/0 .text daObjCRVLH_UP_Create__FP10fopAc_ac_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_UP_Create(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/daObjCRVLH_UP_Create__FP10fopAc_ac_c.s"
+static int daObjCRVLH_UP_Create(fopAc_ac_c* i_this) {
+    return static_cast<daObjCRVLH_UP_c*>(i_this)->create();
 }
-#pragma pop
 
 /* 80BD4EF8-80BD4F1C 000098 0024+00 1/0 0/0 0/0 .text daObjCRVLH_UP_Delete__FP15daObjCRVLH_UP_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_UP_Delete(daObjCRVLH_UP_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/daObjCRVLH_UP_Delete__FP15daObjCRVLH_UP_c.s"
+static int daObjCRVLH_UP_Delete(daObjCRVLH_UP_c* i_this) {
+    return i_this->MoveBGDelete();
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BD59FC-80BD5A00 000000 0004+00 6/6 0/0 0/0 .rodata          @3672 */
 SECTION_RODATA static f32 const lit_3672 = 16000.0f;
 COMPILER_STRIP_GATE(0x80BD59FC, &lit_3672);
 
+/* 80BD5A9C-80BD5AA0 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
+static char* l_arcName = "CrvLH_Up";
+
 /* 80BD5A64-80BD5A64 000068 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
 #pragma push
 #pragma force_active on
-SECTION_DEAD static char const* const stringBase_80BD5A64 = "CrvLH_Up";
 SECTION_DEAD static char const* const stringBase_80BD5A6D = "Release Error\n";
 #pragma pop
 
 /* 80BD4F1C-80BD4FB0 0000BC 0094+00 0/0 0/0 1/1 .text            HakaiSet__15daObjCRVLH_UP_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+void daObjCRVLH_UP_c::HakaiSet() {
+    field_0x5db = 1;
+    if (mpBgW != NULL && mpBgW->ChkUsed()) {
+        u8 released = dComIfG_Bgsp().Release(mpBgW);
+        if (released != 0) {
+            OSReport("Release Error\n");
+        }
+    }
+    field_0x5d6 = cM_rndFX(16000.0f);
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -142,6 +141,7 @@ asm void daObjCRVLH_UP_c::HakaiSet() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/HakaiSet__15daObjCRVLH_UP_cFv.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80BD5A00-80BD5A04 000004 0004+00 1/1 0/0 0/0 .rodata          @3681 */
@@ -153,6 +153,15 @@ SECTION_RODATA static f32 const lit_3682 = -5.0f;
 COMPILER_STRIP_GATE(0x80BD5A04, &lit_3682);
 
 /* 80BD4FB0-80BD4FD8 000150 0028+00 1/1 0/0 0/0 .text            UpMotion__15daObjCRVLH_UP_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+void daObjCRVLH_UP_c::UpMotion() {
+    if (field_0x5dc < -120.0f) {
+        return;
+    }
+    field_0x5dc += -5.0f;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -161,6 +170,7 @@ asm void daObjCRVLH_UP_c::UpMotion() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/UpMotion__15daObjCRVLH_UP_cFv.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80BD5A08-80BD5A0C 00000C 0004+00 0/1 0/0 0/0 .rodata          @3723 */
@@ -224,6 +234,31 @@ COMPILER_STRIP_GATE(0x80BD5A24, &lit_3730);
 #pragma pop
 
 /* 80BD4FD8-80BD5254 000178 027C+00 1/1 0/0 0/0 .text            Hakai__15daObjCRVLH_UP_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+void daObjCRVLH_UP_c::Hakai() {
+    s32 angleS = cLib_chaseAngleS(&shape_angle.x, 0x3800, field_0x5d8);
+    if (angleS) {
+        fopAcM_seStartCurrent(this, Z2SE_OBJ_YAGURA_LAND, 0);
+        field_0x5da = 1;
+        csXyz angle(shape_angle.x, field_0x5d6, shape_angle.z);
+        csXyz unused(0, 0, 0);
+
+        for (int i = 0; i < 2; i++) {
+            mDoMtx_stack_c::transS(current.pos.x, field_0x5d0, current.pos.z);
+            mDoMtx_stack_c::YrotM(field_0x5d6);
+            mDoMtx_stack_c::transM(0.0f, 0.0f, i * 350.0f + 150.0f);
+            mDoMtx_stack_c::YrotM(-field_0x5d6);
+            mDoMtx_stack_c::multVec(&field_0x5ac[i], &field_0x5ac[i]);
+        }
+
+        mCrvlhHahenID = fopAcM_create(PROC_Obj_CRVHAHEN, 1, &field_0x5ac[0], fopAcM_GetRoomNo(this), &angle, NULL, -1);
+        mCrvlhHahenID2 = fopAcM_create(PROC_Obj_CRVHAHEN, 1, &field_0x5ac[1], fopAcM_GetRoomNo(this), &angle, NULL, -1);
+        dComIfGp_particle_set(0x8620, &field_0x5ac[1], &tevStr, &angle, NULL);
+    }
+    field_0x5d8 += 148.0f;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -232,6 +267,7 @@ asm void daObjCRVLH_UP_c::Hakai() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/Hakai__15daObjCRVLH_UP_cFv.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80BD5A2C-80BD5A30 000030 0004+00 0/1 0/0 0/0 .rodata          @3769 */
@@ -242,6 +278,20 @@ COMPILER_STRIP_GATE(0x80BD5A2C, &lit_3769);
 #pragma pop
 
 /* 80BD5254-80BD532C 0003F4 00D8+00 1/1 0/0 0/0 .text            setBaseMtx__15daObjCRVLH_UP_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+void daObjCRVLH_UP_c::setBaseMtx() {
+    mDoMtx_stack_c::transS(current.pos);
+    mDoMtx_stack_c::transM(0.0f, field_0x5dc, 0.0f);
+    mDoMtx_stack_c::YrotM(field_0x5d6 - shape_angle.y);
+    mDoMtx_stack_c::transM(0.0f, 150.0f, 0.0f);
+    mDoMtx_stack_c::ZXYrotM(shape_angle);
+    mDoMtx_stack_c::transM(0.0f, -150.0f, 0.0f);
+    mDoMtx_stack_c::YrotM(-(field_0x5d6 - shape_angle.y));
+    mpModel->setBaseTRMtx(mDoMtx_stack_c::get());
+    MTXCopy(mDoMtx_stack_c::get(), mBgMtx);
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -250,47 +300,28 @@ asm void daObjCRVLH_UP_c::setBaseMtx() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/setBaseMtx__15daObjCRVLH_UP_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BD532C-80BD5358 0004CC 002C+00 1/0 0/0 0/0 .text daObjCRVLH_UP_Draw__FP15daObjCRVLH_UP_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_UP_Draw(daObjCRVLH_UP_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/daObjCRVLH_UP_Draw__FP15daObjCRVLH_UP_c.s"
+static int daObjCRVLH_UP_Draw(daObjCRVLH_UP_c* i_this) {
+    return i_this->MoveBGDraw();
 }
-#pragma pop
 
 /* 80BD5358-80BD5378 0004F8 0020+00 2/1 0/0 0/0 .text daObjCRVLH_UP_Execute__FP15daObjCRVLH_UP_c
  */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVLH_UP_Execute(daObjCRVLH_UP_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/daObjCRVLH_UP_Execute__FP15daObjCRVLH_UP_c.s"
+static int daObjCRVLH_UP_Execute(daObjCRVLH_UP_c* i_this) {
+    return i_this->MoveBGExecute();
 }
-#pragma pop
-
-/* ############################################################################################## */
-/* 80BD5A64-80BD5A64 000068 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
-#pragma push
-#pragma force_active on
-SECTION_DEAD static char const* const stringBase_80BD5A7C = "U_CrvLH_UP.bmd";
-#pragma pop
-
-/* 80BD5A9C-80BD5AA0 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
-SECTION_DATA static void* l_arcName = (void*)&d_a_obj_crvlh_up__stringBase0;
 
 /* 80BD5378-80BD53F0 000518 0078+00 1/0 0/0 0/0 .text            CreateHeap__15daObjCRVLH_UP_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm int daObjCRVLH_UP_c::CreateHeap() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/CreateHeap__15daObjCRVLH_UP_cFv.s"
+int daObjCRVLH_UP_c::CreateHeap() {
+    J3DModelData* modelData = (J3DModelData*)dComIfG_getObjectRes(l_arcName, "U_CrvLH_UP.bmd");
+    mpModel = mDoExt_J3DModel__create(modelData, 0x80000, 0x11000084);
+    if (mpModel != NULL) {
+        return 1;
+    }
+    return 0;
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BD5A30-80BD5A34 000034 0004+00 0/1 0/0 0/0 .rodata          @3857 */
@@ -385,6 +416,33 @@ SECTION_DATA extern void* __vt__15daObjCRVLH_UP_c[10] = {
 };
 
 /* 80BD53F0-80BD5614 000590 0224+00 1/1 0/0 0/0 .text            create__15daObjCRVLH_UP_cFv */
+// Matches with literals and vtable
+#ifdef NONMATCHING
+int daObjCRVLH_UP_c::create() {
+    fopAcM_SetupActor(this, daObjCRVLH_UP_c);
+
+    int phase = dComIfG_resLoad(&mPhaseReq, l_arcName);
+    if (phase == cPhs_COMPLEATE_e) {
+        gravity = -9.0f;
+        
+        int dzb_id = dComIfG_getObjectResName2Index(l_arcName, "U_CrvLH_Up.dzb");
+        phase = MoveBGCreate(l_arcName, dzb_id, dBgS_MoveBGProc_TypicalRotY, 0xE80, NULL);
+        if (phase == cPhs_ERROR_e) {
+            return phase;
+        }
+        fopAcM_SetMtx(this, mpModel->getBaseTRMtx());
+        field_0x5ac[0].set(0.0f, 0.0f, 0.0f);
+        field_0x5ac[1].set(0.0f, 0.0f, 0.0f);
+        cXyz modified_pos(current.pos.x, current.pos.y + 100.0f, current.pos.z); // unused but appears in debug and matches stack
+        fopAcM_setCullSizeFar(this, 100.0f);
+        field_0x5d0 = current.pos.y;
+        field_0x5dc = 0.0f;
+        fopAcM_setCullSizeBox(this, -500.0f, -500.0f, -500.0f, 500.0f, 2000.0f, 500.0f);
+        daObjCRVLH_UP_Execute(this);
+    }
+    return phase;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -393,6 +451,7 @@ asm int daObjCRVLH_UP_c::create() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/create__15daObjCRVLH_UP_cFv.s"
 }
 #pragma pop
+#endif
 
 /* 80BD5614-80BD565C 0007B4 0048+00 1/0 0/0 0/0 .text            __dt__8cM3dGCylFv */
 #pragma push
@@ -435,8 +494,8 @@ extern "C" void __ct__4cXyzFv() {
 
 /* 80BD56E4-80BD56EC 000884 0008+00 1/0 0/0 0/0 .text daObjCRVLH_UP_IsDelete__FP15daObjCRVLH_UP_c
  */
-static bool daObjCRVLH_UP_IsDelete(daObjCRVLH_UP_c* param_0) {
-    return true;
+static int daObjCRVLH_UP_IsDelete(daObjCRVLH_UP_c* i_this) {
+    return 1;
 }
 
 /* ############################################################################################## */
@@ -455,6 +514,13 @@ COMPILER_STRIP_GATE(0x80BD5A48, &lit_3941);
 #pragma pop
 
 /* 80BD56EC-80BD5730 00088C 0044+00 1/0 0/0 0/0 .text            Create__15daObjCRVLH_UP_cFv */
+// Matches with literals
+#ifdef NONMATCHING
+int daObjCRVLH_UP_c::Create() {
+    fopAcM_setCullSizeBox(this, -1000.0f, -500.0f, -1000.0f, 1000.0f, 500.0f, 1000.0f);
+    return cPhs_COMPLEATE_e;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -463,6 +529,7 @@ asm int daObjCRVLH_UP_c::Create() {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/func_80BD56EC.s"
 }
 #pragma pop
+#endif
 
 /* ############################################################################################## */
 /* 80BD5A4C-80BD5A50 000050 0004+00 0/1 0/0 0/0 .rodata          @3997 */
@@ -508,6 +575,40 @@ COMPILER_STRIP_GATE(0x80BD5A60, &lit_4002);
 #pragma pop
 
 /* 80BD5730-80BD593C 0008D0 020C+00 1/0 0/0 0/0 .text Execute__15daObjCRVLH_UP_cFPPA3_A4_f */
+// Later
+#ifdef NONMATCHING
+int daObjCRVLH_UP_c::Execute(Mtx** i_mtx) {
+    if (mHahenIsSet) {
+        fopAcM_delete(this);
+    }
+    if (field_0x5da == 0) {
+        if (field_0x5db != 0) {
+            Hakai();
+            UpMotion();
+        }
+    } else {
+        fopAc_ac_c* hahen1;
+        fopAc_ac_c* hahen2;
+        
+        if (fopAcM_SearchByID(mCrvlhHahenID, &hahen1) && fopAcM_SearchByID(mCrvlhHahenID2, &hahen2) && hahen1 != NULL && hahen2 != NULL) {
+            cXyz arg0(100.0f, 250.0f, 80.0f);
+            cXyz arg1(60.0f, 60.0f, 60.0f);
+            cXyz arg2(0.0f, 10.0f, 0.0f);
+            cXyz arg3(10.0f, 20.0f, 20.0f);
+            static_cast<daObjCRVHAHEN_c*>(hahen1)->HahenSet(arg0, arg1, arg2, arg3, 3000.0f);
+            arg0.set(100.0f, 250.0f, 80.0f);
+            arg1.set(60.0f, 60.0f, 60.0f);
+            arg0.set(100.0f, 250.0f, 80.0f);
+            arg1.set(60.0f, 60.0f, 60.0f);
+            static_cast<daObjCRVHAHEN_c*>(hahen2)->HahenSet(arg0, arg1, arg2, arg1, 3000.0f);
+            mHahenIsSet = true;
+        }
+    }
+    *i_mtx = &mBgMtx;
+    setBaseMtx();
+    return 1;
+}
+#else
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
@@ -516,23 +617,19 @@ asm int daObjCRVLH_UP_c::Execute(Mtx** i_mtx) {
 #include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/Execute__15daObjCRVLH_UP_cFPPA3_A4_f.s"
 }
 #pragma pop
+#endif
 
 /* 80BD593C-80BD59C0 000ADC 0084+00 1/0 0/0 0/0 .text            Draw__15daObjCRVLH_UP_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm int daObjCRVLH_UP_c::Draw() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/Draw__15daObjCRVLH_UP_cFv.s"
+int daObjCRVLH_UP_c::Draw() {
+    g_env_light.settingTevStruct(0x10, &current.pos, &tevStr);
+    g_env_light.setLightTevColorType_MAJI(mpModel, &tevStr);
+    dComIfGd_setListBG();
+    mDoExt_modelUpdateDL(mpModel);
+    return 1;
 }
-#pragma pop
 
 /* 80BD59C0-80BD59F4 000B60 0034+00 1/0 0/0 0/0 .text            Delete__15daObjCRVLH_UP_cFv */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-asm int daObjCRVLH_UP_c::Delete() {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvlh_up/d_a_obj_crvlh_up/Delete__15daObjCRVLH_UP_cFv.s"
+int daObjCRVLH_UP_c::Delete() {
+    dComIfG_resDelete(&mPhaseReq, l_arcName);
+    return 1;
 }
-#pragma pop

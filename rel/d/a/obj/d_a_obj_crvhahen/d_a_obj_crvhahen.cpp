@@ -5,84 +5,9 @@
 
 #include "rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen.h"
 #include "dol2asm.h"
-
-//
-// Types:
-//
-
-struct request_of_phase_process_class {};
-
-struct csXyz {
-    /* 80BD3F9C */ ~csXyz();
-    /* 80BD3FD8 */ csXyz();
-};
-
-struct cXyz {
-    /* 80BD36E4 */ ~cXyz();
-    /* 80BD3FDC */ cXyz();
-};
-
-struct mDoMtx_stack_c {
-    /* 8000CD64 */ void transS(cXyz const&);
-    /* 8000CE70 */ void scaleM(cXyz const&);
-    /* 8000CF0C */ void ZXYrotS(csXyz const&);
-    /* 8000CF44 */ void ZXYrotM(csXyz const&);
-
-    static u8 now[48];
-};
-
-struct fopAc_ac_c {
-    /* 80018B64 */ fopAc_ac_c();
-};
-
-struct daObjCRVHAHEN_c {
-    /* 80BD342C */ void HahenSet(cXyz, cXyz, cXyz, cXyz, f32);
-    /* 80BD3628 */ void Wall_Check(cXyz, cXyz);
-    /* 80BD3720 */ void Hahen_Hakai(int, int);
-    /* 80BD38DC */ void CheckCull();
-    /* 80BD3A9C */ void checkViewArea(cXyz*);
-    /* 80BD3B20 */ void Execute();
-    /* 80BD3B74 */ void Delete();
-    /* 80BD3C0C */ void setBaseMtx();
-    /* 80BD3DBC */ void create();
-};
-
-struct dKy_tevstr_c {};
-
-struct J3DModelData {};
-
-struct dScnKy_env_light_c {
-    /* 801A37C4 */ void settingTevStruct(int, cXyz*, dKy_tevstr_c*);
-    /* 801A4DA0 */ void setLightTevColorType_MAJI(J3DModelData*, dKy_tevstr_c*);
-};
-
-struct dRes_info_c {};
-
-struct dRes_control_c {
-    /* 8003C37C */ void getRes(char const*, char const*, dRes_info_c*, int);
-};
-
-struct J3DModel {};
-
-struct dComIfG_play_c {
-    /* 8002CAF0 */ void addSimpleModel(J3DModelData*, int, u8);
-    /* 8002CB30 */ void removeSimpleModel(J3DModelData*, int);
-    /* 8002CB68 */ void entrySimpleModel(J3DModel*, int);
-};
-
-struct dBgS_LinChk {
-    /* 80077C68 */ dBgS_LinChk();
-    /* 80077CDC */ ~dBgS_LinChk();
-    /* 80077D64 */ void Set(cXyz const*, cXyz const*, fopAc_ac_c const*);
-};
-
-struct cBgS_LinChk {};
-
-struct cBgS {
-    /* 800743B4 */ void LineCross(cBgS_LinChk*);
-};
-
-struct Vec {};
+#include "d/d_procname.h"
+#include "JSystem/JKernel/JKRHeap.h"
+#include "d/d_procname.h"
 
 //
 // Forward References:
@@ -139,9 +64,6 @@ extern "C" void setLightTevColorType_MAJI__18dScnKy_env_light_cFP12J3DModelDataP
 extern "C" void cM_rndF__Ff();
 extern "C" void cM_rndFX__Ff();
 extern "C" void __dl__FPv();
-extern "C" void PSMTXCopy();
-extern "C" void PSMTXMultVec();
-extern "C" void PSVECSquareDistance();
 extern "C" void __construct_array();
 extern "C" void _savegpr_21();
 extern "C" void _savegpr_24();
@@ -153,58 +75,42 @@ extern "C" void _restgpr_24();
 extern "C" void _restgpr_25();
 extern "C" void _restgpr_27();
 extern "C" void _restgpr_29();
-extern "C" extern void* g_fopAc_Method[8];
-extern "C" extern void* g_fpcLf_Method[5 + 1 /* padding */];
 extern "C" u8 now__14mDoMtx_stack_c[48];
-extern "C" extern u8 g_dComIfG_gameInfo[122384];
-extern "C" extern u8 g_env_light[4880];
-extern "C" extern u8 j3dSys[284];
-extern "C" extern u32 __float_nan;
 
 //
 // Declarations:
 //
 
-/* ############################################################################################## */
-/* 80BD4048-80BD4048 000058 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */
-#pragma push
-#pragma force_active on
-SECTION_DEAD static char const* const stringBase_80BD4048 = "CrvFence";
-SECTION_DEAD static char const* const stringBase_80BD4051 = "CaravanPiece.bmd";
-#pragma pop
-
 /* 80BD4064-80BD4068 -00001 0004+00 3/3 0/0 0/0 .data            l_arcName */
-SECTION_DATA static void* l_arcName = (void*)&d_a_obj_crvhahen__stringBase0;
+static char* l_arcName = "CrvFence";
+
+int daObjCRVHAHEN_c::CreateHeap() {
+    J3DModelData* modelData = (J3DModelData*)dComIfG_getObjectRes(l_arcName, "CaravanPiece.bmd");
+
+    for (int i = 0; i < 10; i++) {
+        mpModel[i] = mDoExt_J3DModel__create(modelData, 0x20000, 0x11000084);
+        if (mpModel[i] == NULL) {
+            return 0;
+        }
+    }
+    return 1;
+}
 
 /* 80BD3338-80BD33E8 000078 00B0+00 1/1 0/0 0/0 .text            useHeapInit__FP10fopAc_ac_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void useHeapInit(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/useHeapInit__FP10fopAc_ac_c.s"
+static int useHeapInit(fopAc_ac_c* i_this) {
+    return static_cast<daObjCRVHAHEN_c*>(i_this)->CreateHeap();
 }
-#pragma pop
 
 /* 80BD33E8-80BD3408 000128 0020+00 1/0 0/0 0/0 .text daObjCRVHAHEN_Create__FP10fopAc_ac_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVHAHEN_Create(fopAc_ac_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/daObjCRVHAHEN_Create__FP10fopAc_ac_c.s"
+static int daObjCRVHAHEN_Create(fopAc_ac_c* i_this) {
+    return static_cast<daObjCRVHAHEN_c*>(i_this)->create();
 }
-#pragma pop
 
 /* 80BD3408-80BD342C 000148 0024+00 1/0 0/0 0/0 .text daObjCRVHAHEN_Delete__FP15daObjCRVHAHEN_c */
-#pragma push
-#pragma optimization_level 0
-#pragma optimizewithasm off
-static asm void daObjCRVHAHEN_Delete(daObjCRVHAHEN_c* param_0) {
-    nofralloc
-#include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/daObjCRVHAHEN_Delete__FP15daObjCRVHAHEN_c.s"
+static int daObjCRVHAHEN_Delete(daObjCRVHAHEN_c* i_this) {
+    i_this->Delete();
+    return 1;
 }
-#pragma pop
 
 /* ############################################################################################## */
 /* 80BD3FF0-80BD3FF4 000000 0004+00 5/5 0/0 0/0 .rodata          @3703 */
@@ -258,7 +164,8 @@ asm void daObjCRVHAHEN_c::Wall_Check(cXyz param_0, cXyz param_1) {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm cXyz::~cXyz() {
+// cXyz::~cXyz()
+extern "C" asm void __dt__4cXyzFv() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/__dt__4cXyzFv.s"
 }
@@ -388,7 +295,7 @@ asm void daObjCRVHAHEN_c::checkViewArea(cXyz* param_0) {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVHAHEN_c::Execute() {
+asm int daObjCRVHAHEN_c::Execute() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/Execute__15daObjCRVHAHEN_cFv.s"
 }
@@ -398,7 +305,7 @@ asm void daObjCRVHAHEN_c::Execute() {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVHAHEN_c::Delete() {
+asm int daObjCRVHAHEN_c::Delete() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/Delete__15daObjCRVHAHEN_cFv.s"
 }
@@ -418,7 +325,7 @@ asm void daObjCRVHAHEN_c::setBaseMtx() {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-static asm void daObjCRVHAHEN_Draw(daObjCRVHAHEN_c* param_0) {
+static asm void daObjCRVHAHEN_Draw(daObjCRVHAHEN_c* i_this) {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/daObjCRVHAHEN_Draw__FP15daObjCRVHAHEN_c.s"
 }
@@ -429,7 +336,7 @@ static asm void daObjCRVHAHEN_Draw(daObjCRVHAHEN_c* param_0) {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-static asm void daObjCRVHAHEN_Execute(daObjCRVHAHEN_c* param_0) {
+static asm void daObjCRVHAHEN_Execute(daObjCRVHAHEN_c* i_this) {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/daObjCRVHAHEN_Execute__FP15daObjCRVHAHEN_c.s"
 }
@@ -468,7 +375,7 @@ COMPILER_STRIP_GATE(0x80BD4044, &lit_3996);
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm void daObjCRVHAHEN_c::create() {
+asm int daObjCRVHAHEN_c::create() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/create__15daObjCRVHAHEN_cFv.s"
 }
@@ -478,26 +385,29 @@ asm void daObjCRVHAHEN_c::create() {
 #pragma push
 #pragma optimization_level 0
 #pragma optimizewithasm off
-asm csXyz::~csXyz() {
+// csXyz::~csXyz()
+extern "C" asm void __dt__5csXyzFv() {
     nofralloc
 #include "asm/rel/d/a/obj/d_a_obj_crvhahen/d_a_obj_crvhahen/__dt__5csXyzFv.s"
 }
 #pragma pop
 
 /* 80BD3FD8-80BD3FDC 000D18 0004+00 1/1 0/0 0/0 .text            __ct__5csXyzFv */
-csXyz::csXyz() {
+// csXyz::csXyz()
+extern "C" void __ct__5csXyzFv() {
     /* empty function */
 }
 
 /* 80BD3FDC-80BD3FE0 000D1C 0004+00 1/1 0/0 0/0 .text            __ct__4cXyzFv */
-cXyz::cXyz() {
+// cXyz::cXyz()
+extern "C" void __ct__4cXyzFv() {
     /* empty function */
 }
 
 /* 80BD3FE0-80BD3FE8 000D20 0008+00 1/0 0/0 0/0 .text daObjCRVHAHEN_IsDelete__FP15daObjCRVHAHEN_c
  */
-static bool daObjCRVHAHEN_IsDelete(daObjCRVHAHEN_c* param_0) {
-    return true;
+static int daObjCRVHAHEN_IsDelete(daObjCRVHAHEN_c* i_this) {
+    return 1;
 }
 
 /* ############################################################################################## */
@@ -522,5 +432,3 @@ SECTION_DATA extern void* g_profile_Obj_CRVHAHEN[12] = {
     (void*)0x01D40000, (void*)&l_daObjCRVHAHEN_Method,
     (void*)0x00040000, (void*)0x000E0000,
 };
-
-/* 80BD4048-80BD4048 000058 0000+00 0/0 0/0 0/0 .rodata          @stringBase0 */

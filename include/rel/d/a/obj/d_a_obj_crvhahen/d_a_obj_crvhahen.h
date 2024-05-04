@@ -1,6 +1,37 @@
 #ifndef D_A_OBJ_CRVHAHEN_H
 #define D_A_OBJ_CRVHAHEN_H
 
-#include "dolphin/types.h"
+#include "d/com/d_com_inf_game.h"
+#include "f_op/f_op_actor_mng.h"
+
+class daObjCRVHAHEN_c : public fopAc_ac_c {
+public:
+    /* 80BD342C */ void HahenSet(cXyz, cXyz, cXyz, cXyz, f32);
+    /* 80BD3628 */ void Wall_Check(cXyz, cXyz);
+    /* 80BD3720 */ void Hahen_Hakai(int, int);
+    /* 80BD38DC */ void CheckCull();
+    /* 80BD3A9C */ void checkViewArea(cXyz*);
+    /* 80BD3B20 */ int Execute();
+    /* 80BD3B74 */ int Delete();
+    /* 80BD3C0C */ void setBaseMtx();
+    /* 80BD3DBC */ int create();
+
+    inline int CreateHeap();
+
+    /* 0x568 */ cXyz field_0x568[10];
+    /* 0x5E0 */ cXyz field_0x5e0[10];
+    /* 0x658 */ cXyz field_0x658[10];
+    /* 0x6D0 */ csXyz field_0x6d0[10];
+    /* 0x70C */ csXyz field_0x70c[10];
+    /* 0x748 */ u8 field_0x748[0x74C - 0x748];
+    /* 0x74C */ f32 field_0x74c;
+    /* 0x750 */ u8 field_0x750;
+    /* 0x751 */ u8 field_0x751[0x75C - 0x751];
+    /* 0x75C */ f32 field_0x75c;
+    /* 0x760 */ J3DModel* mpModel[10];
+    /* 0x788 */ request_of_phase_process_class mPhaseReq;
+    /* 0x790 */ u8 field_0x790[0x791 - 0x790];
+    /* 0x791 */ u8 field_0x791;
+};
 
 #endif /* D_A_OBJ_CRVHAHEN_H */
