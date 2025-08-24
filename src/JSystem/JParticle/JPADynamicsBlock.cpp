@@ -34,7 +34,6 @@ void JPAVolumeLine(JPAEmitterWorkData* work) {
 }
 
 /* 8027B33C-8027B4E8 275C7C 01AC+00 1/1 0/0 0/0 .text JPAVolumeCircle */
-// NONMATCHING regalloc. Could be issue with mul asm implementations
 void JPAVolumeCircle(JPAEmitterWorkData* work) {
     s16 theta;
     f32 distance;

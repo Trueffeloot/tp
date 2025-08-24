@@ -1881,14 +1881,13 @@ int dCamera_c::Draw() {
 
 /* 8016317C-80163340 15DABC 01C4+00 1/1 0/0 0/0 .text            setStageMapToolData__9dCamera_cFv
  */
-// NONMATCHING regswap, equivalent
+// Fake match
 void dCamera_c::setStageMapToolData() {
     int var_r28 = 0xFF;
-    int var_r27 = 0xFF;
 
     field_0x7e8.Clr();
 
-    dStage_stageDt_c* stage_dt = dComIfGp_getStage();
+    dStage_stageDt_c* stage_dt = &g_dComIfG_gameInfo.play.getStage(); // inline dComIfGp_getStage() causes regswap
     if (stage_dt != NULL) {
         stage_camera_class* camera = stage_dt->getCamera();
         stage_arrow_class* arrow = stage_dt->getArrow();
@@ -1909,10 +1908,10 @@ void dCamera_c::setStageMapToolData() {
                 field_0x7e8.field_0x0.field_0x14 &= (u16) ~0xC000;
             }
 
-            var_r27 = field_0x7e8.field_0x0.m_arrow_idx;
-            if (arrow != NULL && var_r27 >= 0 && var_r27 < arrow->num) {
-                field_0x7e8.field_0x2c = var_r27;
-                field_0x7e8.field_0x18 = arrow->m_entries[var_r27];
+            int arrow_index = field_0x7e8.field_0x0.m_arrow_idx;
+            if (arrow != NULL && arrow_index >= 0 && arrow_index < arrow->num) {
+                field_0x7e8.field_0x2c = arrow_index;
+                field_0x7e8.field_0x18 = arrow->m_entries[arrow_index];
             }
         }
     }

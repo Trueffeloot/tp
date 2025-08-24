@@ -294,18 +294,17 @@ int J3DSkinDeform::initMtxIndexArray(J3DModelData* param_0) {
             int uVar13;
             for (;
                 (int)local_58 - (int)pcVar10 < param_0->getShapeNodePointer(local_6c)->getShapeDraw(local_6e)->getDisplayListSize();
-                local_58 += r23 * uVar13) {
-                u8 uVar1 = *local_58;
-                local_58++;
-                if (uVar1 != 0xA0 && uVar1 != 0x98) {
+                local_58 += r23 * uVar13, local_58 += 3) {
+                if (*local_58 != 0xA0 && *local_58 != 0x98) {
                     break;
                 }
                 
-                uVar13 = *(u16*)local_58;
-                local_58 += 2;
+                uVar13 = *(u16*)(local_58 +1); // really ugly
+
                 for (int local_60 = 0; local_60 < uVar13; local_60++) {
-                    u8* iVar5 = local_58 + r23 * local_60;
-                    u8 bVar3 = *(iVar5 + r26) / 3U;
+                    // registers swapped in iVar5 and bVar3
+                    u8* iVar5 = (u8*)(local_58 + (r23 * local_60 + 3));
+                    u8 bVar3 = *(u8*)(iVar5 + r26) / 3U;
                     u16 uVar1 = *(u16*)(iVar5 + r25);
                     u16 uVar2 = *(u16*)(iVar5 + r24);
                     u16 uVar3 = *(u16*)(iVar5 + stack_3c);

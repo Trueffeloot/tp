@@ -151,41 +151,41 @@ bool dCcS::ChkAtTgHitAfterCross(bool i_setAt, bool i_setTg, cCcD_GObjInf const* 
 /* 80086240-80086360 080B80 0120+00 1/0 0/0 0/0 .text
  * SetCoGObjInf__4dCcSFbbP12cCcD_GObjInfP12cCcD_GObjInfP9cCcD_SttsP9cCcD_SttsP10cCcD_GSttsP10cCcD_GStts
  */
-// NONMATCHING weird reg alloc
+// NONMATCHING weird lzw instruction and register misordering in the beginning
 void dCcS::SetCoGObjInf(bool i_co2Set, bool i_co1Set, cCcD_GObjInf* i_co1Obj, cCcD_GObjInf* i_co2Obj,
                         cCcD_Stts* i_co1Stts, cCcD_Stts* i_co2Stts, cCcD_GStts* i_co1GStts,
                         cCcD_GStts* i_co2GStts) {
     if (i_co2Set) {
-        static_cast<dCcD_GObjInf*>(i_co1Obj)->SetCoHitApid(i_co2Stts->GetApid());
+        static_cast<dCcD_GObjInf*>(i_co2Obj)->SetCoHitApid(i_co2Stts->GetApid());
 
         if (static_cast<dCcD_GStts*>(i_co2GStts)->ChkNoActor()) {
-            static_cast<dCcD_GObjInf*>(i_co1Obj)->OnCoHitNoActor();
-        }
-    }
-
-    if (i_co1Set) {
-        static_cast<dCcD_GObjInf*>(i_co2Obj)->SetCoHitApid(i_co1Stts->GetApid());
-
-        if (static_cast<dCcD_GStts*>(i_co1GStts)->ChkNoActor()) {
             static_cast<dCcD_GObjInf*>(i_co2Obj)->OnCoHitNoActor();
         }
     }
 
-    if (i_co2Set) {
-        dCcD_HitCallback cb = static_cast<dCcD_GObjInf*>(i_co1Obj)->GetCoHitCallback();
+    if (i_co1Set) {
+        static_cast<dCcD_GObjInf*>(i_co1Obj)->SetCoHitApid(i_co1Stts->GetApid());
 
-        if (cb != NULL) {
-            cb(i_co1Obj->GetAc(), static_cast<dCcD_GObjInf*>(i_co1Obj), i_co2Obj->GetAc(),
-               static_cast<dCcD_GObjInf*>(i_co2Obj));
+        if (static_cast<dCcD_GStts*>(i_co1GStts)->ChkNoActor()) {
+            static_cast<dCcD_GObjInf*>(i_co1Obj)->OnCoHitNoActor();
         }
     }
 
-    if (i_co1Set) {
+    if (i_co2Set) {
         dCcD_HitCallback cb = static_cast<dCcD_GObjInf*>(i_co2Obj)->GetCoHitCallback();
 
         if (cb != NULL) {
             cb(i_co2Obj->GetAc(), static_cast<dCcD_GObjInf*>(i_co2Obj), i_co1Obj->GetAc(),
                static_cast<dCcD_GObjInf*>(i_co1Obj));
+        }
+    }
+
+    if (i_co1Set) {
+        dCcD_HitCallback cb = static_cast<dCcD_GObjInf*>(i_co1Obj)->GetCoHitCallback();
+
+        if (cb != NULL) {
+            cb(i_co1Obj->GetAc(), static_cast<dCcD_GObjInf*>(i_co1Obj), i_co2Obj->GetAc(),
+               static_cast<dCcD_GObjInf*>(i_co2Obj));
         }
     }
 }
@@ -378,19 +378,15 @@ void dCcS::CalcParticleAngle(dCcD_GObjInf* i_atObjInf, cCcD_Stts* i_atStts, cCcD
 /* 8008685C-80086AC0 08119C 0264+00 1/1 0/0 0/0 .text
  * ProcAtTgHitmark__4dCcSFbbP8cCcD_ObjP8cCcD_ObjP12dCcD_GObjInfP12dCcD_GObjInfP9cCcD_SttsP9cCcD_SttsP10dCcD_GSttsP10dCcD_GSttsP4cXyzb
  */
-// NONMATCHING one branch issue
 void dCcS::ProcAtTgHitmark(bool i_setAt, bool i_setTg, cCcD_Obj* param_2, cCcD_Obj* param_3,
                            dCcD_GObjInf* i_atObjInf, dCcD_GObjInf* i_tgObjInf, cCcD_Stts* param_6,
                            cCcD_Stts* param_7, dCcD_GStts* param_8, dCcD_GStts* param_9,
                            cXyz* i_hitPos, bool i_chkShield) {
-    if (!i_atObjInf->ChkAtNoHitMark() && !i_tgObjInf->ChkTgNoHitMark() &&
-        (i_atObjInf->GetAtType() != AT_TYPE_10000000 || i_tgObjInf->GetAc() == NULL ||
-         fopAcM_checkStatus(i_tgObjInf->GetAc(), AT_TYPE_10000000)))
-    {
-        if ((i_atObjInf->GetAtType() &
+    if (i_atObjInf->ChkAtNoHitMark() || i_tgObjInf->ChkTgNoHitMark() ||
+        (i_atObjInf->GetAtType() == AT_TYPE_10000000 && i_tgObjInf->GetAc() != NULL &&
+         !fopAcM_checkStatus(i_tgObjInf->GetAc(), AT_TYPE_10000000)) || (i_atObjInf->GetAtType() &
              (AT_TYPE_WOLF_ATTACK | AT_TYPE_WOLF_CUT_TURN | AT_TYPE_10000000 | AT_TYPE_MIDNA_LOCK |
-              AT_TYPE_HOOKSHOT | AT_TYPE_SHIELD_ATTACK | AT_TYPE_NORMAL_SWORD)) != 0 &&
-            i_tgObjInf->GetTgSpl() == 1)
+              AT_TYPE_HOOKSHOT | AT_TYPE_SHIELD_ATTACK | AT_TYPE_NORMAL_SWORD)) && i_tgObjInf->GetTgSpl() == 1)
         {
             return;
         }
@@ -439,7 +435,7 @@ void dCcS::ProcAtTgHitmark(bool i_setAt, bool i_setTg, cCcD_Obj* param_2, cCcD_O
                 dComIfGp_setHitMark(hitmark, ac, i_hitPos, &sp8, NULL, atType);
             }
         }
-    }
+    
 }
 
 /* 80086AC0-80086D8C 081400 02CC+00 1/0 0/0 0/0 .text
