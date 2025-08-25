@@ -3,6 +3,8 @@
  * 
 */
 
+#include "d/dolzel_rel.h"
+
 #include "d/actor/d_a_e_gob.h"
 #include "d/d_com_inf_game.h"
 #include "d/d_com_inf_actor.h"
@@ -13,6 +15,23 @@
 #include "m_Do/m_Do_graphic.h"
 #include "c/c_damagereaction.h"
 #include "Z2AudioLib/Z2Instances.h"
+
+class daE_GOB_HIO_c : public JORReflexible {
+public:
+    /* 806D808C */ daE_GOB_HIO_c();
+
+    void genMessage(JORMContext*);
+    /* 806DECD0 */ virtual ~daE_GOB_HIO_c() {}
+
+    /* 0x04 */ s8 id;
+    /* 0x08 */ f32 size;
+    /* 0x0C */ f32 normal_walk_speed;
+    /* 0x10 */ f32 battle_walk_speed;
+    /* 0x14 */ f32 roll_speed;
+    /* 0x18 */ s16 rotation_speed;
+    /* 0x1A */ s16 swing_time_a;
+    /* 0x1C */ s16 swing_time_b;
+};
 
 enum E_gob_RES_file_ID {
     /* BCK */
@@ -260,8 +279,6 @@ static void damage_check(e_gob_class* i_this) {
         dComIfGp_setHitMark(hitmark, actor, &sp24, &actor->shape_angle, NULL, 0);
     }
 }
-
-UNK_REL_BSS
 
 /* 806DF2C4-806DF2C8 -00001 0004+00 2/2 0/0 0/0 .bss             None */
 /* 806DF2C5 0003+00 data_806DF2C5 None */
@@ -1747,7 +1764,7 @@ static void demo_camera(e_gob_class* i_this) {
         }
     
         if (i_this->mDemoCamTimer == 47) {
-            ms->field_0x582 = 1;
+            ms->mAction = obj_msima_class::ACTION_DROP;
             ms->field_0x594 = ms->field_0x596 = 0;
             ms->field_0x59c = 700.0f;
             ms->field_0x586[0] = 40;
@@ -1766,8 +1783,8 @@ static void demo_camera(e_gob_class* i_this) {
         if (spC >= 0) {
             ms->mChains[spC].field_0x92 = 1;
             ms->mChains[spC].field_0x8c = 200.0f + TREG_F(12);
-            dComIfGp_particle_set(0x8455, &ms->mChains[spC].field_0x94, NULL, NULL);
-            mDoAud_seStart(Z2SE_OBJ_GOBFLOOR_CHAIN_BREAK, &ms->mChains[spC].field_0x94, 0, dComIfGp_getReverb(fopAcM_GetRoomNo(actor)));
+            dComIfGp_particle_set(0x8455, &ms->mChains[spC].mPos, NULL, NULL);
+            mDoAud_seStart(Z2SE_OBJ_GOBFLOOR_CHAIN_BREAK, &ms->mChains[spC].mPos, 0, dComIfGp_getReverb(fopAcM_GetRoomNo(actor)));
         }
     
         if (i_this->mDemoCamTimer == 82) {
@@ -1798,7 +1815,7 @@ static void demo_camera(e_gob_class* i_this) {
             i_this->mDemoCamCenterSpd.z = fabsf(i_this->mDemoCamCenterTarget.z - i_this->mDemoCamCenter.z);
             i_this->field_0xd88 = 0.0f;
 
-            ms->field_0x582 = 2;
+            ms->mAction = obj_msima_class::ACTION_FLOAT_1;
             ms->field_0x584 = 0;
         }
         break;
@@ -1930,7 +1947,7 @@ static void demo_camera(e_gob_class* i_this) {
 
         i_this->mDemoCamMode = 15;
         i_this->mDemoCamTimer = 0;
-        ms->field_0x582 = 3;
+        ms->mAction = obj_msima_class::ACTION_FLOAT_2;
         my->mAction = 1;
         actor->current = player->current;
         actor->shape_angle = player->shape_angle;

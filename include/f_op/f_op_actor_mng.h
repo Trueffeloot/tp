@@ -94,17 +94,12 @@ struct fOpAcm_HIO_entry_c : public mDoHIO_entry_c {
     void removeHIO(const fopAc_ac_c& i_this) { removeHIO(static_cast<const leafdraw_class&>(i_this)); }
     void removeHIO(const leafdraw_class& i_this) { removeHIO(i_this.base); }
     void removeHIO(const base_process_class& i_this) { removeHIO(i_this.state); }
-    void removeHIO(const state_class& state) { 
+    void removeHIO(const state_class& state) {
         if (state.create_phase == cPhs_NEXT_e) {
-            mDoHIO_entry_c::removeHIO(); 
+            mDoHIO_entry_c::removeHIO();
         }
     }
     #endif
-};
-
-class l_HIO {
-public:
-    /* 8001E098 */ ~l_HIO() {}
 };
 
 dBgS& dComIfG_Bgsp();
@@ -511,7 +506,7 @@ fopAcM_prm_class* createAppend(u16 i_setId, u32 i_parameters, const cXyz* i_pos,
 
 void fopAcM_Log(fopAc_ac_c const* i_actor, char const* i_message);
 
-void fopAcM_delete(fopAc_ac_c* i_actor);
+s32 fopAcM_delete(fopAc_ac_c* i_actor);
 
 s32 fopAcM_delete(fpc_ProcID i_actorID);
 

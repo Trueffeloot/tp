@@ -3,10 +3,10 @@
  * 
 */
 
+#include "d/dolzel_rel.h"
+
 #include "d/actor/d_a_e_hb.h"
 #include "d/actor/d_a_e_hb_leaf.h"
-
-UNK_REL_DATA;
 #include "f_op/f_op_actor_enemy.h"
 
 enum daE_HB_ACTION {
@@ -19,6 +19,24 @@ enum daE_HB_ACTION {
     ACTION_CHANCE = 6,
     ACTION_S_DAMAGE,
     ACTION_DAMAGE
+};
+
+class daE_HB_HIO_c : public JORReflexible {
+public:
+#if DEBUG
+    virtual void genMessage(JORMContext*);
+#endif
+
+    /* 804FBD6C */ daE_HB_HIO_c();
+    /* 805005D0 */ virtual ~daE_HB_HIO_c() {}
+
+    /* 0x04 */ s8 id;
+    /* 0x08 */ f32 base_size;
+    /* 0x0C */ f32 flower_size;
+    /* 0x10 */ f32 appear_size;
+    /* 0x14 */ s16 roof_reappear_interval;
+    /* 0x16 */ s16 attack_freq;
+    /* 0x18 */ u8 bite_pattern;
 };
 
 /* 804FBD6C-804FBDB8 0000EC 004C+00 1/1 0/0 0/0 .text            __ct__12daE_HB_HIO_cFv */
@@ -830,7 +848,7 @@ static void e_hb_damage(e_hb_class* i_this) {
             i_this->action = ACTION_WAIT;
             i_this->mode = 0;
         }
-    }    
+    }
 }
 
 /* 804FE5C8-804FE8F8 002948 0330+00 1/1 0/0 0/0 .text            kuki_control1__FP10e_hb_class */

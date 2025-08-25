@@ -3,6 +3,8 @@
 // Translation Unit: d/d_event
 //
 
+#include "d/dolzel.h"
+
 #include "d/d_event.h"
 #include "d/actor/d_a_alink.h"
 #include "d/d_demo.h"
@@ -558,10 +560,10 @@ int dEvt_control_c::entry() {
 void dEvt_control_c::reset() {
     if (field_0xec != 0xFF) {
         fopAc_ac_c* pt1 = getPt1();
+        fopAc_ac_c* pt1_2 = pt1;
         s16 eventIdx = dComIfGp_getEventManager().getEventIdx(NULL, field_0xec, -1);
-        fopAc_ac_c* pt2 = getPt2();
 
-        order(EVT_TYPE_OTHER, 3, 0x201, mHindFlag, pt1, pt2, eventIdx, field_0xec);
+        order(EVT_TYPE_OTHER, 3, 0x201, mHindFlag, pt1, getPt2(), eventIdx, field_0xec);
         mChangeOK = pt1;
     }
 

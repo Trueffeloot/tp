@@ -3,21 +3,26 @@
  * Actor Manager
  */
 
-#pragma nosyminline on
+#include "d/dolzel.h"
 
-#include "f_op/f_op_actor_mng.h"
 #include "JSystem/J3DGraphBase/J3DMaterial.h"
 #include "JSystem/JKernel/JKRExpHeap.h"
 #include "JSystem/JKernel/JKRSolidHeap.h"
 #include "SSystem/SComponent/c_malloc.h"
 #include "SSystem/SComponent/c_math.h"
+#include "d/actor/d_a_obj_carry.h"
 #include "d/actor/d_a_player.h"
 #include "d/actor/d_a_tag_stream.h"
 #include "d/d_item.h"
 #include "d/d_path.h"
-#include "d/actor/d_a_obj_carry.h"
+#include "f_op/f_op_actor_mng.h"
 #include "f_op/f_op_scene_mng.h"
 #include "m_Do/m_Do_lib.h"
+
+class l_HIO {
+public:
+    /* 8001E098 */ ~l_HIO() {}
+};
 
 #define MAKE_ITEM_PARAMS(itemNo, itemBitNo, param_2, param_3)                                      \
     ((itemNo & 0xFF) << 0 | (itemBitNo & 0xFF) << 0x8 | param_2 << 0x10 | (param_3 & 0xF) << 0x18)
@@ -136,10 +141,10 @@ void fopAcM_Log(fopAc_ac_c const* i_actor, char const* i_message) {}
 
 /* 80019C7C-80019CB8 0145BC 003C+00 0/0 10/10 483/483 .text            fopAcM_delete__FP10fopAc_ac_c
  */
-void fopAcM_delete(fopAc_ac_c* i_actor) {
+s32 fopAcM_delete(fopAc_ac_c* i_actor) {
     // "Deleting Actor"
     fopAcM_Log(i_actor, "アクターの削除");
-    fpcM_Delete(i_actor);
+    return fpcM_Delete(i_actor);
 }
 
 /* 80019CB8-80019D18 0145F8 0060+00 0/0 3/3 12/12 .text            fopAcM_delete__FUi */
