@@ -201,6 +201,7 @@ config.asflags = [
     "--strip-local-absolute",
     "-I include",
     f"-I build/{config.version}/include",
+    f"-I assets/{config.version}",
     f"--defsym version={version_num}",
 ]
 config.ldflags = [
@@ -244,6 +245,7 @@ cflags_base = [
     "-fp_contract on",
     "-i include",
     f"-i build/{config.version}/include",
+    f"-i assets/{config.version}",
     "-i src",
     "-ir src/dolphin",
     "-i src/PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Include",
@@ -356,6 +358,50 @@ cflags_dolphin = [
     "-DSDK_REVISION=2",
 ]
 
+# Revolution library flags
+cflags_revolution_base = [
+    "-nodefaults",
+    "-proc gekko",
+    "-align powerpc",
+    "-enum int",
+    "-fp hardware",
+    "-Cpp_exceptions off",
+    '-pragma "cats off"',
+    '-pragma "warn_notinlined off"',
+    "-maxerrors 1",
+    "-nosyspath",
+    #"-char unsigned",
+    "-sym on",
+    "-inline auto",
+    "-ipa file",
+    "-i include",
+    f"-i build/{config.version}/include",
+    "-ir src/revolution",
+    "-i src/PowerPC_EABI_Support/MSL/MSL_C/MSL_Common/Include",
+    "-i src/PowerPC_EABI_Support/MSL/MSL_C/MSL_Common_Embedded/Math/Include",
+    "-i src/PowerPC_EABI_Support/MSL/MSL_C/PPC_EABI/Include",
+    "-i src/PowerPC_EABI_Support/MSL/MSL_C++/MSL_Common/Include",
+    "-i src/PowerPC_EABI_Support/Runtime/Inc",
+    "-i src/PowerPC_EABI_Support/MetroTRK",
+    "-i include/revolution",
+    f"-DVERSION={version_num}",
+    "-D__GEKKO__",
+    "-D__REVOLUTION_SDK__",
+]
+
+cflags_revolution_retail = [
+    *cflags_revolution_base,
+    "-O4,p",
+    "-DSDK_SEP2006",
+]
+
+cflags_revolution_debug = [
+    *cflags_revolution_base,
+    "-opt off",
+    "-DDEBUG=1",
+    "-DSDK_AUG2010",
+]
+
 # Framework flags
 cflags_framework = [
     *cflags_base,
@@ -424,6 +470,23 @@ def DolphinLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
         "objects": objects,
     }
 
+def RevolutionLib(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
+    if config.version == "ShieldD":
+        return {
+            "lib": lib_name,
+            "mw_version": "Wii/1.0",
+            "cflags": cflags_revolution_debug,
+            "progress_category": "sdk",
+            "objects": objects,
+        }
+    else:
+        return {
+            "lib": lib_name,
+            "mw_version": "GC/3.0a3",
+            "cflags": cflags_revolution_retail,
+            "progress_category": "sdk",
+            "objects": objects,
+        }
 
 # Helper function for REL script objects
 def Rel(lib_name: str, objects: List[Object]) -> Dict[str, Any]:
@@ -626,7 +689,7 @@ config.libs = [
             Object(NonMatching, "d/d_resorce.cpp"),
             Object(MatchingFor(ALL_GCN), "d/d_map_path.cpp"),
             Object(MatchingFor(ALL_GCN), "d/d_map_path_fmap.cpp"),
-            Object(NonMatching, "d/d_map_path_dmap.cpp"),
+            Object(MatchingFor(ALL_GCN), "d/d_map_path_dmap.cpp"),
             Object(MatchingFor(ALL_GCN), "d/d_event.cpp"),
             Object(MatchingFor(ALL_GCN), "d/d_event_data.cpp"),
             Object(MatchingFor(ALL_GCN), "d/d_event_manager.cpp"),
@@ -943,7 +1006,7 @@ config.libs = [
             Object(NonMatching, "JSystem/JAudio2/JASTaskThread.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASDvdThread.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASCallback.cpp"),
-            Object(NonMatching, "JSystem/JAudio2/JASHeapCtrl.cpp"),
+            Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASHeapCtrl.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASResArcLoader.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASProbe.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/JAudio2/JASReport.cpp"),
@@ -1145,7 +1208,7 @@ config.libs = [
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DMaterialFactory.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DPrint.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DPane.cpp"),
-            Object(NonMatching, "JSystem/J2DGraph/J2DScreen.cpp"),
+            Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DScreen.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DWindow.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DPicture.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J2DGraph/J2DTextBox.cpp"),
@@ -1182,7 +1245,7 @@ config.libs = [
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DShapeTable.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DJointTree.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DModelData.cpp"),
-            Object(NonMatching, "JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp"),
+            Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DMtxBuffer.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DModel.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DAnimation.cpp"),
             Object(MatchingFor(ALL_GCN), "JSystem/J3DGraphAnimator/J3DMaterialAnm.cpp"),
@@ -1390,6 +1453,45 @@ config.libs = [
             Object(MatchingFor(ALL_GCN), "dolphin/gd/GDGeometry.c"),
         ],
     ),
+    RevolutionLib(
+        "os",
+        [
+            Object(MatchingFor("ShieldD"), "revolution/os/OS.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSAddress.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSAlarm.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSAlloc.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSArena.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSAudioSystem.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSCache.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSContext.c"),
+            Object(NonMatching, "revolution/os/OSError.c"),
+            Object(NonMatching, "revolution/os/OSExec.c"),
+            Object(NonMatching, "revolution/os/OSFatal.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSFont.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSInterrupt.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSLink.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSMessage.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSMemory.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSMutex.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSReboot.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSReset.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSRtc.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSStopwatch.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSSync.c"),
+            Object(NonMatching, "revolution/os/OSThread.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSTime.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSUtf.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSIpc.c"),
+            Object(NonMatching, "revolution/os/OSStateTM.c"),
+            Object(NonMatching, "revolution/os/OSPlayRecord.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSStateFlags.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSNet.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSNandbootInfo.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSPlayTime.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/OSLaunch.c"),
+            Object(MatchingFor("ShieldD"), "revolution/os/__ppc_eabi_init.cpp"),
+        ],
+    ),
     {
         "lib": "Runtime.PPCEABI.H",
         "mw_version": MWVersion(config.version),
@@ -1575,7 +1677,7 @@ config.libs = [
     },
     Rel("f_pc_profile_lst", [Object(Matching, "f_pc/f_pc_profile_lst.cpp")]),
     ActorRel(MatchingFor(ALL_GCN), "d_a_andsw"),
-    ActorRel(NonMatching, "d_a_bg"),
+    ActorRel(MatchingFor(ALL_GCN), "d_a_bg"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_bg_obj"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_dmidna"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_door_dbdoor00"),
@@ -1785,7 +1887,7 @@ config.libs = [
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_mk"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_mk_bo"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_mm"),
-    ActorRel(NonMatching, "d_a_e_mm_mt"),
+    ActorRel(MatchingFor(ALL_GCN), "d_a_e_mm_mt"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_ms"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_nz"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_e_oc"),
@@ -1910,7 +2012,7 @@ config.libs = [
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_midp"),
     ActorRel(MatchingFor(ALL_GCN, "ShieldD"), "d_a_npc_mk"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_moi"),
-    ActorRel(NonMatching, "d_a_npc_moir"),
+    ActorRel(MatchingFor(ALL_GCN), "d_a_npc_moir"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_myna2"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_ne"),
     ActorRel(MatchingFor(ALL_GCN, "ShieldD"), "d_a_npc_p2"),
@@ -2274,7 +2376,7 @@ config.libs = [
     ActorRel(MatchingFor(ALL_GCN), "d_a_obj_zraMark"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_obj_zra_freeze"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_obj_zra_rock"),
-    ActorRel(NonMatching, "d_a_passer_mng"),
+    ActorRel(MatchingFor(ALL_GCN), "d_a_passer_mng"),
     ActorRel(MatchingFor(ALL_GCN, "Shield"), "d_a_tag_arena"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_peru"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_ppolamp"),
