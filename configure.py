@@ -453,7 +453,8 @@ def JSystemLib(lib_name: str, objects: List[Object], progress_category: str="thi
 
 Matching = True                   # Object matches and should be linked
 NonMatching = False               # Object does not match and should not be linked
-Equivalent = config.non_matching  # Object should be linked when configured with --non-matching
+Equivalent = False  # Object should be linked when configured with --non-matching
+Modded = config.non_matching
 
 
 ALL_GCN = ["GZ2E01", "GZ2P01", "GZ2J01"]
@@ -1932,7 +1933,7 @@ config.libs = [
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_seirei"),
     ActorRel(Equivalent, "d_a_npc_shad"),  # weak func order
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_shaman"),
-    ActorRel(MatchingFor(ALL_GCN), "d_a_npc_shoe"),
+    ActorRel(Modded, "d_a_npc_shoe"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_shop0"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_shop_maro"),
     ActorRel(MatchingFor(ALL_GCN), "d_a_npc_sola"),
