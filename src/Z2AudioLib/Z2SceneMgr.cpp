@@ -1927,7 +1927,7 @@ void Z2SceneMgr::load2ndDynamicWave() {
     }
 }
 
-// NONMATCHING - extra BGM_ID load
+// NONMATCHING - matches debug but not retail
 void Z2SceneMgr::sceneBgmStart() {
     OS_REPORT("[Z2SceneMgr::sceneBgmStart] %08x\n", *(u32*)&BGM_ID);
     inGame = true;
@@ -1941,8 +1941,12 @@ void Z2SceneMgr::sceneBgmStart() {
     }
 
     if (!BGM_ID.isAnonymous() && var_r28 == 0 && Z2GetStatusMgr()->getDemoStatus() != 11) {
-        bool var;
-        int section = BGM_ID.id_.info.type.parts.sectionID;
+        #if DEBUG
+        s32 var;
+        #else
+        u8 var;
+        #endif
+        s32 section = BGM_ID.id_.info.type.parts.sectionID;
         switch (section) {
         case 1:
             var = false;
@@ -1953,7 +1957,11 @@ void Z2SceneMgr::sceneBgmStart() {
                 var = true;
                 break;
             }
+        #if DEBUG
             Z2GetSeqMgr()->bgmStart(BGM_ID, 0, var);
+        #else
+            Z2GetSeqMgr()->bgmStart(section, 0, var);
+        #endif
             Z2GetSeqMgr()->unMuteSceneBgm(0);
 
             switch (BGM_ID) {
@@ -2012,6 +2020,10 @@ void Z2SceneMgr::sceneBgmStart() {
                 Z2GetSeqMgr()->bgmStreamPrepare(BGM_ID);
             }
             Z2GetSeqMgr()->bgmStreamPlay();
+            break;
+
+        default:
+            (void)0;
             break;
         }
     }
