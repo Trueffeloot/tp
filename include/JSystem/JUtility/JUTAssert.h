@@ -3,7 +3,7 @@
 
 #include "dolphin/os.h"
 
-#ifdef DEBUG
+#if DEBUG
 #define JUT_SHOW_ASSERT(LINE, COND) JUTAssertion::showAssert(JUTAssertion::getSDevice(), __FILE__, LINE, #COND)
 
 #define JUT_ASSERT(LINE, COND) \
@@ -49,12 +49,12 @@
 #endif
 
 namespace JUTAssertion {
-    /* 802E495C */ void create();
-    /* 802E4960 */ u32 flush_subroutine();
-    /* 802E499C */ void flushMessage();
-    /* 802E4A54 */ void flushMessage_dbPrint();
-    /* 802E4C34 */ void setVisible(bool);
-    /* 802E4C3C */ void setMessageCount(int);
+    void create();
+    u32 flush_subroutine();
+    void flushMessage();
+    void flushMessage_dbPrint();
+    void setVisible(bool);
+    void setMessageCount(int);
 
     u32 getSDevice();
     void showAssert(u32 device, const char * file, int line, const char * assertion);

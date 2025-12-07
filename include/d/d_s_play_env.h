@@ -3,18 +3,18 @@
 
 class dScnPly_env_otherHIO_c : public JORReflexible {
 public:
-    /* 80259440 */ dScnPly_env_otherHIO_c();
+    dScnPly_env_otherHIO_c();
 
-    /* 8025AC0C */ virtual ~dScnPly_env_otherHIO_c() {}
+    virtual ~dScnPly_env_otherHIO_c() {}
     void genMessage(JORMContext*);
 
-    #ifdef DEBUG
+    #if DEBUG
     /* 0x04 */ s8 field_0x04;
     #endif
     
     /* 0x08 */ f32 mShadowDensity;
 
-    #ifdef DEBUG
+    #if DEBUG
     /* 0x0C */ f32 mCullFarValue;
     /* 0x10 */ f32 mRailSize;
     /* 0x14 */ s16 mRailColorR;
@@ -28,7 +28,7 @@ public:
     /* 0x45 */ u8 field_0x45;
     /* 0x46 */ u8 mDisplayTransparentCyl;
 
-    #ifdef DEBUG
+    #if DEBUG
     /* 0x47 */ u8 mDisplayShadows;
     /* 0x48 */ u8 mDisplayShadowImage;
     /* 0x49 */ u8 mDisplayShadowPoly;
@@ -44,9 +44,9 @@ public:
 
 class dScnPly_env_debugHIO_c : public JORReflexible {
 public:
-    /* 80259468 */ dScnPly_env_debugHIO_c();
+    dScnPly_env_debugHIO_c();
 
-    /* 8025ABC4 */ virtual ~dScnPly_env_debugHIO_c() {}
+    virtual ~dScnPly_env_debugHIO_c() {}
     void genMessage(JORMContext*);
 
     /* 0x04 */ u8 field_0x4;

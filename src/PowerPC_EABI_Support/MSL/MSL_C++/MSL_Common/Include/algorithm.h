@@ -73,6 +73,7 @@ ForwardIterator upper_bound(ForwardIterator first, ForwardIterator last, const T
 	return first;
 }
 
+// should be inline, but breaks JStudio/JStudio/ctb weak function order
 template<class InputIt, class UnaryPredicate>
 InputIt find_if(InputIt first, InputIt last, UnaryPredicate p) {
 	while (first != last && !p(*first)) {
@@ -155,7 +156,7 @@ struct __copy_backward<T, true>
 {
 	static T* copy_backward(T* first, T* last, T* result)
 	{
-#ifdef DEBUG
+#if DEBUG
 		size_t n = static_cast<size_t>(last - first);
 		result -= n;
 		memmove(result, first, n*sizeof(T));
