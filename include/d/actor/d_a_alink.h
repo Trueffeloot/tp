@@ -213,7 +213,7 @@ class daAlinkHIO_data_c : public JORReflexible {
 public:
 #if DEBUG
     daAlinkHIO_data_c();
-    ~daAlinkHIO_data_c();
+    virtual ~daAlinkHIO_data_c();
 
     void setStructData(char*);
     void checkDataSize();
@@ -8271,7 +8271,7 @@ static void* daAlink_searchBoar(fopAc_ac_c* param_0, void* param_1);
 static fopAc_ac_c* daAlink_searchLightBall(fopAc_ac_c* p_actor, void* param_1);
 
 inline daAlink_c* daAlink_getAlinkActorClass() {
-    return (daAlink_c*)g_dComIfG_gameInfo.play.getPlayerPtr(LINK_PTR);
+    return (daAlink_c*)dComIfGp_getLinkPlayer();
 }
 
 #endif /* D_A_D_A_ALINK_H */

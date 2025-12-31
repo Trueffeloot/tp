@@ -191,8 +191,10 @@ static void drawHeapMap() {
                 heap = mDoExt_getGameHeap();
                 OSReport_Error("ゲームヒープマップ表示\n");
             } else if (l_heapMapMode == 2) {
+#if PLATFORM_WII || PLATFORM_SHIELD
                 heap = (JKRExpHeap*)DynamicModuleControlBase::getHeap();
                 OSReport_Error("ダイナミックリンクヒープマップ表示\n");
+#endif
             } else if (l_heapMapMode == 4) {
                 heap = mDoExt_getZeldaHeap();
                 OSReport_Error("ゼルダヒープマップ表示\n");
@@ -264,10 +266,6 @@ GXColor mDoGph_gInf_c::mBackColor = {0, 0, 0, 0};
 
 GXColor mDoGph_gInf_c::mFadeColor = {0, 0, 0, 0};
 
-/* 80450BE4 0001+00 data_80450BE4 None */
-/* 80450BE5 0001+00 data_80450BE5 None */
-/* 80450BE6 0001+00 mFade__13mDoGph_gInf_c None */
-/* 80450BE7 0001+00 data_80450BE7 None */
 u8 mDoGph_gInf_c::mBlureFlag;
 
 u8 mDoGph_gInf_c::mBlureRate;
@@ -336,7 +334,7 @@ static bool data_80450BE8;
 void mDoGph_gInf_c::beginRender() {
     #if PLATFORM_WII || PLATFORM_SHIELD
     VISetTrapFilter(fapGmHIO_getTrapFilter() ? 1 : 0);
-    VISetGamma(fapGmHIO_getGamma());
+    VISetGamma((VIGamma)fapGmHIO_getGamma());
     #endif
 
     if (data_80450BE8) {
@@ -1004,7 +1002,7 @@ static void drawDepth2(view_class* param_0, view_port_class* param_1, int param_
 }
 
 static void trimming(view_class* param_0, view_port_class* param_1) {
-    (void)param_0;
+    UNUSED(param_0);
 
     s16 y_orig = (int)param_1->y_orig & ~7;
     s16 y_orig_pos = y_orig < 0 ? 0 : y_orig;
@@ -1166,7 +1164,7 @@ void mDoGph_gInf_c::bloom_c::draw() {
             GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE,
                             GX_TEVPREV);
             GXSetBlendMode(GX_BM_NONE, GX_BL_ZERO, GX_BL_ZERO, GX_LO_OR);
-            GXColorS10 tevColor0 = {-mPoint, -mPoint, -mPoint, 0x40};
+            GXColorS10 tevColor0 = {(s16)-mPoint, (s16)-mPoint, (s16)-mPoint, 0x40};
             GXSetTevColorS10(GX_TEVREG0, tevColor0);
             GXColor tevColor1 = {mBlureRatio, mBlureRatio, mBlureRatio, mBlureRatio};
             GXSetTevColor(GX_TEVREG1, tevColor1);
@@ -1273,8 +1271,8 @@ void mDoGph_gInf_c::bloom_c::draw() {
 }
 
 static void retry_captue_frame(view_class* param_0, view_port_class* param_1, int param_2) {
-    (void)param_0;
-    (void)param_2;
+    UNUSED(param_0);
+    UNUSED(param_2);
 
     s16 x_orig = (int)param_1->x_orig & 0xFFFFFFF8;
     s16 y_orig = (int)param_1->y_orig & 0xFFFFFFF8;

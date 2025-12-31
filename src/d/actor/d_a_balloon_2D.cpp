@@ -9,6 +9,7 @@
 #include "JSystem/J2DGraph/J2DGrafContext.h"
 #include "JSystem/J2DGraph/J2DScreen.h"
 #include "JSystem/J2DGraph/J2DTextBox.h"
+#include "JSystem/JHostIO/JORServer.h"
 #include "SSystem/SComponent/c_math.h"
 #include "d/actor/d_a_player.h"
 #include "d/d_com_inf_game.h"
@@ -716,7 +717,7 @@ static actor_method_class daBalloon2D_METHODS = {
     (process_method_func)daBalloon2D_draw,
 };
 
-extern actor_process_profile_definition g_profile_BALLOON2D = {
+actor_process_profile_definition g_profile_BALLOON2D = {
     fpcLy_CURRENT_e,        // mLayerID
     3,                      // mListID
     fpcPi_CURRENT_e,        // mListPrio

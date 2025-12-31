@@ -68,11 +68,14 @@ static int daObjZCloth_Execute(daObjZCloth_c* i_this) {
 }
 
 static int daObjZCloth_Delete(daObjZCloth_c* i_this) {
+    const fpc_ProcID procID = fopAcM_GetID(i_this);
     return i_this->_delete();
 }
 
 static int daObjZCloth_Create(fopAc_ac_c* i_this) {
-    return static_cast<daObjZCloth_c*>(i_this)->create();
+    daObjZCloth_c* a_this = static_cast<daObjZCloth_c*>(i_this);
+    const fpc_ProcID procID = fopAcM_GetID(i_this);
+    return a_this->create();
 }
 
 static actor_method_class l_daObjZCloth_Method = {
@@ -83,7 +86,7 @@ static actor_method_class l_daObjZCloth_Method = {
     (process_method_func)daObjZCloth_Draw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_ZoraCloth = {
+actor_process_profile_definition g_profile_Obj_ZoraCloth = {
     fpcLy_CURRENT_e,
     7,
     fpcPi_CURRENT_e,

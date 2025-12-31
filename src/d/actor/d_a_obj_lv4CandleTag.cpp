@@ -49,7 +49,7 @@ int dalv4CandleTag_c::Execute() {
 static dalv4CandleTag_HIO_c l_HIO;
 
 void dalv4CandleTag_c::procMain() {
-    static void (dalv4CandleTag_c::*mode_proc[])() = {
+    static const modeFunc mode_proc[] = {
         &dalv4CandleTag_c::modeWatch,
         &dalv4CandleTag_c::modeNG,
         &dalv4CandleTag_c::modeNGWait,
@@ -148,7 +148,7 @@ static actor_method_class l_dalv4CandleTag_Method = {
     (process_method_func)dalv4CandleTag_Draw,
 };
 
-extern actor_process_profile_definition g_profile_Tag_Lv4Candle = {
+actor_process_profile_definition g_profile_Tag_Lv4Candle = {
     fpcLy_CURRENT_e,              // mLayerID
     7,                            // mListID
     fpcPi_CURRENT_e,              // mListPrio

@@ -21,11 +21,14 @@
 #include "Z2AudioLib/Z2Instances.h"
 #include "f_op/f_op_overlap_mng.h"
 
+inline s32 daMP_NEXT_READ_SIZE(daMP_THPReadBuffer* readBuf) {
+    return *(s32*)readBuf->ptr;
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// NONMATCHING
 static u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
     THPAudioRecordHeader* header;
     THPAudioDecodeInfo decInfo;
@@ -68,12 +71,12 @@ static u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
             yn += (sample << decInfo.scale) << 11;
             yn <<= 5;
 
-            if ((u16)(yn & 0xffff) > 0x8000) {
-				yn += 0x10000;
-			} else if ((u16)(yn & 0xffff) == 0x8000) {
-				if ((yn & 0x10000))
-					yn += 0x10000;
-			}
+            u16 temp = yn & 0xffff;
+            if (temp > 0x8000) {
+                yn += 0x10000;
+            } else if (temp == 0x8000 && (yn & 0x10000)) {
+                yn += 0x10000;
+            }
 
             if (yn > 2147483647LL) {
                 yn = 2147483647LL;
@@ -103,14 +106,12 @@ static u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
             yn += (sample << decInfo.scale) << 11;
             yn <<= 5;
             
-            if ((u16)(yn & 0xffff) > 0x8000) {
-				yn += 0x10000;
-			} else {
-				if ((u16)(yn & 0xffff) == 0x8000) {
-					if ((yn & 0x10000))
-						yn += 0x10000;
-				}
-			}
+            u16 temp = yn & 0xffff;
+            if (temp > 0x8000) {
+                yn += 0x10000;
+            } else if (temp == 0x8000 && (yn & 0x10000)) {
+                yn += 0x10000;
+            }
 
             if (yn > 2147483647LL) {
                 yn = 2147483647LL;
@@ -138,14 +139,12 @@ static u32 THPAudioDecode(s16* audioBuffer, u8* audioFrame, s32 flag) {
             yn += (sample << decInfo.scale) << 11;
             yn <<= 5;
 
-            if ((u16)(yn & 0xffff) > 0x8000) {
-				yn += 0x10000;
-			} else {
-				if ((u16)(yn & 0xffff) == 0x8000) {
-					if ((yn & 0x10000))
-						yn += 0x10000;
-				}
-			}
+            u16 temp = yn & 0xffff;
+            if (temp > 0x8000) {
+                yn += 0x10000;
+            } else if (temp == 0x8000 && (yn & 0x10000)) {
+                yn += 0x10000;
+            }
 
             if (yn > 2147483647LL) {
                 yn = 2147483647LL;
@@ -3202,7 +3201,6 @@ static u16 daMP_VolumeTable[] = {
     0x7247, 0x7430, 0x761E, 0x7810, 0x7A06, 0x7C00, 0x7DFE, 0x8000,
 };
 
-// NONMATCHING - missing extsh
 #pragma push
 #pragma optimization_level 3
 static void daMP_MixAudio(s16* destination, s16*, u32 sample) {
@@ -3218,6 +3216,7 @@ static void daMP_MixAudio(s16* destination, s16*, u32 sample) {
 		requestSample = sample;
 		dst = destination;
 
+        BOOL loop = TRUE;
 		do {
 			do {
 				if (daMP_ActivePlayer.playAudioBuffer == (THPAudioBuffer*)NULL) {
@@ -3260,6 +3259,8 @@ static void daMP_MixAudio(s16* destination, s16*, u32 sample) {
 
                 if (JASDriver::getOutputMode() == 0) {
                     l_mix = r_mix = ((r_mix >> 1) + (l_mix >> 1));
+                    r_mix = (s16)r_mix;
+                    l_mix = (s16)l_mix;
                 }
 
                 dst[0] = l_mix;
@@ -3282,7 +3283,7 @@ static void daMP_MixAudio(s16* destination, s16*, u32 sample) {
 				break;
 			}
 
-		} while (TRUE);
+		} while (loop);
 	} else {
 		memset(destination, 0, sample * 4);
 	}
@@ -3709,7 +3710,7 @@ BOOL daMP_WaitUntilPrepare() {
     OSMessage msg;
     OSReceiveMessage(&daMP_PrepareReadyQueue, &msg, 1);
     
-    if ((BOOL)msg) {
+    if ((intptr_t)msg) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -4194,7 +4195,7 @@ static actor_method_class daMP_METHODS = {
     (process_method_func)daMP_c::daMP_c_Callback_Draw,
 };
 
-extern actor_process_profile_definition g_profile_MOVIE_PLAYER = {
+actor_process_profile_definition g_profile_MOVIE_PLAYER = {
   fpcLy_CURRENT_e,        // mLayerID
   7,                      // mListID
   fpcPi_CURRENT_e,        // mListPrio

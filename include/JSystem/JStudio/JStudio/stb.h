@@ -43,7 +43,21 @@ public:
     virtual ~TObject();
 
     void setFlag_operation(u8, int);
+#if PLATFORM_SHIELD && !DEBUG
+    void reset(void const* arg1) {
+        bSequence_ = 0;
+        mStatus = STATUS_STILL;
+        pSequence_next = arg1;
+        u32Wait_ = 0;
+    }
+#else
     void reset(void const*);
+#endif
+#if !DEBUG
+    void reset() { reset(NULL); }
+#else
+    void reset();
+#endif
     bool forward(u32);
     virtual void do_begin();
     virtual void do_end();
@@ -149,7 +163,7 @@ private:
     /* 0x04 */ u32 _4;
     /* 0x08 */ u32 _8;
     /* 0x0C */ TFactory* pFactory;
-    /* 0x10 */ JGadget::TLinkList<TObject, -12> mObjectContainer;
+    /* 0x10 */ JGadget::TLinkList<TObject, -12> ocObject_;
     /* 0x1C */ u32 mStatus;
     /* 0x20 */ TObject_control mObject_control;
     /* 0x54 */ s32 _54;

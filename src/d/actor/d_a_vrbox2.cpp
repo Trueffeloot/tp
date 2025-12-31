@@ -23,7 +23,6 @@ static void texScrollCheck(f32& param_0) {
         param_0 -= 1.0f;
 }
 
-// NONMATCHING - reg alloc
 static int daVrbox2_Draw(vrbox2_class* i_this) {
     camera_class* camera_p;
     dKankyo_sunlenz_Packet* lenz_p;
@@ -39,7 +38,7 @@ static int daVrbox2_Draw(vrbox2_class* i_this) {
     s16 temp_r19;
     s16 temp_r18;
 
-    camera_p = dComIfGp_getCamera(0);
+    camera_p = (camera_class*)dComIfGp_getCamera(0);
     lenz_p = g_env_light.mpSunLenzPacket;
     kumo_model_p = i_this->mpKumoModel;
     sun_model_p = i_this->model2;
@@ -180,7 +179,6 @@ static int daVrbox2_Draw(vrbox2_class* i_this) {
 
 
         if (strcmp(dComIfGp_getStartStageName(), "F_SP127") == 0) {
-            /* 80499B78-80499B7C 000000 0002+02 1/1 0/0 0/0 .bss             mangZ$3688 */
             static s16 mangZ;
 
             sp14 = sun_p->mPos[0];
@@ -387,7 +385,7 @@ static int daVrbox2_color_set(vrbox2_class* i_this) {
 }
 
 static int daVrbox2_Execute(vrbox2_class* i_this) {
-    i_this = i_this; // ?? fakematch? only needed for debug
+    UNUSED(i_this);
 
     if (g_env_light.daytime > 255.0f) {
         i_this->mSunBtk.play();
@@ -454,7 +452,7 @@ static actor_method_class l_daVrbox2_Method = {
     (process_method_func)daVrbox2_Draw,
 };
 
-extern actor_process_profile_definition g_profile_VRBOX2 = {
+actor_process_profile_definition g_profile_VRBOX2 = {
     fpcLy_CURRENT_e,
     7,
     fpcPi_CURRENT_e,

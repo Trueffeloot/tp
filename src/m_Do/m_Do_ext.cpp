@@ -21,7 +21,7 @@
 #include "global.h"
 #include "m_Do/m_Do_ext.h"
 #include "m_Do/m_Do_mtx.h"
-#include "stdio.h"
+#include <stdio.h>
 
 static void mDoExt_setJ3DData(Mtx mtx, const J3DTransformInfo* transformInfo, u16 param_2) {
     bool local_28;
@@ -665,7 +665,7 @@ JKRExpHeap* mDoExt_getZeldaHeap() {
     return zeldaHeap;
 }
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
 s32 safeZeldaHeapSize = -1;
 
 s32 mDoExt_getSafeZeldaHeapSize() {
@@ -717,11 +717,7 @@ JKRExpHeap* mDoExt_getHostIOHeap() {
     return HostIOHeap;
 }
 
-#if DEBUG
-extern u8 lbl_8074C3B9[1];
-#endif
-
-static JKRSolidHeap* mDoExt_createSolidHeap(u32 i_size, JKRHeap* i_heap, u32 i_alignment) {
+JKRSolidHeap* mDoExt_createSolidHeap(u32 i_size, JKRHeap* i_heap, u32 i_alignment) {
     if (i_heap == NULL) {
         i_heap = JKRGetCurrentHeap();
     }
@@ -729,7 +725,7 @@ static JKRSolidHeap* mDoExt_createSolidHeap(u32 i_size, JKRHeap* i_heap, u32 i_a
     JKRSolidHeap* createdHeap;
     if (i_size == 0 || i_size == -1) {
         #if DEBUG
-        if (lbl_8074C3B9[0] != 0) {
+        if (mDoExt::HeapAdjustVerbose != 0) {
             OS_REPORT("\x1b[44mmDoExt_createSolidHeap サイズ未設定\n\x1b[m");
             OS_REPORT("最大空き容量確保します %08x\n\x1b[m", i_heap->getFreeSize());
         }
@@ -749,7 +745,7 @@ static JKRSolidHeap* mDoExt_createSolidHeap(u32 i_size, JKRHeap* i_heap, u32 i_a
     if (createdHeap != NULL) {
         JKRSetErrorFlag(createdHeap, true);
         #if DEBUG
-        if (lbl_8074C3B9[0] != 0) {
+        if (mDoExt::HeapAdjustVerbose != 0) {
             u32 heapSize = createdHeap->getHeapSize();
             OS_REPORT(
                 "JKRCreateSolidHeap %08x i_size=%08x solidHeapSize=%08x\n",
@@ -831,17 +827,42 @@ u32 mDoExt_adjustSolidHeap(JKRSolidHeap* i_heap) {
         return -1;
     }
 
+    u32 estimatedSize = i_heap->getHeapSize();
     s32 result = i_heap->adjustSize();
     if (result < 0) {
         // "adjustSize failure %08x\n"
         OSReport_Error("adjustSize失敗 %08x\n", i_heap);
         return -1;
     }
+    u32 actualSize = i_heap->getHeapSize();
+
+    #if DEBUG
+    if (mDoExt::HeapAdjustVerbose) {
+        // "\x1B[33mSolid heap estimate: %08x actual: %08x\n\x1B[m"
+        OS_REPORT("\x1B[33mソリッドヒープの見積もり %08x 実際 %08x\n\x1B[m", estimatedSize, actualSize);
+
+        if (estimatedSize > 0x400 && estimatedSize > (actualSize + 0x400)) {
+            // "\x1B[33mThe estimate is %x bytes too large (%5.2f times). This could lead to degraded memory efficiency.\n\x1B[m"
+            OS_REPORT("\x1B[33m見積もりが %x バイト大きい(%5.2f倍)です。メモリ効率悪化が懸念されます。\n\x1B[m", estimatedSize - actualSize, (f32)estimatedSize / (f32)actualSize);
+        } else if (estimatedSize >= (actualSize + 0x20)) {
+            // "\x1B[36mThe estimate is %x bytes too large. That's pretty good.\n\x1B[m"
+            OS_REPORT("\x1B[36m見積もりが %x バイト大きいです。だいぶいい感じです。\n\x1B[m", estimatedSize - actualSize);
+        } else {
+            // "\x1B[32mThe estimate is spot on! Perfect.\n\x1B[m"
+            OS_REPORT("\x1B[32m見積もりが、ジャストミート！完璧です。\n\x1B[m");
+        }
+    }
+
+    if (mDoExt::HeapAdjustVerbose) {
+        OS_REPORT("JKRSolidHeap::adjustSize %08x (%08x bytes)\n", (u32)i_heap, result);
+    }
+    #endif
 
     // this probably indicates that 0x80 is some constant, maybe from a sizeof(JKRSolidHeap)
     // with alignment?
-    if (result >= (u32)0x80) {
-        result -= 0x80;
+    u32 r25 = 0x80;
+    if (result >= r25) {
+        return result - r25;
     }
 
     return result;
@@ -1060,9 +1081,6 @@ void mDoExt_morf_c::frameUpdate() {
     mFrameCtrl.update();
 }
 
-/* 8000FC4C-8000FD10 00A58C 00C4+00 0/0 0/0 34/34 .text
- * __ct__14mDoExt_McaMorfFP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformifiiiPvUlUl
- */
 mDoExt_McaMorf::mDoExt_McaMorf(J3DModelData* modelData, mDoExt_McaMorfCallBack1_c* callback1,
                                    mDoExt_McaMorfCallBack2_c* callback2, J3DAnmTransform* anmTransform,
                                    int param_4, f32 param_5, int param_6, int param_7, int param_8,
@@ -1079,9 +1097,6 @@ mDoExt_McaMorf::~mDoExt_McaMorf() {
     }
 }
 
-/* 8000FD94-80010074 00A6D4 02E0+00 1/1 0/0 0/0 .text
- * create__14mDoExt_McaMorfFP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformifiiiPvUlUl
- */
 int mDoExt_McaMorf::create(J3DModelData* modelData, mDoExt_McaMorfCallBack1_c* callback1,
                            mDoExt_McaMorfCallBack2_c* callback2, J3DAnmTransform* anmTransform,
                            int param_4, f32 param_5, int param_6, int param_7, int param_8,
@@ -1320,9 +1335,6 @@ void mDoExt_McaMorf::getTransform(u16 param_0, J3DTransformInfo* param_1) {
     }
 }
 
-/* 800107D0-80010888 00B110 00B8+00 0/0 2/2 222/222 .text
- * __ct__16mDoExt_McaMorfSOFP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformifiiP10Z2CreatureUlUl
- */
 mDoExt_McaMorfSO::mDoExt_McaMorfSO(J3DModelData* param_0, mDoExt_McaMorfCallBack1_c* param_1,
                                    mDoExt_McaMorfCallBack2_c* param_2, J3DAnmTransform* param_3,
                                    int param_4, f32 param_5, int param_6, int param_7,
@@ -1337,9 +1349,6 @@ mDoExt_McaMorfSO::~mDoExt_McaMorfSO() {
     stopZelAnime();
 }
 
-/* 800108F0-80010B68 00B230 0278+00 1/1 0/0 0/0 .text
- * create__16mDoExt_McaMorfSOFP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformifiiP10Z2CreatureUlUl
- */
 int mDoExt_McaMorfSO::create(J3DModelData* i_modelData, mDoExt_McaMorfCallBack1_c* param_1,
                              mDoExt_McaMorfCallBack2_c* param_2, J3DAnmTransform* param_3,
                              int param_4, f32 param_5, int param_6, int param_7,
@@ -1618,9 +1627,6 @@ void mDoExt_McaMorfSO::stopZelAnime() {
     }
 }
 
-/* 80011348-800113FC 00BC88 00B4+00 0/0 0/0 1/1 .text
- * __ct__15mDoExt_McaMorf2FP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformP15J3DAnmTransformifiiP10Z2CreatureUlUl
- */
 mDoExt_McaMorf2::mDoExt_McaMorf2(J3DModelData* param_0, mDoExt_McaMorfCallBack1_c* param_1,
                                  mDoExt_McaMorfCallBack2_c* param_2, J3DAnmTransform* param_3,
                                  J3DAnmTransform* param_4, int param_5, f32 param_6, int param_7,
@@ -1633,9 +1639,6 @@ mDoExt_McaMorf2::~mDoExt_McaMorf2() {
     stopZelAnime();
 }
 
-/* 80011464-800116B4 00BDA4 0250+00 1/1 0/0 0/0 .text
- * create__15mDoExt_McaMorf2FP12J3DModelDataP25mDoExt_McaMorfCallBack1_cP25mDoExt_McaMorfCallBack2_cP15J3DAnmTransformP15J3DAnmTransformifiiP10Z2CreatureUlUl
- */
  int mDoExt_McaMorf2::create(J3DModelData* param_0, mDoExt_McaMorfCallBack1_c* param_1,
                                  mDoExt_McaMorfCallBack2_c* param_2, J3DAnmTransform* param_3,
                                  J3DAnmTransform* param_4, int param_5, f32 param_6, int param_7,
@@ -2189,8 +2192,8 @@ void mDoExt_3DlineMat0_c::draw() {
     int var_r26 = (field_0x14 << 1) & 0xFFFF;
 
     for (int i = 0; i < field_0x10; i++) {
-        GXSetArray(GX_VA_POS, ((mDoExt_3Dline_c*)((int)var_r28 + field_0x16 * 4))->field_0x8, sizeof(cXyz));
-        GXSetArray(GX_VA_NRM, ((mDoExt_3Dline_c*)((int)var_r28 + field_0x16 * 4))->field_0x10, 3);
+        GXSetArray(GX_VA_POS, ((mDoExt_3Dline_c*)((intptr_t)var_r28 + field_0x16 * 4))->field_0x8, sizeof(cXyz));
+        GXSetArray(GX_VA_NRM, ((mDoExt_3Dline_c*)((intptr_t)var_r28 + field_0x16 * 4))->field_0x10, 3);
 
         GXBegin(GX_TRIANGLESTRIP, GX_VTXFMT0, var_r26);
         for (u16 j = 0; j < (u16)var_r26; j++) {
@@ -2245,9 +2248,9 @@ void mDoExt_3DlineMat0_c::update(int param_0, f32 param_1, GXColor& param_2, u16
     for (s32 sp_14 = 0; sp_14 < field_0x10; sp_14++) {
         local_r27 = sp_28->field_0x0;
 
-        sp_1c = ((mDoExt_3Dline_c*)((int)sp_28 + (field_0x16 << 2)))->field_0x8;
+        sp_1c = ((mDoExt_3Dline_c*)((intptr_t)sp_28 + (field_0x16 << 2)))->field_0x8;
         local_r26 = sp_1c;
-        sp_18 = ((mDoExt_3Dline_c*)((int)sp_28 + (field_0x16 << 2)))->field_0x10;
+        sp_18 = ((mDoExt_3Dline_c*)((intptr_t)sp_28 + (field_0x16 << 2)))->field_0x10;
         local_r30 = sp_18;
 
         local_r29 = local_r30 + 1;
@@ -2366,9 +2369,9 @@ void mDoExt_3DlineMat0_c::update(int param_0, GXColor& param_2, dKy_tevstr_c* pa
 
         JUT_ASSERT(0x1545, sp_18 != NULL);
 
-        sp_20 = ((mDoExt_3Dline_c*)((int)sp_30 + (field_0x16 << 2)))->field_0x8;
+        sp_20 = ((mDoExt_3Dline_c*)((intptr_t)sp_30 + (field_0x16 << 2)))->field_0x8;
         sp_24 = sp_20;
-        sp_1c = ((mDoExt_3Dline_c*)((int)sp_30 + (field_0x16 << 2)))->field_0x10;
+        sp_1c = ((mDoExt_3Dline_c*)((intptr_t)sp_30 + (field_0x16 << 2)))->field_0x10;
         local_r30 = sp_1c;
 
         local_r29 = local_r30 + 1;
@@ -2455,7 +2458,7 @@ int mDoExt_3DlineMat1_c::init(u16 param_0, u16 param_1, ResTIMG* param_2, int pa
     field_0x4 = 0;
     mIsDrawn = 0;
 
-    GXInitTexObj(&mTextureObject, (void*)((int)param_2 + param_2->imageOffset), param_2->width,
+    GXInitTexObj(&mTextureObject, (void*)((intptr_t)param_2 + param_2->imageOffset), param_2->width,
                  param_2->height, (GXTexFmt)param_2->format, (GXTexWrapMode)param_2->wrapS,
                  (GXTexWrapMode)param_2->wrapT, param_2->mipmapCount > 1 ? GX_TRUE : GX_FALSE);
     GXInitTexObjLOD(&mTextureObject, (GXTexFilter)param_2->minFilter,
@@ -2564,14 +2567,14 @@ void mDoExt_3DlineMat1_c::update(int param_0, f32 param_1, _GXColor& param_2, u1
 
     for (s32 sp_14 = 0; sp_14 < mNumLines; sp_14++) {
         local_r27 = sp_38[0].field_0x0;
-        sp_24 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x8;
+        sp_24 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x8;
         sp_28 = sp_24;
 
-        sp_20 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x10;
+        sp_20 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x10;
         local_r30 = sp_20;
         local_r28 = local_r30 + 1;
 
-        sp_18 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x18;
+        sp_18 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x18;
         sp_1c = sp_18;
 
         local_f29 = param_1;
@@ -2711,12 +2714,12 @@ void mDoExt_3DlineMat1_c::update(int param_0, _GXColor& param_2, dKy_tevstr_c* p
         local_r27 = sp_38[0].field_0x0;
         local_r18 = sp_38->field_0x4;
         JUT_ASSERT(0x16f3, sp_18 != NULL);
-        sp_24 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x8;
+        sp_24 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x8;
         sp_28 = sp_24;
-        sp_20 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x10;
+        sp_20 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x10;
         local_r30 = sp_20;
         local_r28 = local_r30 + 1;
-        sp_18 = ((mDoExt_3Dline_c*)((int)sp_38 + (mIsDrawn << 2)))->field_0x18;
+        sp_18 = ((mDoExt_3Dline_c*)((intptr_t)sp_38 + (mIsDrawn << 2)))->field_0x18;
         sp_1c = sp_18;
         sp_1c++->field_0x4 = local_f31;
         sp_1c++->field_0x4 = local_f31;
@@ -3527,4 +3530,24 @@ OSThread* mDoExt_GetCurrentRunningThread() {
     }
 
     return thread;
+}
+
+// TODO: hack to get these inlines to appear for debug
+static void dummy() {
+    { J3DZMode temp; temp = temp; J3DZMode temp2(temp); }
+    { J3DBlend temp; temp = temp; J3DBlend temp2(temp); }
+    { J3DAlphaComp temp; temp = temp; J3DAlphaComp temp2(temp); }
+    { J3DIndTexCoordScale temp; temp = temp; J3DIndTexCoordScale temp2(temp); }
+    { J3DIndTexMtx temp; temp = temp; J3DIndTexMtx temp2(temp); }
+    { J3DIndTevStage temp; temp = temp; J3DIndTevStage temp2(temp); }
+    { J3DTevStage temp; temp = temp; J3DTevStage temp2(temp); }
+    { J3DTevSwapModeTable temp; temp = temp; J3DTevSwapModeTable temp2(temp); }
+    { J3DTevOrder temp; temp = temp; J3DTevOrder temp2(temp); }
+    { J3DGXColorS10 temp; temp = temp; J3DGXColorS10 temp2(temp); }
+    { J3DTexCoord temp; temp = temp; J3DTexCoord temp2(temp); }
+    { J3DColorChan temp; temp = temp; J3DColorChan temp2(temp); }
+    { J3DGXColor temp; temp = temp; J3DGXColor temp2(temp); }
+    { J3DIndTexOrderInfo temp; temp = temp; J3DIndTexOrderInfo temp2(temp); }
+    { J3DFog temp; temp = temp; J3DFog temp2(temp); }
+    { J3DTexMtx temp; temp = temp; J3DTexMtx temp2(temp); }
 }

@@ -19,7 +19,7 @@ class dScnPly_reg_HIO_c : public JORReflexible {
 public:
     virtual ~dScnPly_reg_HIO_c() {}
 
-#if DEBUG
+#if ENABLE_REGHIO
     void genMessage(JORMContext*);
 
     /* 0x4 */ s8 id;
@@ -68,7 +68,11 @@ public:
     bool resetGame();
     void offReset();
 
-    static bool isPause() { return pauseTimer == 0; }
+    #if VERSION == VERSION_SHIELD_DEBUG
+    static s8 isPause() { return pauseTimer | nextPauseTimer; }
+    #else
+    static s8 isPause() { return pauseTimer; }
+    #endif
     static void setPauseTimer(s8 time) { nextPauseTimer = time; }
 
     static s8 pauseTimer;
@@ -95,7 +99,7 @@ extern dScnPly_preset_HIO_c g_presetHIO;
  * Float Reg(25-29) ... -1.0 - +1.0
  */
 
-#if DEBUG
+#if ENABLE_REGHIO
 // Morita
 #define TREG_F(i) g_regHIO.mChildReg[0].mFloatReg[i]
 #define TREG_S(i) g_regHIO.mChildReg[0].mShortReg[i]

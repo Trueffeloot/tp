@@ -983,7 +983,7 @@ void daNpc_Post_c::drawOtherMdl() {
     }
 }
 
-BOOL daNpc_Post_c::setFlagAnm(int i_idx, int i_attr, f32 i_morf) {
+bool daNpc_Post_c::setFlagAnm(int i_idx, int i_attr, f32 i_morf) {
     static daNpc_GetParam1 flagAnmData[13] = {
         {BCK_POST_FLAG_WAIT_A, POST},
         {BCK_POST_FLAG_RUN, POST1},
@@ -1011,12 +1011,12 @@ BOOL daNpc_Post_c::setFlagAnm(int i_idx, int i_attr, f32 i_morf) {
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 bool daNpc_Post_c::afterSetMotionAnm(int i_idx, int i_attr, f32 i_morf, int param_4) {
     f32 morf = mCreating == true ? 0.0f : i_morf;
-    setFlagAnm(i_idx, i_attr, morf);
+    return setFlagAnm(i_idx, i_attr, morf);
 }
 
 BOOL daNpc_Post_c::selectAction() {
@@ -1561,7 +1561,7 @@ static actor_method_class daNpc_Post_MethodTable = {
     (process_method_func)daNpc_Post_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_POST = {
+actor_process_profile_definition g_profile_NPC_POST = {
   fpcLy_CURRENT_e,         // mLayerID
   7,                       // mListID
   fpcPi_CURRENT_e,         // mListPrio

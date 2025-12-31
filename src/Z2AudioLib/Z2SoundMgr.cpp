@@ -5,11 +5,14 @@
 #include "Z2AudioLib/Z2SeqMgr.h"
 #include "Z2AudioLib/Z2SeMgr.h"
 #include "Z2AudioLib/Z2SoundInfo.h"
-#include "Z2AudioLib/Z2AudioCS.h"
 #include "JSystem/JAudio2/JASCalc.h"
 #include "JSystem/JAudio2/JASDriverIF.h"
 #include "JSystem/JAudio2/JAUSectionHeap.h"
 #include "d/d_com_inf_game.h"
+
+#if PLATFORM_WII || PLATFORM_SHIELD
+#include "Z2AudioLib/Z2AudioCS.h"
+#endif
 
 u16 seqCallback(JASTrack* track, u16 command) {
     switch (command) {
@@ -154,7 +157,7 @@ bool Z2SoundMgr::startSound(JAISoundID soundID, JAISoundHandle* handle, const JG
                     OS_REPORT("[Z2SoundMgr::startSound] FAILED!!! LOAD SEQ_DATA id: %08x\n", *(u32*)&soundID);
 
                     for (JSULink<JAUSeqDataBlock>* link = sectionHeap->getSectionHeapData().seqDataBlocks.getFreeBlocks().getFirst(); link != NULL; link = link->getNext()) {
-                        OS_REPORT("       freeSeqBlock: %d\n", link->getObject()->field_0x14.size);
+                        OS_REPORT("       freeSeqBlock: %d\n", link->getObject()->region.size);
                     }
                 }
 

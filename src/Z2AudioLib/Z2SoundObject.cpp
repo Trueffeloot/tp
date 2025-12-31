@@ -14,7 +14,7 @@
 #endif
 
 Z2SoundObjBase::Z2SoundObjBase()
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
 : JSULink<Z2SoundObjBase>(this)
 #endif
 {
@@ -30,7 +30,7 @@ Z2SoundObjBase::~Z2SoundObjBase() {
 }
 
 void Z2SoundObjBase::init(Vec* posPtr, u8 handleNum) {
-    #if VERSION == VERSION_SHIELD_DEBUG
+    #if DEBUG
     Z2GetSoundObjMgr()->getAllList()->append(this);
     #endif
 
@@ -40,7 +40,7 @@ void Z2SoundObjBase::init(Vec* posPtr, u8 handleNum) {
 }
 
 void Z2SoundObjBase::deleteObject() {
-    #if VERSION == VERSION_SHIELD_DEBUG
+    #if DEBUG
     Z2GetSoundObjMgr()->getAllList()->remove(this);
     #endif
 
@@ -528,8 +528,8 @@ u32 Z2SoundObjAnime::getSoundID(const JAUSoundAnimationSound* animationSound,
 
 bool Z2SoundObjAnime::playsSound(const JAUSoundAnimationSound* animationSound,
                                  const JGeometry::TVec3<f32>& param_1, f32 param_2) {
-    (void)param_1;
-    (void)param_2;
+    UNUSED(param_1);
+    UNUSED(param_2);
 
     if (animationSound->playsOnlyOnce()) {
         if (field_0x3c != animationSound->field_0x16) {

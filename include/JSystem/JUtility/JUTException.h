@@ -3,7 +3,7 @@
 
 #include "JSystem/JKernel/JKRThread.h"
 #include "JSystem/JUtility/JUTGamePad.h"
-#include "__va_arg.h"
+#include <stdarg.h>
 #include <dolphin/gx.h>
 #include <dolphin/os.h>
 #include "global.h"
@@ -152,7 +152,7 @@ STATIC_ASSERT(sizeof(JUTException) == 0xA4);
 */
 struct JUTWarn {
     JUTWarn& operator<<(const char*) { return *this; }
-    JUTWarn& operator<<(long) { return *this; }
+    JUTWarn& operator<<(s32) { return *this; }
 };
 
 #endif /* JUTEXCEPTION_H */

@@ -128,8 +128,8 @@ struct TLinkList : TNodeLinkList {
 
         iterator& operator=(const iterator& rhs) {
             //TODO: Probably fakematch? Not sure what's going on here exactly
-            (TIterator<std::bidirectional_iterator_tag, T, long, T*, T&>&)*this =
-                (const TIterator<std::bidirectional_iterator_tag, T, long, T*, T&>&)rhs;
+            (TIterator<std::bidirectional_iterator_tag, T, s32, T*, T&>&)*this =
+                (const TIterator<std::bidirectional_iterator_tag, T, s32, T*, T&>&)rhs;
             this->node = rhs.node;
             return *this;
         }
@@ -243,6 +243,8 @@ struct TLinkList : TNodeLinkList {
         return iterator(TNodeLinkList::Find(Element_toNode(element)));
     }
     void Remove(T* element) { TNodeLinkList::Remove(Element_toNode(element)); }
+
+    typedef T value_type;
 };
 
 template <typename T, int I>
@@ -260,7 +262,7 @@ struct TLinkList_factory : public TLinkList<T, I> {
     }
 
     typename TLinkList<T, I>::iterator Erase_destroy(T* param_0) {
-        typename TLinkList<T, I>::iterator spC(Erase(param_0));
+        typename TLinkList<T, I>::iterator spC(this->Erase(param_0));
         Do_destroy(param_0);
         return spC;
     }
@@ -268,7 +270,11 @@ struct TLinkList_factory : public TLinkList<T, I> {
 
 template <typename T, int I>
 TLinkList_factory<T, I>::~TLinkList_factory() {
+#ifdef __MWERKS__
     JGADGET_ASSERTWARN(934, empty());
+#else
+    JGADGET_ASSERTWARN(934, this->empty());
+#endif
 }
 
 template <typename T>
@@ -311,10 +317,10 @@ struct TEnumerator2 {
     Iterator end;
 };
 
-template <typename T, int I>
-struct TContainerEnumerator : public TEnumerator2<typename TLinkList<T, I>::iterator, T> {
-    inline TContainerEnumerator(TLinkList<T, I>* param_0)
-        : TEnumerator2<typename TLinkList<T, I>::iterator, T>(param_0->begin(), param_0->end()) {}
+template <typename T>
+struct TContainerEnumerator : public TEnumerator2<typename T::iterator, typename T::value_type> {
+    inline TContainerEnumerator(T& param_0)
+        : TEnumerator2<typename T::iterator, typename T::value_type>(param_0.begin(), param_0.end()) {}
 };
 
 

@@ -1089,7 +1089,23 @@ BOOL daNpc_Pachi_Besu_c::talk(void* param_1) {
 }
 
 BOOL daNpc_Pachi_Besu_c::test(void* param_1) {
-    // DEBUG NONMATCHING
+    switch(mMode) {
+    case 0:
+    case 1:
+        speedF = 0.0f;
+        speed.setall(0.0f);
+        mMode = 2;
+        // fallthrough
+    case 2:
+        mFaceMotionSeqMngr.setNo(mHIO->param.common.face_expression, -1.0f, 0, 0);
+        mMotionSeqMngr.setNo(mHIO->param.common.motion, -1.0f, 0, 0);
+        mJntAnm.lookNone(0);
+        attention_info.flags = 0;
+        break;
+    case 3:
+        break;
+    }
+    return 1;
 }
 
 BOOL daNpc_Pachi_Besu_c::_turn_to_link(s16 param_1) {
@@ -1528,7 +1544,7 @@ static actor_method_class daNpc_Pachi_Besu_MethodTable = {
     (process_method_func)daNpc_Pachi_Besu_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_PACHI_BESU = {
+actor_process_profile_definition g_profile_NPC_PACHI_BESU = {
   fpcLy_CURRENT_e,               // mLayerID
   7,                             // mListID
   fpcPi_CURRENT_e,               // mListPrio

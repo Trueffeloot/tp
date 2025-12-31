@@ -3,7 +3,7 @@
 #include "d/d_camera.h"
 #include "SSystem/SComponent/c_counter.h"
 #include "SSystem/SComponent/c_math.h"
-#include "cmath.h"
+#include <math.h>
 #include "d/actor/d_a_alink.h"
 #include "d/actor/d_a_boomerang.h"
 #include "d/actor/d_a_horse.h"
@@ -21,7 +21,7 @@
 #include "m_Do/m_Do_controller_pad.h"
 #include "m_Do/m_Do_graphic.h"
 #include "m_Do/m_Do_lib.h"
-#include "math.h"
+#include <math.h>
 
 namespace {
 
@@ -298,7 +298,9 @@ static int specialType[42];
 
 static int Stage;
 
+#if WIDESCREEN_SUPPORT
 static f32 WideTurnSaving = 0.86f + OREG_F(1);
+#endif
 
 inline static u32 check_owner_action(u32 param_0, u32 param_1) {
     return dComIfGp_checkPlayerStatus0(param_0, param_1);
@@ -718,8 +720,7 @@ void dCamera_c::initPad() {
     mHoldY = mDoCPd_c::getHoldY(mPadID) ? true : false;
     mTrigY = mDoCPd_c::getTrigY(mPadID) ? true : false;
 
-    // fakematch (doesn't match in debug)
-    mHoldZ = (u8)mDoCPd_c::getHoldZ(mPadID) ? true : false;
+    mHoldZ = mDoCPd_c::getHoldZ(mPadID) ? true : false;
     mTrigZ = mDoCPd_c::getTrigZ(mPadID) ? true : false;
     field_0x21f = 0;
 
@@ -1027,7 +1028,7 @@ bool dCamera_c::Run() {
         mCamSetup.mCStick.Shift(mPadID);
     }
 
-    if (dComIfGp_getEvent().runCheck()) {
+    if (dComIfGp_getEvent()->runCheck()) {
         mPadInfo.mMainStick.mLastValue = 0.0f;
         mPadInfo.mMainStick.mLastPosY = 0.0f;
         mPadInfo.mMainStick.mLastPosX = 0.0f;
@@ -1317,7 +1318,7 @@ void dCamera_c::CalcTrimSize() {
     if (mCurState == 1) {
         mCurState = 0;
     } else if (mCurState == 2) {
-        if (dComIfGp_getEvent().isOrderOK()) {
+        if (dComIfGp_getEvent()->isOrderOK()) {
             mCurState = 0;
         }
     }
@@ -1706,7 +1707,7 @@ s32 dCamera_c::nextType(s32 i_curType) {
         dComIfGp_getAttention()->LockSoundOff();
     } else {
         clrFlag(0x40000000);
-        if (dComIfGp_getEvent().runCheck()) {
+        if (dComIfGp_getEvent()->runCheck()) {
             setComStat(4);
             dComIfGp_getAttention()->LockSoundOff();
         }
@@ -2109,10 +2110,10 @@ f32 dCamera_c::radiusActorInSight(fopAc_ac_c* i_actor1, fopAc_ac_c* i_actor2, cX
     f32 local_12c = 1.0f;
     f32 local_130 = 1.0f;
     if (bVar2 & 5) {
-        local_12c = i_tanf(fVar7);
+        local_12c = tanf(fVar7);
     }
     if (bVar2 & 0xA) {
-        local_130 = i_tanf(fVar8);
+        local_130 = tanf(fVar8);
     }
 
     if (bVar2 & 1) {
@@ -4221,15 +4222,13 @@ bool dCamera_c::lockonCamera(s32 param_0) {
             target_attention_pos.z = positionOf(mpLockonTarget).z;
         }
 
-        // this should probably be an ifdef, but we force it to be compiled
-        // to make the function large enough to stop doing inlining
-        if (!NDEBUG_DEFINED) {
-            if (mCamSetup.CheckFlag(0x8000)) {
-                //char name[28];
-                fopAcM_getNameString(mpPlayerActor, NULL);
-                dDbVw_Report(0x1e0, 0x109, "%s", NULL);
-            }
+#if DEBUG
+        if (mCamSetup.CheckFlag(0x8000)) {
+            char name[dStage_NAME_LENGTH];
+            fopAcM_getNameString(mpPlayerActor, name);
+            dDbVw_Report(0x1e0, 0x109, "%s", name);
         }
+#endif
 
         if (check_owner_action(mPadID, 0x2000008)) {
             cXyz vec(0.0f, 0.0f, -90.0f);
@@ -4392,7 +4391,7 @@ bool dCamera_c::lockonCamera(s32 param_0) {
         v.Val(lockon->field_0x34.V() + ang5 * 0.05f);
     } else {
         r = lockon->field_0x34.R();
-        r = r + ((fVar44a - r) * lockon->field_0x54 * fabsf(ang5.Cos()));
+        r = r + (fVar44a - r) * lockon->field_0x54 * fabsf(ang5.Cos());
         u.Val(lockon->field_0x34.U() + (ang4 - lockon->field_0x34.U()) * lockon->field_0x58);
         v.Val(lockon->field_0x34.V() + ang5 * lockon->field_0x58);
     }
@@ -4444,9 +4443,9 @@ bool dCamera_c::lockonCamera(s32 param_0) {
 
     bool bVar3 = false;
     f32 fVar31;
-    if (std::fabsf(fVar47) > 0.05f) {
+    if (fabsf(fVar47) > 0.05f) {
         cSAngle ang = globe2.U() + cSAngle(dCamMath::rationalBezierRatio(fVar47, 0.5f) * 7.5f);
-        fVar31 = std::fabsf(fVar47) - 0.05f;
+        fVar31 = fabsf(fVar47) - 0.05f;
         lockon->field_0x42 = ang;
         lockon->field_0x4c = 0.0f;
         bVar3 = true;
@@ -7448,8 +7447,8 @@ bool dCamera_c::railCamera(s32 param_0) {
     cSGlobe eyeFromCenter = bestEyePos - mViewCache.mCenter;
     cSAngle unkAngle1 = eyeFromCenter.U() - mViewCache.mDirection.U();
 
-    static cSAngle yawSnapThreshold = 120.0f;
-    if (unkAngle1.Abs() > yawSnapThreshold) {
+    static cSAngle _120 = 120.0f;
+    if (unkAngle1.Abs() > _120) {
         setUSOAngle();
     }
 
@@ -7679,8 +7678,8 @@ bool dCamera_c::paraRailCamera(s32 param_0) {
     cSGlobe cStack_260 = paraRail->field_0x10 - mViewCache.mCenter;
     cSAngle acStack_2cc = cStack_260.U() - mViewCache.mDirection.U();
 
-    static cSAngle paraRailCamera = 120.0f;
-    if (acStack_2cc.Abs() > paraRailCamera) {
+    static cSAngle _120 = 120.0f;
+    if (acStack_2cc.Abs() > _120) {
         setUSOAngle();
     }
 
@@ -8922,7 +8921,7 @@ bool dCamera_c::oneSideCamera(s32 param_1) {
 bool dCamera_c::eventCamera(s32 param_0) {
     char sp90[12];
 
-    (void)param_0;
+    UNUSED(param_0);
     int var_r29 = -1;
 
     typedef bool (dCamera_c::*func)();
@@ -9035,7 +9034,7 @@ bool dCamera_c::eventCamera(s32 param_0) {
              mEventData.field_0xc == specialType[20] || mEventData.field_0xc == specialType[21] ||
              mEventData.field_0xc == specialType[22] || mEventData.field_0xc == specialType[23] ||
              mEventData.field_0xc == specialType[24] || mEventData.field_0xc == specialType[18]) &&
-             *(int*)((int)&mEventData + 0xc) != -1) // fakematch to force additional load
+             *(int*)((intptr_t)&mEventData + 0xc) != -1) // fakematch to force additional load
         {
             var_r29 = 28;
         } else if (mEventData.field_0xc == specialType[14] && var_r29 != 2) {
@@ -9070,7 +9069,7 @@ bool dCamera_c::eventCamera(s32 param_0) {
         pushInfo(mSavedViewStack + 1, 0);
         mEventData.field_0x0 = 0;
         mEventData.field_0xec = NULL;
-        int sp2C = dComIfGp_getEvent().getMapToolId();
+        int sp2C = dComIfGp_getEvent()->getMapToolId();
         if (sp2C != -1) {
             mEventData.field_0xec = dEvt_control_c::searchMapEventData(sp2C);
         }
@@ -9425,7 +9424,6 @@ int dCamera_c::Reset() {
     return 1;
 }
 
-// NONMATCHING - minor regalloc
 f32 dCamera_c::shakeCamera() {
     static f32 const wave[] = {0.4f, 0.9f, 2.1f, 3.2f};
 
@@ -10071,7 +10069,7 @@ static leafdraw_method_class method = {
     (process_method_func)camera_draw,
 };
 
-extern camera_process_profile_definition g_profile_CAMERA = {
+camera_process_profile_definition g_profile_CAMERA = {
     fpcLy_CURRENT_e,
     11,
     fpcPi_CURRENT_e,
@@ -10092,7 +10090,7 @@ extern camera_process_profile_definition g_profile_CAMERA = {
     0,
 };
 
-extern camera_process_profile_definition g_profile_CAMERA2 = {
+camera_process_profile_definition g_profile_CAMERA2 = {
     fpcLy_CURRENT_e,
     11,
     fpcPi_CURRENT_e,

@@ -101,7 +101,7 @@ int daObjSword_c::actionGetDemo() {
 }
 
 int daObjSword_c::execute() {
-    static int (daObjSword_c::* l_demoFunc[])() = {
+    static const actionFunc l_demoFunc[] = {
         &daObjSword_c::actionWait, &daObjSword_c::actionOrderGetDemo, &daObjSword_c::actionGetDemo};
     field_0x92c++;
     (this->*l_demoFunc[mStatus])();
@@ -146,7 +146,7 @@ static actor_method_class l_daObjSword_Method = {
     (process_method_func)daObjSword_Draw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_Sword = {
+actor_process_profile_definition g_profile_Obj_Sword = {
     fpcLy_CURRENT_e,         // mLayerID
     7,                       // mListID
     fpcPi_CURRENT_e,         // mListPrio

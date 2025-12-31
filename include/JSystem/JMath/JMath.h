@@ -2,7 +2,7 @@
 #define JMATH_H
 
 #include "dolphin/mtx.h"
-#include "math.h"
+#include <math.h>
 
 void JMAMTXApplyScale(const Mtx, Mtx, f32, f32, f32);
 void JMAEulerToQuat(s16 param_0, s16 param_1, s16 param_2, Quaternion* param_3);
@@ -14,6 +14,12 @@ void JMAVECScaleAdd(__REGISTER const Vec* vec1, __REGISTER const Vec* vec2, __RE
 inline int JMAAbs(int value) {
 #ifdef __MWERKS__
     return __abs(value);
+#endif
+}
+
+inline f32 JMAAbs(f32 x) {
+#ifdef __MWERKS__
+    return __fabsf(x);
 #endif
 }
 

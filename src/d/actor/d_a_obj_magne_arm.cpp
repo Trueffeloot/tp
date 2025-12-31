@@ -381,7 +381,7 @@ int daObjMarm_c::create1st() {
         &daObjMarm_c::phase_1,
         &daObjMarm_c::phase_2,
     };
-    (this->*l_ct_func[mPhaseIndex])();
+    return (this->*l_ct_func[mPhaseIndex])();
 }
 
 int daObjMarm_c::Execute(Mtx** i_bgMtx) {
@@ -1098,7 +1098,7 @@ static actor_method_class daObjMarm_METHODS = {
     (process_method_func)daObjMarm_MoveBGDraw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_MagneArm = {
+actor_process_profile_definition g_profile_Obj_MagneArm = {
     fpcLy_CURRENT_e,         // mLayerID
     3,                       // mListID
     fpcPi_CURRENT_e,         // mListPrio

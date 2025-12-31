@@ -82,7 +82,7 @@ public:
     MtxP getRideMtx() { return mpModelMorf->getModel()->getAnmMtx(15); }
     f32 nowAnimeFrame() const { return mpModelMorf->getFrame(); }
     s16 getWaitRollAngle() const { return mWaitRollAngle; }
-    bool checkGetOff() const { return mEnemy.speedF < 3.0f; }
+    BOOL checkGetOff() const { return mEnemy.speedF < 3.0f; }
     f32 rideSpeedRate() const { return mEnemy.speedF / mSpeedRate; }
     f32 getAnimeFrameRate() { return mpModelMorf->getFrame() / mpModelMorf->getEndFrame(); }
     BOOL checkAnmLoopFrame() { return mpModelMorf->checkFrame(0.0f); }
@@ -123,9 +123,7 @@ public:
     /* 0x06A0 */ s16 field_0x6a0;
     /* 0x06A2 */ u8 field_0x6a2[0x6ae - 0x6a2];
     /* 0x06AE */ csXyz field_0x6ae;
-    /* 0x06B4 */ u8 field_0x6b4[0x6b6 - 0x6b4];
-    /* 0x06B6 */ s16 field_0x6b6;
-    /* 0x06B8 */ u8 field_0x6b8[0x6ba - 0x6b8];
+    /* 0x06B4 */ csXyz field_0x6b4;
     /* 0x06BA */ s16 field_0x6ba;
     /* 0x06BC */ u8 field_0x6bc;
     /* 0x06BD */ s8 mPursuitFlag;   ///< @brief Flag indicating pursuit mode.
@@ -141,9 +139,7 @@ public:
     /* 0x06D8 */ s16 field_0x6d8;
     /* 0x06DA */ s16 field_0x6da;
     /* 0x06DC */ s16 field_0x6dc;
-    /* 0x06DE */ s16 field_0x6de;
-    /* 0x06E0 */ s16 field_0x6e0;
-    /* 0x06E2 */ s16 field_0x6e2;
+    /* 0x06DE */ csXyz field_0x6de;
     /* 0x06E4 */ s8 field_0x6e4;
     /* 0x06E5 */ u8 field_0x6e5[0x6ec - 0x6e5];
     /* 0x06EC */ csXyz field_0x6ec[0x1d];

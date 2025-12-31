@@ -120,14 +120,14 @@ int daE_FB_c::JointCallBack(J3DJoint* i_joint, int param_1) {
     return 1;
 }
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
 static f32 dummy_117095() {
     // For rodata ordering in the debug version, this must be put here:
     return 100.0f;
 }
 #endif
 
-bool l_HIOInit;
+bool hio_set;
 
 static daE_FB_HIO_c l_HIO;
 
@@ -379,7 +379,6 @@ void daE_FB_c::executeWait() {
 static int mFireTimer;
 
 void daE_FB_c::executeAttack() {
-    // NONMATCHING - regalloc purgatory
     static u16 a_eff_id[3] = {
         dPa_RM(ID_ZI_S_FL_BREATH_A),
         dPa_RM(ID_ZI_S_FL_BREATH_B),
@@ -425,8 +424,8 @@ void daE_FB_c::executeAttack() {
         }
         /* fallthrough */
     case 2:
-        if (mMoveMode != 3) {
-            search_check();
+        if (mMoveMode != 3 && search_check()) {
+            // empty
         }
 
         if (mType == 0 && mBgLineCheck()) {
@@ -451,9 +450,9 @@ void daE_FB_c::executeAttack() {
             field_0x68f &= (u8) 1;
             if (field_0x68f == 0) {
                 csXyz sp_0x28;
-                int child_type = 10;
+                u32 child_type = 10;
                 sp_0x28 = shape_angle;
-                sp_0x28.x = mHeadAngle + 0x2BC + JREG_S(1);
+                sp_0x28.x = mHeadAngle + 700 + JREG_S(1);
                 if (mType == 1) {
                     if (current.pos.y <= 300.0f) {
                         sp_0x28.x = mHeadAngle + 2000 + BREG_S(2);
@@ -462,7 +461,7 @@ void daE_FB_c::executeAttack() {
                     }
                 }
 
-                if (dComIfGp_event_runCheck() == FALSE) {
+                if (!dComIfGp_event_runCheck()) {
                     cMtx_YrotS(*calc_mtx, current.angle.y);
                     cMtx_XrotM(*calc_mtx, sp_0x28.x);
                     sp_0x48.x = 0.0f;
@@ -481,10 +480,10 @@ void daE_FB_c::executeAttack() {
         }
 
         if (mMoveMode == 3) {
-            fopAc_ac_c* player = dComIfGp_getPlayer(0);
+            fopAc_ac_c* player = (fopAc_ac_c*) dComIfGp_getPlayer(0);
             cLib_addCalcAngleS2(&shape_angle.y, mRotation, 1, l_HIO.rotation_width_stairs);
             if (current.pos.y <= 300.0f) {
-                mHeadAngle = f32(NREG_S(1) + 14000 - abs(shape_angle.y)) / (6.0f + NREG_F(1));
+                mHeadAngle = f32(NREG_S(1) + 14000 - abs(s16(shape_angle.y))) / (6.0f + NREG_F(1));
                 if (player->current.pos.x > -2800.0f) {
                     field_0x69c = 0;
                     current.angle.y = shape_angle.y;
@@ -493,7 +492,7 @@ void daE_FB_c::executeAttack() {
                 }
             } else {
                 mHeadAngle = NREG_S(2) - 2500;
-                mHeadAngle = mHeadAngle - abs(shape_angle.y) * (-0.2f + NREG_F(2));
+                mHeadAngle -= abs(s16(shape_angle.y)) * (-0.2f + NREG_F(2));
                 if (player->current.pos.x < -3600.0f) {
                     field_0x69c = 0;
                     current.angle.y = shape_angle.y;
@@ -818,7 +817,7 @@ void daE_FB_c::dead_eff_set() {
     }
 }
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
 static char* dummy_117771() {
     return "Delete -> E_FB(id=%d)\n";
 }
@@ -858,7 +857,7 @@ int daE_FB_c::_delete() {
     }
 
     if (mHIOInit) {
-        l_HIOInit = 0;
+        hio_set = 0;
         mDoHIO_DELETE_CHILD(l_HIO.mId);
     }
 
@@ -943,8 +942,8 @@ cPhs__Step daE_FB_c::create() {
                 return cPhs_ERROR_e;
             }
 
-            if (l_HIOInit == false) {
-                l_HIOInit = true;
+            if (hio_set == false) {
+                hio_set = true;
                 mHIOInit = 1;
                 l_HIO.mId = mDoHIO_CREATE_CHILD("フリザド（大）", &l_HIO);
             }
@@ -1008,7 +1007,7 @@ static actor_method_class l_daE_FB_Method = {
     (process_method_func)daE_FB_Draw,
 };
 
-extern actor_process_profile_definition g_profile_E_FB = {
+actor_process_profile_definition g_profile_E_FB = {
   fpcLy_CURRENT_e,        // mLayerID
   7,                      // mListID
   fpcPi_CURRENT_e,        // mListPrio

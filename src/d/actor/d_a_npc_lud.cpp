@@ -879,7 +879,7 @@ bool daNpc_Lud_c::afterSetMotionAnm(int param_0, int param_1, f32 param_2, int p
     if (mCreating == true) {
         param_2 = 0.0f;
     }
-    setBowlAnm(param_0, param_1, param_2);
+    return setBowlAnm(param_0, param_1, param_2);
 }
 
 int daNpc_Lud_c::selectAction() {
@@ -1511,7 +1511,7 @@ static actor_method_class daNpc_Lud_MethodTable = {
     (process_method_func)daNpc_Lud_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_LUD = {
+actor_process_profile_definition g_profile_NPC_LUD = {
     fpcLy_CURRENT_e,         // mLayerID
     7,                       // mListID
     fpcPi_CURRENT_e,         // mListPrio

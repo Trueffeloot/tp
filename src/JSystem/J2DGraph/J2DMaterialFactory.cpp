@@ -60,9 +60,6 @@ u32 J2DMaterialFactory::countStages(int param_0) const {
     return uVar3;
 }
 
-/* 802F2D1C-802F362C 2ED65C 0910+00 0/0 1/1 0/0 .text
- * create__18J2DMaterialFactoryCFP11J2DMaterialiUlP15J2DResReferenceP15J2DResReferenceP10JKRArchive
- */
 J2DMaterial* J2DMaterialFactory::create(J2DMaterial* param_0, int index, u32 param_2,
                                     J2DResReference* param_3, J2DResReference* param_4,
                                     JKRArchive* param_5) const {
@@ -270,18 +267,8 @@ J2DTevOrder J2DMaterialFactory::newTevOrder(int param_0, int param_1) const {
 }
 
 J2DGXColorS10 J2DMaterialFactory::newTevColor(int param_0, int param_1) const {
-    // FAKEMATCH
-    #if DEBUG || VERSION == VERSION_WII_USA_R0 || VERSION == VERSION_WII_USA_R2
     GXColorS10 color = {0, 0, 0, 0};
     J2DGXColorS10 rv = color;
-    #else
-    GXColorS10 color = {0, 0, 0, 0};
-    J2DGXColorS10 rv;
-    rv.r = color.r;
-    rv.g = color.g;
-    rv.b = color.b;
-    rv.a = color.a;
-    #endif
     J2DMaterialInitData* iVar2 = &field_0x4[field_0x8[param_0]];
 
     if (iVar2->field_0x92[param_1] != 0xffff) {

@@ -61,11 +61,15 @@ public:
     JASVoiceBank* newVoiceBank(u32, u32);
     bool beginNewBankTable(u32, u32);
     JAUBankTable* endNewBankTable();
-    virtual ~JAUSection() {}
 
     bool isBuilding() const { return field_0x2c; }
     bool isOpen() const;
-    JAUSectionHeap* asSectionHeap() { return (JAUSection*)sectionHeap_ == this ? sectionHeap_ : NULL; }
+    JAUSectionHeap* asSectionHeap() {
+        if ((JAUSection*)sectionHeap_ == this) {
+            return sectionHeap_;
+        }
+        return NULL;
+    }
     const TSectionData& getSectionData() const { return data_; }
 
     JKRHeap* getHeap_();
@@ -100,6 +104,7 @@ public:
     u32 releaseIdleDynamicSeqDataBlock();
     JAUSectionHeap(JKRSolidHeap*, bool, s32);
     JAUSection* getOpenSection();
+    JAUSection* getSection(int);
     bool setSeqDataUser(JAISeqDataUser*);
     bool newDynamicSeqBlock(u32);
     SeqDataReturnValue getSeqData(JAISoundID, JAISeqData*);
@@ -124,7 +129,7 @@ public:
 };
 
 inline JKRHeap* JAUSection::getHeap_() { return sectionHeap_->mHeap; }
-inline bool JAUSection::isOpen() const { return this == sectionHeap_->getOpenSection(); }
+inline bool JAUSection::isOpen() const { return sectionHeap_->getOpenSection() == this; }
 
 JAUSectionHeap* JAUNewSectionHeap(bool);
 

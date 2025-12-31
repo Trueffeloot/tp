@@ -310,7 +310,7 @@ int daNpc_Raca_c::Draw() {
         modelData->getMaterialNodePointer(getEyeballMaterialNo())->setMaterialAnm(mpMatAnm[0]);
     }
 
-    draw(
+    return draw(
 #if DEBUG
         chkAction(mAction),
 #else
@@ -796,19 +796,19 @@ int daNpc_Raca_c::talk(void* param_1) {
 }
 
 static int daNpc_Raca_Create(void* a_this) {
-    static_cast<daNpc_Raca_c*>(a_this)->create();
+    return static_cast<daNpc_Raca_c*>(a_this)->create();
 }
 
 static int daNpc_Raca_Delete(void* a_this) {
-    static_cast<daNpc_Raca_c*>(a_this)->Delete();
+    return static_cast<daNpc_Raca_c*>(a_this)->Delete();
 }
 
 static int daNpc_Raca_Execute(void* a_this) {
-    static_cast<daNpc_Raca_c*>(a_this)->Execute();
+    return static_cast<daNpc_Raca_c*>(a_this)->Execute();
 }
 
 static int daNpc_Raca_Draw(void* a_this) {
-    static_cast<daNpc_Raca_c*>(a_this)->Draw();
+    return static_cast<daNpc_Raca_c*>(a_this)->Draw();
 }
 
 static int daNpc_Raca_IsDelete(void* a_this) {
@@ -825,7 +825,7 @@ static actor_method_class daNpc_Raca_MethodTable = {
     (process_method_func)daNpc_Raca_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_RACA = {
+actor_process_profile_definition g_profile_NPC_RACA = {
   fpcLy_CURRENT_e,         // mLayerID
   7,                       // mListID
   fpcPi_CURRENT_e,         // mListPrio

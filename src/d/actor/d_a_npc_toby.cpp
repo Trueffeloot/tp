@@ -644,7 +644,7 @@ int daNpc_Toby_c::checkChangeEvt() {
                 break;
             }
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if VERSION >= VERSION_WII_USA_R0
             if (chkAttnZra() && !dComIfGs_isSaveSwitch(0x51))
 #else
             // 0x31E - F_0798 - Heard about Zora from Fyer
@@ -795,7 +795,7 @@ void daNpc_Toby_c::action() {
         }
     }
 
-    if (dComIfGp_event_runCheck() == FALSE && field_0x1001) {
+    if (!dComIfGp_event_runCheck() && field_0x1001) {
         fopAcM_delete(this);
     }
 }
@@ -1688,7 +1688,7 @@ int daNpc_Toby_c::cutConversationAboutSCannon(int arg0) {
         actor_p = mActorMngr[2].getActorP();
         if (actor_p != NULL) {
             mJntAnm.lookPos(&actor_p->current.pos, 0);
-            dComIfGp_getEvent().setPt2(actor_p);
+            dComIfGp_getEvent()->setPt2(actor_p);
         } else {
             mJntAnm.lookNone(0);
         }
@@ -1726,7 +1726,7 @@ int daNpc_Toby_c::cutConversationAboutSCannon(int arg0) {
             field_0xd6c = actor_p->current.pos;
             field_0xd6c.y += 600.0f;
             mJntAnm.lookPos(&field_0xd6c, 0);
-            dComIfGp_getEvent().setPt2(actor_p);
+            dComIfGp_getEvent()->setPt2(actor_p);
         } else {
             mJntAnm.lookNone(0);
         }
@@ -2184,7 +2184,23 @@ int daNpc_Toby_c::talk(void*) {
 }
 
 int daNpc_Toby_c::test(void* param_0) {
-    // TODO
+    switch(mMode) {
+    case 0:
+    case 1:
+        speedF = 0.0f;
+        speed.setall(0.0f);
+        mMode = 2;
+        // fallthrough
+    case 2:
+        mFaceMotionSeqMngr.setNo(mpHIO->m.common.face_expression, -1.0f, 0, 0);
+        mMotionSeqMngr.setNo(mpHIO->m.common.motion, -1.0f, 0, 0);
+        mJntAnm.lookNone(0);
+        attention_info.flags = 0;
+        break;
+    case 3:
+        break;
+    }
+    return 1;
 }
 
 static int daNpc_Toby_Create(void* i_this) {
@@ -2215,7 +2231,7 @@ static actor_method_class daNpc_Toby_MethodTable = {
     (process_method_func)daNpc_Toby_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_TOBY = {
+actor_process_profile_definition g_profile_NPC_TOBY = {
   fpcLy_CURRENT_e,         // mLayerID
   7,                       // mListID
   fpcPi_CURRENT_e,         // mListPrio

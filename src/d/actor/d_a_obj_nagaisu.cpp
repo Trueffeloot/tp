@@ -58,10 +58,12 @@ const dCcD_SrcCyl daObjIsuChild_c::s_CcDCyl = {
         {0},
     },
     {
-        {0.0f, 0.0f, 0.0f},
-        0.0f,
-        0.0f,
-    },
+        {
+            {0.0f, 0.0f, 0.0f},
+            0.0f,
+            0.0f,
+        },
+    }
 };
 
 int daObjNagaisu_c::create() {
@@ -234,7 +236,7 @@ void daObjIsuChild_c::create(daObjNagaisu_c* i_parent, dCcD_Stts* i_ccStts) {
     }
 }
 
-int daObjIsuChild_c::execute() {
+void daObjIsuChild_c::execute() {
     if (!mIsDead) {
         if (chkHit()) {
             callEmt();
@@ -249,7 +251,7 @@ int daObjIsuChild_c::execute() {
     }
 }
 
-int daObjIsuChild_c::draw(dMdl_c* i_mdl) {
+void daObjIsuChild_c::draw(dMdl_c* i_mdl) {
     if (!mIsDead) {
         mDoMtx_stack_c::transS(mPos.x, mPos.y, mPos.z);
         mDoMtx_stack_c::YrotM(-0x8000);
@@ -318,7 +320,7 @@ static actor_method_class daObjNagaisu_METHODS = {
     (process_method_func)daObjNagaisu_draw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_Nagaisu = {
+actor_process_profile_definition g_profile_Obj_Nagaisu = {
   fpcLy_CURRENT_e,         // mLayerID
   7,                       // mListID
   fpcPi_CURRENT_e,         // mListPrio

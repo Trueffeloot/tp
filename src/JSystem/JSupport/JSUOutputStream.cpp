@@ -2,8 +2,8 @@
 
 #include "JSystem/JSupport/JSUOutputStream.h"
 #include "JSystem/JSupport/JSURandomOutputStream.h"
-#include <dolphin.h>
-#include <cstring.h>
+#include <dolphin/dolphin.h>
+#include <string.h>
 
 JSUOutputStream::~JSUOutputStream() {
     if (!isGood()) {

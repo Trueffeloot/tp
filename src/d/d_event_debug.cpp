@@ -2,8 +2,7 @@
 
 #include "d/d_event_debug.h"
 #include "JSystem/JHostIO/JORFile.h"
-#include "JSystem/JHostIO/JORMContext.h"
-#include "JSystem/JHostIO/JORReflexible.h"
+#include "JSystem/JHostIO/JORServer.h"
 #include "d/actor/d_a_player.h"
 #include "m_Do/m_Do_controller_pad.h"
 
@@ -175,7 +174,7 @@ void dEvM_HIO_c::listenPropertyEvent(const JORPropertyEvent* param_0) {
         break;
     case BTN_FORCED_TERMINATION:
         // "Forced termination" button
-        dComIfGp_getEvent().reset();
+        dComIfGp_getEvent()->reset();
         break;
     }
 }

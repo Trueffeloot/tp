@@ -4,6 +4,7 @@
 #include <iterator.h>
 #include <string.h>
 #include <functional.h>
+#include "global.h"
 
 namespace std {
 
@@ -31,7 +32,9 @@ inline ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, 
 template <class ForwardIterator, class T>
 ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T& val) {
 	// For some reason, calling the other lower_bound matches for debug, but not for retail:
-	// return lower_bound(first, last, val, std::detail::less<T, T>());
+	#if DEBUG
+	return lower_bound(first, last, val, std::detail::less<T, T>());
+	#else
 
 	typedef typename iterator_traits<ForwardIterator>::difference_type difference_type;
 	difference_type len = std::distance(first, last);
@@ -50,6 +53,7 @@ ForwardIterator lower_bound(ForwardIterator first, ForwardIterator last, const T
 	}
 
 	return first;
+	#endif
 }
 
 template <class ForwardIterator, class T, class Predicate>
@@ -124,6 +128,36 @@ inline void fill(ForwardIt first, ForwardIt last, const T& value) {
     }
 }
 
+#if PLATFORM_SHIELD
+template <class T, bool IsPOD = true>
+struct __msl_copy {
+    static T* copy(T* first, T* last, T* result) {
+        for (; first < last; ++first, ++result)
+            *result = *first;
+        return result;
+    }
+};
+
+template <class T>
+struct __msl_copy<T, true> {
+    static T* copy(T* first, T* last, T* result) {
+        size_t n = static_cast<size_t>(last - first);
+        memmove(result, first, n * sizeof(T));
+        return result + n;
+    }
+};
+
+template <class T>
+inline T* copy(T* first, T* last, T* result) {
+    return __msl_copy<T>::copy(first, last, result);
+}
+
+template <class T>
+inline T* copy(const T* first, const T* last, T* result) {
+    return __msl_copy<T>::copy(const_cast<T*>(first), const_cast<T*>(last), result);
+}
+#endif
+
 template<class InputIt, class OutputIt>
 inline OutputIt copy(InputIt first, InputIt last,
               OutputIt d_first) {
@@ -172,6 +206,11 @@ struct __copy_backward<T, true>
 template <class T>
 inline T* copy_backward(T* first, T* last, T* result) {
 	return __copy_backward<T, true>::copy_backward(first, last, result);
+}
+
+template <typename T>
+inline const T& min(const T& a, const T& b) {
+	return b < a ? b : a;
 }
 
 }  // namespace std

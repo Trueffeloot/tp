@@ -439,7 +439,7 @@ const daNpcWrestler_HIOParam daNpcWrestler_Param_c::m = {
     10.0f,
     400,
     400,
-    0xFF00,
+    -0x0100,
     400.0f,
     14,
     11,
@@ -690,7 +690,7 @@ cPhs__Step daNpcWrestler_c::Create() {
             return cPhs_ERROR_e;
         }
 
-        field_0xbd8 = &l_HIO.m;
+        field_0xbd8 = const_cast<daNpcWrestler_HIOParam*>(&l_HIO.m);
         field_0xbdc = &field_0xbd8->mTypeParams[mType];
 #if DEBUG
         // Sumo wrestler:
@@ -1739,7 +1739,7 @@ bool daNpcWrestler_c::wait(void* param_1) {
         }
 
         case 2: {
-            if (dComIfGp_event_runCheck() && (mOrderNewEvt == 0 || !dComIfGp_getEvent().isOrderOK())) {
+            if (dComIfGp_event_runCheck() && (mOrderNewEvt == 0 || !dComIfGp_getEvent()->isOrderOK())) {
                 actionFunc action;
                 if (eventInfo.checkCommandTalk()) {
                     if (dComIfGp_event_chkTalkXY() == 0 || dComIfGp_evmng_ChkPresentEnd()) {
@@ -1898,7 +1898,7 @@ bool daNpcWrestler_c::talk(void* param_1) {
                         field_0xe78 = fopAcM_createItemForPresentDemo(&current.pos, mItemNo, 0, -1, -1, NULL, NULL);
                         if (field_0xe78 != -1) {
                             s16 sVar1 = dComIfGp_getEventManager().getEventIdx(this, "DEFAULT_GETITEM", 0xFF);
-                            dComIfGp_getEvent().reset(this);
+                            dComIfGp_getEvent()->reset(this);
                             fopAcM_orderChangeEventId(this, sVar1, 1, 0xFFFF);
                             field_0x9ec = true;
                             field_0xe8c = field_0xbd8->common.morf_frame;
@@ -2668,7 +2668,6 @@ bool daNpcWrestler_c::checkOutOfArenaW() {
 }
 
 bool daNpcWrestler_c::sumouPunchMiss(void* param_1) {
-    // NONMATCHING - regalloc
     daPy_py_c* player = daPy_getPlayerActorClass();
     int jointNo = mType == 0 ? 0x12 : 0x11;
     cXyz sp2c;
@@ -3114,7 +3113,7 @@ void daNpcWrestler_c::setStepAngle() {
         }
 
         s16 tgt_ang = cLib_targetAngleY(player->getViewerCurrentPosP(), &current.pos);
-        tgt_ang += mStepAngle * field_0xbdc->lateral_movement_time;
+        tgt_ang = tgt_ang + mStepAngle * field_0xbdc->lateral_movement_time;
         cXyz sp30(0.0f, 0.0f, field_0xbdc->grapple_distance);
         mDoMtx_stack_c::push();
         mDoMtx_stack_c::YrotM(tgt_ang);
@@ -3135,7 +3134,6 @@ void daNpcWrestler_c::setStepAngle() {
 }
 
 bool daNpcWrestler_c::sumouSideStep(void* param_1) {
-    // NONMATCHING - g_dComIfG_gameInfo weirdness
     switch (field_0xe96) {
         case 0:
             field_0xe80 = field_0xbdc->lateral_movement_time;
@@ -3285,7 +3283,6 @@ bool daNpcWrestler_c::sumouPunchShock(void* param_1) {
 }
 
 bool daNpcWrestler_c::sumouPunchChaseShock(void* param_1) {
-    // NONMATCHING - regalloc
     daPy_py_c* player = daPy_getPlayerActorClass();
 
     switch (field_0xe96) {
@@ -3685,12 +3682,12 @@ bool daNpcWrestler_c::demoSumouReady(void* param_1) {
                 field_0xe80 = 0;
             }
 
-            dComIfGp_getEvent().startCheckSkipEdge(this);
+            dComIfGp_getEvent()->startCheckSkipEdge(this);
             field_0xe96 = 2;
             break;
 
         case 2:
-            if (dComIfGp_getEvent().checkSkipEdge()) {
+            if (dComIfGp_getEvent()->checkSkipEdge()) {
                 field_0xe84 = 10;
             }
 
@@ -3898,7 +3895,7 @@ bool daNpcWrestler_c::demoSumouReady(void* param_1) {
                     break;
 
                 case 10:
-                    dComIfGp_getEvent().setSkipProc(this, NULL, 0);
+                    dComIfGp_getEvent()->setSkipProc(this, NULL, 0);
                     field_0x9ec = true;
                     mItemNo = 3;
                     setAction(&daNpcWrestler_c::gotoArena);
@@ -5176,7 +5173,7 @@ BOOL daNpcWrestler_c::main() {
         (this->*field_0xdcc)(NULL);
     }
 
-    if (dComIfGp_event_runCheck() != 0 && !eventInfo.checkCommandTalk() && field_0xe78 != -1) {
+    if (dComIfGp_event_runCheck() && !eventInfo.checkCommandTalk() && field_0xe78 != -1) {
         dComIfGp_event_setItemPartnerId(field_0xe78);
         field_0xe78 = -1;
     }
@@ -5222,7 +5219,7 @@ static actor_method_class daNpcWrestler_MethodTable = {
     (process_method_func)daNpcWrestler_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_WRESTLER = {
+actor_process_profile_definition g_profile_NPC_WRESTLER = {
   fpcLy_CURRENT_e,            // mLayerID
   7,                          // mListID
   fpcPi_CURRENT_e,            // mListPrio

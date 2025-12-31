@@ -710,10 +710,12 @@ void daNpcF_c::tgHitCallBack(fopAc_ac_c* i_this, dCcD_GObjInf* param_1, fopAc_ac
 dCcD_SrcCyl daNpcF_c::mCcDCyl = {
     daNpcF_c::mCcDObjInfo,
     {
-                {0.0f, 0.0f, 0.0f},  // mCenter
-                0.0f,  // mRadius
-                0.0f  // mHeight
-            }  // mCyl
+        {
+            {0.0f, 0.0f, 0.0f},  // mCenter
+            0.0f,  // mRadius
+            0.0f  // mHeight
+        }  // mCyl
+    }
 };
 
 dCcD_SrcSph daNpcF_c::mCcDSph = {
@@ -1308,7 +1310,7 @@ void daNpcF_c::changeEvent(char* i_arcName, char* i_evtName, u16 param_2, u16 pa
     JUT_ASSERT(2887, NULL != i_evtName);
 
     mEventIdx = dComIfGp_getEventManager().getEventIdx(this, i_evtName, 0xFF);
-    dComIfGp_getEvent().reset(this);
+    dComIfGp_getEvent()->reset(this);
     fopAcM_orderChangeEventId(this, mEventIdx, param_2, param_3);
 }
 
@@ -2131,16 +2133,8 @@ void daNpcF_clearMessageTmpBit() {
 }
 
 // TODO: dummy to generate weak functions, proper fix later
-static void dummyVirtual(daNpcF_MoveBgActor_c* dummy) {
-    dummy->~daNpcF_MoveBgActor_c();
-    dummy->CreateHeap();
-    dummy->Create();
-    dummy->Execute(NULL);
-    dummy->Draw();
-    dummy->Delete();
-    dummy->IsDelete();
-    dummy->ToFore();
-    dummy->ToBack();
+static void dummyVirtual() {
+    daNpcF_MoveBgActor_c dummy;
 }
 
 dCcD_SrcGObjInf const daBaseNpc_c::mCcDObj = {

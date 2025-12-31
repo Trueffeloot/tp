@@ -1,7 +1,7 @@
 #ifndef JSUPPORT_H
 #define JSUPPORT_H
 
-#include <dolphin.h>
+#include <dolphin/dolphin.h>
 #include <stdint.h>
 
 /**
@@ -10,11 +10,7 @@
 */
 template <typename T>
 T* JSUConvertOffsetToPtr(const void* ptr, uintptr_t offset) {
-    if (offset == 0) {
-        return NULL;
-    } else {
-        return (T*)((intptr_t)ptr + (intptr_t)offset);
-    }
+    return offset == 0 ? NULL : (T*)((intptr_t)ptr + (intptr_t)offset);
 }
 
 /**
@@ -23,11 +19,13 @@ T* JSUConvertOffsetToPtr(const void* ptr, uintptr_t offset) {
 */
 template <typename T>
 T* JSUConvertOffsetToPtr(const void* ptr, const void* offset) {
+    T* ret;
     if (offset == NULL) {
-        return NULL;
+        ret = NULL;
     } else {
-        return (T*)((intptr_t)ptr + (intptr_t)offset);
+        ret = (T*)((intptr_t)ptr + (intptr_t)offset);
     }
+    return ret;
 }
 
 inline u8 JSULoNibble(u8 param_0) { return param_0 & 0x0f; }

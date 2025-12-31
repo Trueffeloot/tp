@@ -670,7 +670,7 @@ void daNpc_Seira_c::setCollision() {
     cXyz cStack_48;
     f32 cylH, wallR;
     if (!mHide) {
-        if (mTwilight == 1 && dComIfGp_event_runCheck() == FALSE) {
+        if (mTwilight == 1 && !dComIfGp_event_runCheck()) {
             mCyl1.SetCoSPrm(0x69);
         } else {
             mCyl1.SetCoSPrm(0x79);
@@ -757,7 +757,7 @@ bool daNpc_Seira_c::setBottleAnm(int arg0, int arg1, f32 arg2, bool arg3) {
 
 bool daNpc_Seira_c::afterSetMotionAnm(int arg0, int arg1, f32 arg2, int arg3) {
     f32 var_f30 = (mCreating == 1) ? 0.0f : arg2;
-    setBottleAnm(arg0, arg1, var_f30, 1);
+    return setBottleAnm(arg0, arg1, var_f30, 1);
 }
 
 void daNpc_Seira_c::changeAnm(int* arg0, int* arg1) {
@@ -1382,7 +1382,7 @@ static actor_method_class daNpc_Seira_MethodTable = {
     (process_method_func)daNpc_Seira_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_SEIRA = {
+actor_process_profile_definition g_profile_NPC_SEIRA = {
   fpcLy_CURRENT_e,          // mLayerID
   7,                        // mListID
   fpcPi_CURRENT_e,          // mListPrio

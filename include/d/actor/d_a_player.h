@@ -267,7 +267,7 @@ public:
     int getParam0() const { return mParam0; }
     void setParam0(int value) { mParam0 = value; }
     void setParam1(int value) { mParam1 = value; }
-    void setParam2(int value) { mParam2 = value; }
+    void setParam2(s16 value) { mParam2 = value; }
     void setPos0(const cXyz* pos) { mDemoPos0 = *pos; }
     void setToolDemoType() { setDemoType(DEMO_TYPE_TOOL_e); }
     s16 getTimer() const { return mTimer; }
@@ -695,7 +695,7 @@ public:
     f32 getSpinnerRideSpeed() const;
     bool checkSpinnerReflectEffect();
     static bool checkBoomerangCharge();
-    static u8 checkBoomerangChargeTime();
+    static bool checkBoomerangChargeTime();
     static daBoomerang_c* getThrowBoomerangActor();
     static void cancelBoomerangLockActor(fopAc_ac_c*);
     static void setPlayerDamage(int, int);

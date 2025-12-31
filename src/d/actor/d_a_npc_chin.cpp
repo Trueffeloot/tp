@@ -439,7 +439,7 @@ int daNpcChin_c::ctrlJoint(J3DJoint* i_joint, J3DModel* i_model) {
 
 int daNpcChin_c::createHeapCallBack(fopAc_ac_c* i_this) {
     daNpcChin_c* chin = (daNpcChin_c*)i_this;
-    chin->CreateHeap();
+    return chin->CreateHeap();
 }
 
 int daNpcChin_c::ctrlJointCallBack(J3DJoint* i_joint, int param_1) {
@@ -485,7 +485,7 @@ void daNpcChin_c::setParam() {
 int daNpcChin_c::main() {
     Action();
 
-    if (dComIfGp_event_runCheck() != FALSE && eventInfo.checkCommandTalk() == FALSE &&
+    if (dComIfGp_event_runCheck() && eventInfo.checkCommandTalk() == FALSE &&
         field_0xdf4 != fpcM_ERROR_PROCESS_ID_e)
     {
         dComIfGp_event_setItemPartnerId(field_0xdf4);
@@ -1214,7 +1214,7 @@ bool daNpcChin_c::wait(void* param_0) {
                 eventInfo.setArchiveName(l_arcNames[4]);
             }
 
-            if (!dComIfGp_getEvent().isOrderOK()) {
+            if (!dComIfGp_getEvent()->isOrderOK()) {
                 return true;
             }
 
@@ -2119,7 +2119,7 @@ static actor_method_class daNpcChin_MethodTable = {
     (process_method_func)daNpcChin_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_CHIN = {
+actor_process_profile_definition g_profile_NPC_CHIN = {
     fpcLy_CURRENT_e,        // mLayerID
     7,                      // mListID
     fpcPi_CURRENT_e,        // mListPrio

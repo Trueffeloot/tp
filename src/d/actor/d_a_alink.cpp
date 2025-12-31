@@ -10,6 +10,7 @@
 #include "JSystem/J3DGraphBase/J3DMaterial.h"
 #include "JSystem/J3DGraphLoader/J3DAnmLoader.h"
 #include "JSystem/J3DGraphBase/J3DDrawBuffer.h"
+#include "JSystem/JHostIO/JORServer.h"
 #include "JSystem/JKernel/JKRExpHeap.h"
 #include "SSystem/SComponent/c_math.h"
 #include "d/d_item.h"
@@ -114,9 +115,9 @@ static cXyz l_wolfBaseAnime(1.0f, 88.63934f, -28.497932f);
 
 static cXyz l_wolfRopeBaseAnime(0.115164f, 68.336296f, -7.667817f);
 
-static u8 const lit_3757[12] = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
+static void dummy_lit_3757() {
+    Vec temp = { 0.0f, 0.0f, 0.0f };
+}
 
 #include "d/actor/d_a_alink_HIO_data.inc"
 
@@ -1190,8 +1191,6 @@ daAlink_FaceTexData const daAlink_c::m_faceTexDataTable[] = {
     0x040D, 0x03A7,
 };
 
-static const Vec lit_5908 = { 0.0f, 0.0f, 0.0f };
-
 #include "d/actor/d_a_alink_link.inc"
 
 #include "d/actor/d_a_alink_cut.inc"
@@ -1250,10 +1249,12 @@ static dCcD_SrcCyl l_cylSrc = {
         {0},
     },
     {
-        {0.0f, 0.0f, 0.0f},
-        35.0f,
-        180.0f,
-    },
+        {
+            {0.0f, 0.0f, 0.0f},
+            35.0f,
+            180.0f,
+        },
+    }
 };
 
 static dCcD_SrcSph l_sphSrc = {
@@ -1277,10 +1278,12 @@ static dCcD_SrcCyl l_atCylSrc = {
         {0},
     },
     {
-        {0.0f, 0.0f, 0.0f},
-        180.0f,
-        130.0f,
-    },
+        {
+            {0.0f, 0.0f, 0.0f},
+            180.0f,
+            130.0f,
+        },
+    }
 };
 
 static dCcD_SrcCps l_atCpsSrc = {
@@ -1684,9 +1687,11 @@ static dJntColData_c l_wolfJntColData[] = {
 
 #include "d/actor/d_a_alink_swindow.inc"
 
-daAlinkHIO_c::daAlinkHIO_c() {}
+// TODO: These ctors and dtors below might need to go in a new .inc file that gets included right
+// after d_a_alink_swindow.inc to slightly improve function order?
+// Making them weak functions in a header doesn't seem to work at least.
 
-// TODO: these dtors are probably supposed to be weak functions from the header
+daAlinkHIO_c::daAlinkHIO_c() {}
 
 daAlinkHIO_wolf_c::~daAlinkHIO_wolf_c() {}
 
@@ -4607,7 +4612,7 @@ int daAlink_c::create() {
     }
 
     if (var_r24 != NULL) {
-        dComIfGp_getEvent().setPtD(var_r24);
+        dComIfGp_getEvent()->setPtD(var_r24);
     }
 
     bgWaitFlg = 0;
@@ -16596,7 +16601,7 @@ int daAlink_c::procCrouch() {
 int daAlink_c::procCoMetamorphoseInit() {
     int var_r29 = 0;
 
-    if (dComIfGp_getEvent().isOrderOK()) {
+    if (dComIfGp_getEvent()->isOrderOK()) {
         if (!dComIfGp_event_compulsory(this, NULL, 0xFFFF)) {
             return 0;
         }
@@ -17274,7 +17279,7 @@ int daAlink_c::execute() {
             mWolfEyeUp = mpHIO->mWolf.m.mSensesLingerTime;
         } else if (mTargetedActor != NULL || dComIfGp_checkPlayerStatus0(0, 0x2000)) {
             mWolfEyeUp = mpHIO->mWolf.m.mSensesLingerTime - 1;
-        } else if (!dComIfGp_getEvent().isOrderOK() && mProcID != PROC_GET_ITEM &&
+        } else if (!dComIfGp_getEvent()->isOrderOK() && mProcID != PROC_GET_ITEM &&
                    mWolfEyeUp <= mpHIO->mWolf.m.mSensesLingerTime)
         {
             offWolfEyeUp();
@@ -18881,7 +18886,7 @@ static actor_method_class l_daAlink_Method = {
     (process_method_func)daAlink_Draw,
 };
 
-extern actor_process_profile_definition g_profile_ALINK = {
+actor_process_profile_definition g_profile_ALINK = {
     fpcLy_CURRENT_e,
     5,
     fpcPi_CURRENT_e,

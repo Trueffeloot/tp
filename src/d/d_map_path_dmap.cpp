@@ -357,10 +357,8 @@ bool dMpath_c::isExistMapPathData() {
 
 int dMapInfo_c::mNextRoomNo = -1;
 
-/* 80450634 0001+00 data_80450634 None */
 s8 dMpath_c::mBottomFloorNo = 127;
 
-/* 80450635 0001+00 data_80450635 None */
 s8 dMpath_c::mTopFloorNo = -128;
 
 int dMpath_c::getTopBottomFloorNo(s8* i_topFloorNo, s8* i_bottomFloorNo) {
@@ -422,7 +420,7 @@ int dMpath_c::setPointer(dDrawPath_c::room_class* i_room, s8* param_1, s8* param
     i_room->mpFloatData = (f32*)((uintptr_t)i_room + (uintptr_t)i_room->mpFloatData);
 
     dDrawPath_c::floor_class* floor_p = i_room->mpFloor;
-    int room = (int)i_room;
+    int room = (intptr_t)i_room;
     for (int i = 0; i < i_room->mFloorNum; i++) {
         floor_p->mpGroup = (dDrawPath_c::group_class*)(room + (uintptr_t)floor_p->mpGroup);
 

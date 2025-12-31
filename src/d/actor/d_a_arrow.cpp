@@ -1069,8 +1069,8 @@ int daArrow_c::draw() {
         return TRUE;
     }
     
-    static const GXColorS10 tmpColor = {0, 0, 0};
-    J3DGXColorS10 color = (tmpColor);
+    static const GXColorS10 tmpColor = {0x00, 0x00, 0x00, 0x00};
+    J3DGXColorS10 color = tmpColor;
 
     daAlink_c* link = daAlink_getAlinkActorClass();
     if (fopAcM_GetParam(this) == 0 && field_0x940 != 0) {
@@ -1220,7 +1220,7 @@ static actor_method_class l_daArrowMethodTable = {
     (process_method_func)daArrow_draw,
 };
 
-extern actor_process_profile_definition g_profile_ARROW = {
+actor_process_profile_definition g_profile_ARROW = {
   fpcLy_CURRENT_e,        // mLayerID
   9,                      // mListID
   fpcPi_CURRENT_e,        // mListPrio

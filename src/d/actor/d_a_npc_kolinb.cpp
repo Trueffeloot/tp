@@ -381,7 +381,7 @@ int daNpc_Kolinb_c::Draw() {
         modelData->getMaterialNodePointer(getEyeballMaterialNo())->setMaterialAnm(mpMatAnm[0]);
     }
 
-    draw(FALSE, FALSE, mRealShadowSize, NULL, 100.0f, FALSE, FALSE, FALSE);
+    return draw(FALSE, FALSE, mRealShadowSize, NULL, 100.0f, FALSE, FALSE, FALSE);
 }
 
 int daNpc_Kolinb_c::createHeapCallBack(fopAc_ac_c* a_this) {
@@ -917,7 +917,7 @@ static actor_method_class daNpc_Kolinb_MethodTable = {
     (process_method_func)daNpc_Kolinb_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_KOLINB = {
+actor_process_profile_definition g_profile_NPC_KOLINB = {
   fpcLy_CURRENT_e,           // mLayerID
   7,                         // mListID
   fpcPi_CURRENT_e,           // mListPrio

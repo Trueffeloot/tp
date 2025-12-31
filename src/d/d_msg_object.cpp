@@ -22,7 +22,7 @@
 #include "d/d_meter2.h"
 #include "d/actor/d_a_midna.h"
 #include "f_op/f_op_msg_mng.h"
-#include "stdio.h"
+#include <stdio.h>
 #include "m_Do/m_Do_controller_pad.h"
 #include "m_Do/m_Do_lib.h"
 #include "JSystem/JKernel/JKRExpHeap.h"
@@ -1323,7 +1323,7 @@ void dMsgObject_c::talkStartInit() {
          (((dComIfGp_isHeapLockFlag() == 2 ||
             (dComIfGp_isHeapLockFlag() == 3 || dComIfGp_isHeapLockFlag() == 1)) &&
            field_0x4cd == 0 && mpTalkHeap != NULL))) &&
-        (mpScrnDraw == NULL && dMeter2Info_getFloatingMessageID() != 0x13eb))
+        (mpScrnDraw == NULL && (u32)dMeter2Info_getFloatingMessageID() != 0x13eb))
     {
         if (!bVar1 && ((dComIfGp_isHeapLockFlag() == 0 || dComIfGp_isHeapLockFlag() == 5))) {
             dComIfGp_setHeapLockFlag(7);
@@ -1743,8 +1743,8 @@ bool dMsgObject_c::getStringLocal(u32 param_1, J2DTextBox* param_2, J2DTextBox* 
     return false;
 }
 
-u8 dMsgObject_c::isGetItemMessage() {
-    return mFukiKind == 9;
+bool dMsgObject_c::isGetItemMessage() {
+    return (u8)(mFukiKind == 9);
 }
 
 bool dMsgObject_c::isKanbanMessage() {
@@ -2461,7 +2461,7 @@ static leafdraw_method_class l_dMsgObject_Method = {
     (process_method_func)dMsgObject_Draw,
 };
 
-extern msg_process_profile_definition g_profile_MSG_OBJECT = {
+msg_process_profile_definition g_profile_MSG_OBJECT = {
   fpcLy_CURRENT_e,        // mLayerID
   12,                     // mListID
   fpcPi_CURRENT_e,        // mListPrio

@@ -218,7 +218,17 @@ int daSCannon_c::draw() {
 
     if (mDrawShadow) {
         cXyz sp8(current.pos.x, current.pos.y, current.pos.z);
-        mShadowKey = dComIfGd_setShadow(mShadowKey, 1, mpModels[mIsRepaired], &sp8, 2500.0f, 0.0f, current.pos.y + aREG_F(1), mGroundY + aREG_F(3), mGroundPoly, &tevStr, 0, 1.0f, dDlst_shadowControl_c::getSimpleTex());
+#if DEBUG
+        mShadowKey = dComIfGd_setShadow(mShadowKey, 1, mpModels[mIsRepaired], &sp8, 2500.0f, 0.0f,
+                                        current.pos.y + aREG_F(1), mGroundY + aREG_F(3),
+                                        mGroundPoly, &tevStr, 0, 1.0f,
+                                        dDlst_shadowControl_c::getSimpleTex());
+#else
+        mShadowKey = dComIfGd_setShadow(mShadowKey, 1, mpModels[mIsRepaired], &sp8, 2500.0f, 0.0f,
+                                        current.pos.y, mGroundY,
+                                        mGroundPoly, &tevStr, 0, 1.0f,
+                                        dDlst_shadowControl_c::getSimpleTex());
+#endif
     }
 
     return 1;
@@ -506,7 +516,7 @@ void daSCannon_c::exeModeActionEvt() {
         }
     } else {
         if ((mLayerNo == 3 || mLayerNo == 10) && fopAcM_isSwitch(this, getSw2())) {
-            dComIfGp_getEvent().setSkipProc(this, eventCallBack, 0);
+            dComIfGp_getEvent()->setSkipProc(this, eventCallBack, 0);
         }
         demoExe();
     }
@@ -839,7 +849,7 @@ static actor_method_class daSCannon_METHODS = {
     (process_method_func)daSCannon_draw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_SCannon = {
+actor_process_profile_definition g_profile_Obj_SCannon = {
   fpcLy_CURRENT_e,        // mLayerID
   7,                      // mListID
   fpcPi_CURRENT_e,        // mListPrio

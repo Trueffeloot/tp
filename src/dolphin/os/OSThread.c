@@ -1,4 +1,4 @@
-#include <dolphin.h>
+#include <dolphin/dolphin.h>
 #include <dolphin/os.h>
 
 #include "__os.h"
@@ -873,7 +873,3 @@ void* OSGetThreadSpecific(s32 index) {
 
     return NULL;
 }
-
-#include "global.h"
-extern u8 Debug_BBA_804516D0;
-u8 Debug_BBA_804516D0 ATTRIBUTE_ALIGN(8);

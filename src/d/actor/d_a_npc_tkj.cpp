@@ -239,7 +239,7 @@ int daNpcTkj_c::Draw() {
         mdlData_p->getMaterialNodePointer(getEyeballMaterialNo())->setMaterialAnm(mpMatAnm[0]);
     }
 
-    draw(FALSE, 0, daNpc_Tkj_Param_c::m.common.real_shadow_size, NULL, 100.0f, FALSE, FALSE, FALSE);
+    return draw(FALSE, 0, daNpc_Tkj_Param_c::m.common.real_shadow_size, NULL, 100.0f, FALSE, FALSE, FALSE);
 }
 
 int daNpcTkj_c::createHeapCallBack(fopAc_ac_c* i_this) {
@@ -664,7 +664,7 @@ static actor_method_class daNpc_Tkj_MethodTable = {
     (process_method_func)daNpc_Tkj_Draw,
 };
 
-extern actor_process_profile_definition g_profile_NPC_TKJ = {
+actor_process_profile_definition g_profile_NPC_TKJ = {
   fpcLy_CURRENT_e,        // mLayerID
   7,                      // mListID
   fpcPi_CURRENT_e,        // mListPrio

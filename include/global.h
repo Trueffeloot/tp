@@ -1,8 +1,7 @@
 #ifndef _global_h_
 #define _global_h_
 
-#include "dolphin/types.h"
-
+// Version ordering defined in configure.py
 #define VERSION_GCN_USA          0
 #define VERSION_GCN_PAL          1
 #define VERSION_GCN_JPN          2
@@ -32,6 +31,8 @@
 #define DEBUG 0
 #endif
 
+#define MSL_INLINE inline
+
 #define ARRAY_SIZE(o) (s32)(sizeof(o) / sizeof(o[0]))
 #define ARRAY_SIZEU(o) (sizeof(o) / sizeof(o[0]))
 
@@ -45,7 +46,13 @@
 #define ROUND(n, a) (((u32)(n) + (a)-1) & ~((a)-1))
 #define TRUNC(n, a) (((u32)(n)) & ~((a)-1))
 
-#define JUT_EXPECT(...)
+// Silence unused parameter warnings.
+// Necessary for debug matches.
+#define UNUSED(x) ((void)(x))
+
+#ifndef decltype
+#define decltype __decltype__
+#endif
 
 #define _SDA_BASE_(dummy) 0
 #define _SDA2_BASE_(dummy) 0
@@ -63,16 +70,14 @@
 #define STATIC_ASSERT(...)
 #endif
 
-#ifdef __MWERKS__
-// Intrinsics
+#ifndef __MWERKS__
+// Silence clangd errors about MWCC PPC intrinsics by declaring them here.
 extern int __cntlzw(unsigned int);
 extern int __rlwimi(int, int, int, int, int);
+extern void __dcbf(void*, int);
 extern void __dcbz(void*, int);
 extern void __sync();
 extern int __abs(int);
-#endif
-
-#ifndef __MWERKS__
 void* __memcpy(void*, const void*, int);
 #endif
 
@@ -80,12 +85,10 @@ void* __memcpy(void*, const void*, int);
 
 #define SQUARE(x) ((x) * (x))
 
+#define POINTER_ADD_TYPE(type_, ptr_, offset_) ((type_)((unsigned long)(ptr_) + (unsigned long)(offset_)))
+#define POINTER_ADD(ptr_, offset_) POINTER_ADD_TYPE(__typeof__(ptr_), ptr_, offset_)
+
 // floating-point constants
-#define _HUGE_ENUF 1e+300
-#define INFINITY ((float)(_HUGE_ENUF * _HUGE_ENUF))
-#define HUGE_VAL ((double)INFINITY)
-#define HUGE_VALL ((long double)INFINITY)
-#define DOUBLE_INF HUGE_VAL
 static const float INF = 2000000000.0f;
 
 // hack to make strings with no references compile properly
@@ -94,6 +97,14 @@ static const float INF = 2000000000.0f;
 #define READU32_BE(ptr, offset) \
     (((u32)ptr[offset] << 24) | ((u32)ptr[offset + 1] << 16) | ((u32)ptr[offset + 2] << 8) | (u32)ptr[offset + 3]);
 
+#ifndef NO_INLINE
+#ifdef __MWERKS__
+#define NO_INLINE __attribute__((never_inline))
+#else
+#define NO_INLINE
+#endif
+#endif
+    
 // Hack to trick the compiler into not inlining functions that use this macro.
 #define FORCE_DONT_INLINE \
     (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; \
@@ -112,5 +123,17 @@ static const float INF = 2000000000.0f;
     (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; \
     (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; \
     (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0; (void*)0;
+
+#ifdef __MWERKS__
+#define SJIS(character, value) character
+#else
+#define SJIS(character, value) ((u32)value)
+#endif
+
+#ifdef __MWERKS__
+#define ASM asm
+#else
+#define ASM
+#endif
 
 #endif

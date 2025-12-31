@@ -46,7 +46,7 @@ TObject::TObject(const data::TParse_TBlock_object& object)
       pSequence_next(object.getContent()), u32Wait_(0), mStatus(STATUS_STILL) {}
 
 TObject::~TObject() {
-    JUT_EXPECT(getControl() == NULL);
+    JGADGET_ASSERTWARN(0, getControl() == NULL);
 }
 
 void TObject::setFlag_operation(u8 op, int val) {
@@ -67,12 +67,20 @@ void TObject::setFlag_operation(u8 op, int val) {
     }
 }
 
+#if !PLATFORM_SHIELD || DEBUG
 void TObject::reset(const void* arg1) {
     bSequence_ = 0;
     mStatus = STATUS_STILL;
     pSequence_next = arg1;
     u32Wait_ = 0;
 }
+#endif
+
+#if DEBUG
+void TObject::reset() {
+    reset(NULL);
+}
+#endif
 
 bool TObject::forward(u32 arg1) {
     bool temp = false;
@@ -197,26 +205,26 @@ void TObject::process_sequence_() {
 
     switch (type) {
     case 0:
-        JUT_EXPECT(u32Value == 0);
-        JUT_EXPECT(pContent == NULL);
+        JGADGET_ASSERTWARN(0, u32Value == 0);
+        JGADGET_ASSERTWARN(0, pContent == NULL);
         break;
     case 1:
-        JUT_EXPECT(pContent == NULL);
+        JGADGET_ASSERTWARN(0, pContent == NULL);
         setFlag_operation_(u32Value);
         break;
     case 2:
-        JUT_EXPECT(pContent == NULL);
+        JGADGET_ASSERTWARN(0, pContent == NULL);
         setWait(u32Value);
         break;
     case 3: {
-        JUT_EXPECT(pContent == NULL);
+        JGADGET_ASSERTWARN(0, pContent == NULL);
         s32 off = toInt32FromUInt24_(u32Value);
         void* nextseq = (void*)getSequence_offset(off);
         setSequence_next(nextseq);
         break;
     }
     case 4: {
-        JUT_EXPECT(pContent == NULL);
+        JGADGET_ASSERTWARN(0, pContent == NULL);
         u32 val = toInt32FromUInt24_(u32Value);
         suspend(val);
         break;
@@ -238,7 +246,7 @@ void TObject::process_sequence_() {
             p = (void*)para_dat.next;
             ASSERT(p != NULL);
         }
-        JUT_EXPECT(p == pNext);
+        JGADGET_ASSERTWARN(0, p == pNext);
         break;
     }
     default:
@@ -294,19 +302,19 @@ TControl::TControl() : _4(0), _8(0), pFactory(NULL), mObject_control(NULL, 0), _
 
 TControl::~TControl() {
     mObject_control.setControl_(NULL);
-    JUT_EXPECT(ocObject_.empty());
+    JGADGET_ASSERTWARN(0, ocObject_.empty());
 }
 
 void TControl::appendObject(TObject* p) {
     p->setControl_(this);
-    mObjectContainer.Push_back(p);
+    ocObject_.Push_back(p);
 }
 
 void TControl::removeObject(TObject* p) {
     ASSERT(p != NULL);
     ASSERT(p->getControl() == this);
     p->setControl_(NULL);
-    mObjectContainer.Erase(p);
+    ocObject_.Erase(p);
 }
 
 void TControl::destroyObject(TObject* p) {
@@ -316,15 +324,15 @@ void TControl::destroyObject(TObject* p) {
 }
 
 void TControl::destroyObject_all() {
-    while (!mObjectContainer.empty()) {
-        destroyObject(&mObjectContainer.back());
+    while (!ocObject_.empty()) {
+        destroyObject(&ocObject_.back());
     }
 }
 
 // NONMATCHING - TPRObject_ID_equal copy issue
 TObject* TControl::getObject(void const* param_0, u32 param_1) {
-    JGadget::TLinkList<TObject, -12>::iterator begin = mObjectContainer.begin();
-    JGadget::TLinkList<TObject, -12>::iterator end = mObjectContainer.end();
+    JGadget::TLinkList<TObject, -12>::iterator begin = ocObject_.begin();
+    JGadget::TLinkList<TObject, -12>::iterator end = ocObject_.end();
     JGadget::TLinkList<TObject, -12>::iterator local_50 = std::find_if(begin, end, object::TPRObject_ID_equal(param_0, param_1));
     if ((local_50 != end) != false) {
         return &*local_50;
@@ -334,10 +342,10 @@ TObject* TControl::getObject(void const* param_0, u32 param_1) {
 
 void TControl::reset() {
     resetStatus_();
-    mObject_control.reset(NULL);
-    JGadget::TContainerEnumerator<JStudio::stb::TObject, -12> aTStack_18(&mObjectContainer);
+    mObject_control.reset();
+    JGadget::TContainerEnumerator<JGadget::TLinkList<JStudio::stb::TObject, -12> > aTStack_18(ocObject_);
     while (aTStack_18) {
-        (*aTStack_18).reset(NULL);
+        (*aTStack_18).reset();
     }
 }
 
@@ -346,7 +354,7 @@ bool TControl::forward(u32 param_0) {
     bool rv = mObject_control.forward(param_0);
     int uVar7 = 0xf;
     int uVar6 = 0;
-    JGadget::TContainerEnumerator<JStudio::stb::TObject, -12> aTStack_38(&mObjectContainer);
+    JGadget::TContainerEnumerator<JGadget::TLinkList<JStudio::stb::TObject, -12> > aTStack_38(ocObject_);
     while (aTStack_38) {
         JStudio::stb::TObject& this_00 = *aTStack_38;
         rv = this_00.forward(param_0) || rv;
@@ -397,7 +405,7 @@ bool TParse::parseHeader_next(const void** ppData_inout, u32* puBlock_out, u32 f
     u16 version = header.get_version();
     if (version < 1) {
         JUTWarn w;
-        w << "obselete version : " << (long)0;
+        w << "obselete version : " << (s32)0;
         return false;
     } else if (version > 3) {
         JUTWarn w;

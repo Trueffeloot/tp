@@ -4,7 +4,7 @@
 #include "JSystem/JGadget/linklist.h"
 #include "JSystem/JKernel/JKRDisposer.h"
 #include "JSystem/JUtility/JUTFont.h"
-#include "__va_arg.h"
+#include <stdarg.h>
 
 /**
 * @ingroup jsystem-jutility
@@ -58,7 +58,8 @@ public:
     }
 
     void setFont(JUTFont* p_font) {
-        mFont = p_font;
+        // Fakematch...? Fixes GCN but breaks Wii. TODO: Test after Wii flags are fixed.
+        p_font = mFont = p_font;
         setFontSize(p_font->getWidth(), p_font->getHeight());
     }
 

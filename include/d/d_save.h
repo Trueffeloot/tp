@@ -469,6 +469,7 @@ class dSv_player_info_c {
 public:
     void init();
     char* getLinkName() { return mPlayerName; }
+    const char* getPlayerName() const { return mPlayerName; }
     char* getHorseName() { return mHorseName; }
     void setPlayerName(const char* i_name) { strcpy((char*)mPlayerName, i_name); }
     void setHorseName(const char* i_name) { strcpy((char*)mHorseName, i_name); }
@@ -505,10 +506,9 @@ public:
     void setVibration(u8 i_status);
     u8 getPalLanguage() const;
 
-    //TODO: placeholder name, actual name is not known
-    u8 getUnk0() { return unk0; }
-    void setUnk0(u8 i_unk0) { unk0 = i_unk0; }
-
+    // Ruby inline names are from TWW debug.
+    u8 getRuby() { return mRuby; }
+    void setRuby(u8 i_ruby) { mRuby = i_ruby; }
     u8 getAttentionType() { return mAttentionType; }
     void setAttentionType(u8 i_mAttentionType) { mAttentionType = i_mAttentionType; }
     u16 getCalibrateDist() { return mCalibrateDist; }
@@ -531,7 +531,7 @@ public:
     };
 
 private:
-    /* 0x0 */ u8 unk0;
+    /* 0x0 */ u8 mRuby;
     /* 0x1 */ u8 mSoundMode;
     /* 0x2 */ u8 mAttentionType;  // Lock-On Type; 0 : hold, 1 : switch
     /* 0x3 */ u8 mVibration;      // Rumble status
@@ -994,7 +994,7 @@ public:
 
     static const int ZONE_MAX = 0x20;
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
     /* 0x000 */ u8 unk_0x0;
     /* 0x001 */ u8 unk_0x1;
     /* 0x000 */ u8 unk_0x2[0x48 - 0x2];
@@ -1013,7 +1013,7 @@ public:
     /* 0xF1B */ u8 field_0xf1b[13];
     /* 0xF28 */ s64 mStartTime;
     /* 0xF30 */ s64 mSaveTotalTime;
-#if VERSION == VERSION_SHIELD_DEBUG
+#if DEBUG
     /* 0xF80 */ flagFile_c mFlagFile;
 #endif
 };  // Size: 0xF38

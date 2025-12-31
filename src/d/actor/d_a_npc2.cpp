@@ -10,10 +10,12 @@ static s16 daBaseNpc_getGroundAngle(cBgS_PolyInfo* param_0, s16 param_1);
 dCcD_SrcCyl daBaseNpc_c::mCcDCyl = {
     daBaseNpc_c::mCcDObj,
     {
+        {
             {0.0f, 0.0f, 0.0f},  // mCenter
             0.0f,  // mRadius
             0.0f  // mHeight
         }  // mCyl
+    }
 };
 
 dCcD_SrcSph daBaseNpc_c::mCcDSph = {
@@ -263,19 +265,13 @@ void daBaseNpc_lookat_c::limitter(s16 i_value, s16* o_value_p, s16 i_max, s16 i_
     }
 
     if (i_min < i_value) {
-        //TODO: fakematch
-#if VERSION == VERSION_SHIELD_DEBUG
-        *o_value_p -= tmp - i_min;
-#else
-        *o_value_p -= tmp - (s16)i_min;
-#endif
+        *o_value_p = *o_value_p - (tmp - i_min);
         return;
     }
 
     *o_value_p = 0;
 }
 
-// NONMATCHING - regalloc, equivalent ? (matches debug)
 void daBaseNpc_lookat_c::calc(fopAc_ac_c* param_0, Mtx param_1, s16 param_2) {
     if (mpAttnPos == NULL) {
         for (int i = 0; i < 4; i++) {
@@ -335,6 +331,7 @@ void daBaseNpc_lookat_c::calc(fopAc_ac_c* param_0, Mtx param_1, s16 param_2) {
     csXyz sp2C;
     cXyz sp94;
     cXyz sp88;
+    s16 sp16, sp14, sp12, sp10;
 
     for (int i = 2; i >= -1; i--) {
         sp2C = csXyz::Zero;
@@ -368,7 +365,6 @@ void daBaseNpc_lookat_c::calc(fopAc_ac_c* param_0, Mtx param_1, s16 param_2) {
 
                 if (!sp88.isZero()) {
                     sp88.normalize();
-                    s16 sp16, sp14, sp12, sp10;
                     sp16 = -cM_atan2s(sp94.y, sp94.absXZ());
                     sp12 = cM_atan2s(sp94.x, sp94.z);
                     sp14 = -cM_atan2s(sp88.y, sp88.absXZ());
@@ -735,9 +731,6 @@ int daBaseNpc_moveBgActor_c::MoveBGCreateHeap() {
     return 1;
 }
 
-/* 8014F60C-8014F6FC 149F4C 00F0+00 0/0 0/0 1/1 .text
- * MoveBGCreate__23daBaseNpc_moveBgActor_cFPCciPFP4dBgWPvRC13cBgS_PolyInfobP4cXyzP5csXyzP5csXyz_vUl
- */
 int daBaseNpc_moveBgActor_c::MoveBGCreate(char const* i_arcName, int i_dzbId, MoveBGActor_SetFunc i_setFunc,
                                           u32 i_heapSize) {
     int unusedInt1 = 1;

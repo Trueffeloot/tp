@@ -178,9 +178,6 @@ void dPaPoT_c::clearTwoAllID() {
     clearCenterID();
 }
 
-/* 800512E8-80051424 04BC28 013C+00 0/0 1/1 1/1 .text
- * setEffectFour__8dPaPoF_cFPC12dKy_tevstr_cPC4cXyzUlUlPC4cXyzPC4cXyzPC4cXyzPC4cXyzPC4cXyzPC5csXyzPC4cXyzScff
- */
 int dPaPoF_c::setEffectFour(dKy_tevstr_c const* param_0, cXyz const* param_1, u32 param_2,
                             u32 param_3, cXyz const* param_4, cXyz const* param_5,
                             cXyz const* param_6, cXyz const* param_7, cXyz const* param_8,
@@ -217,24 +214,24 @@ void dPaPoF_c::clearFourAllID() {
     clearTwoAllID();
 }
 
-dPaPoT_c::effTypeFunc dPaPoT_c::m_typeTwoData[] = {
+const dPaPoT_c::effTypeFunc dPaPoT_c::m_typeTwoData[] = {
     &dPaPoT_c::getCenterEffType,
     &dPaPoT_c::getLeftEffType,
     &dPaPoT_c::getRightEffType,
 };
 
-dPaPoT_c::emitterFunc dPaPoT_c::m_emitterTwoData[] = {
+const dPaPoT_c::emitterFunc dPaPoT_c::m_emitterTwoData[] = {
     &dPaPoT_c::getCenterEmitter,
     &dPaPoT_c::getLeftEmitter,
     &dPaPoT_c::getRightEmitter,
 };
 
-dPaPoF_c::effTypeFunc dPaPoF_c::m_typeFourData[] = {
+const dPaPoF_c::effTypeFunc dPaPoF_c::m_typeFourData[] = {
     &dPaPoF_c::getCenterEffType,   &dPaPoF_c::getLeftEffType,      &dPaPoF_c::getRightEffType,
     &dPaPoF_c::getBackLeftEffType, &dPaPoF_c::getBackRightEffType,
 };
 
-dPaPoF_c::emitterFunc dPaPoF_c::m_emitterFourData[] = {
+const  dPaPoF_c::emitterFunc dPaPoF_c::m_emitterFourData[] = {
     &dPaPoF_c::getCenterEmitter,   &dPaPoF_c::getLeftEmitter,      &dPaPoF_c::getRightEmitter,
     &dPaPoF_c::getBackLeftEmitter, &dPaPoF_c::getBackRightEmitter,
 };

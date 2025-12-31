@@ -9,6 +9,7 @@
  */
 class JASSeqReader {
 public:
+    JASSeqReader() { init(); }
     void init();
     void init(void*);
     bool call(u32);
@@ -25,7 +26,7 @@ public:
         field_0x04 = (u8*)param_1;
     }
 
-    u32 get24(int param_0) const {
+    u32 get24(u32 param_0) const {
         return (*(u32*)(field_0x00 + param_0 - 1)) & 0xffffff;
     }
 
@@ -37,11 +38,23 @@ public:
     u8* getCur() { return field_0x04; }
     u32 readByte() { return *field_0x04++; }
     u32 read16() {
+#ifdef __MWERKS__
         return *((u16*)field_0x04)++;
+#else
+        u16* value = (u16*)field_0x04;
+        field_0x04 += 2;
+        return *value;
+#endif
     }
     u32 read24() {
         field_0x04--;
+#ifdef __MWERKS__
         return (*((u32*)field_0x04)++) & 0x00ffffff;
+#else
+        u32* value = (u32*)field_0x04;
+        field_0x04 += 4;
+        return (*value) & 0x00ffffff;
+#endif
     }
     u16 getLoopCount() const { 
         if (field_0x08 == 0) {

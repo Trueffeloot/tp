@@ -12,8 +12,8 @@
             "GZ2J01",    // GCN JPN
             "RZDE01_00", // Wii USA Rev 0
             "RZDE01_02", // Wii USA Rev 2
-            //"RZDP01",    // Wii PAL
-            //"RZDJ01",    // Wii JPN
+            "RZDP01",    // Wii PAL
+            "RZDJ01",    // Wii JPN
             //"RZDK01",    // Wii KOR
             //"DZDE01",    // Wii USA Kiosk Demo
             //"DZDP01",    // Wii PAL Kiosk Demo

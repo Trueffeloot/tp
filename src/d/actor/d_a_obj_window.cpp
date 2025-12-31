@@ -21,10 +21,12 @@ static dCcD_SrcCyl l_cyl_src = {
         {0x0},                                               // mGObjCo
     },                                                       // mObjInf
     {
-        {0.0f, 0.0f, 0.0f},  // mCenter
-        40.0f,               // mRadius
-        400.0f               // mHeight
-    }                        // mCyl
+        {
+            {0.0f, 0.0f, 0.0f},  // mCenter
+            40.0f,               // mRadius
+            400.0f               // mHeight
+        }                        // mCyl
+    }                            // mCylAttr
 };
 
 void daObjWindow_c::initBaseMtx() {
@@ -53,20 +55,25 @@ int daObjWindow_c::Create() {
         mCyl.Set(l_cyl_src);
         mCyl.SetStts(&mStts);
     }
-    tevStr.mLightInf.r = getLightInf();
+    u8 light = getLightInf();
+    tevStr.mLightInf.r = light;
     return 1;
 }
 
 int daObjWindow_c::CreateHeap() {
-    J3DModelData* model_data = (J3DModelData*)dComIfG_getObjectRes(l_arcName, 9);
-    mpModel = mDoExt_J3DModel__create(model_data, 0x80000, 0x11000084);
+    J3DModelData* modelData = (J3DModelData*)dComIfG_getObjectRes(l_arcName, 9);
+    JUT_ASSERT(251, modelData != NULL);
+
+    mpModel = mDoExt_J3DModel__create(modelData, 0x80000, 0x11000084);
     if (mpModel == NULL) {
         return 0;
     }
     if (l_bck[mType] > 0) {
-        J3DAnmTransform* anm = (J3DAnmTransform*)dComIfG_getObjectRes(l_arcName, l_bck[mType]);
+        J3DAnmTransform* pbck = (J3DAnmTransform*)dComIfG_getObjectRes(l_arcName, l_bck[mType]);
+        JUT_ASSERT(266, pbck != NULL);
+
         mpBckAnm = new mDoExt_bckAnm();
-        if (mpBckAnm == NULL || !mpBckAnm->init(anm, 1, 2, 1.0f, 0, -1, false)) {
+        if (mpBckAnm == NULL || !mpBckAnm->init(pbck, 1, 2, 1.0f, 0, -1, false)) {
             return 0;
         }
     }
@@ -170,7 +177,7 @@ static actor_method_class daObjWindow_METHODS = {
     (process_method_func)daObjWindow_MoveBGDraw,
 };
 
-extern actor_process_profile_definition g_profile_Obj_Window = {
+actor_process_profile_definition g_profile_Obj_Window = {
     fpcLy_CURRENT_e,
     3,
     fpcPi_CURRENT_e,

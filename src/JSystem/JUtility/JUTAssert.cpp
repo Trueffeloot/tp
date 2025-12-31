@@ -4,7 +4,7 @@
 #include "JSystem/JUtility/JUTConsole.h"
 #include "JSystem/JUtility/JUTDbPrint.h"
 #include "JSystem/JUtility/JUTDirectPrint.h"
-#include "stdio.h"
+#include <stdio.h>
 #include <dolphin/vi.h>
 
 bool sAssertVisible = true;
@@ -128,10 +128,6 @@ void showAssert_f(u32 device, const char* file, int line, const char* msg, ...) 
     va_start(args, msg);
     showAssert_f_va(device, file, line, msg, args);
     va_end(args);
-}
-
-void showAssert(u32 device, const char* file, int line, const char* msg) {
-    showAssert_f(device, file, line, "%s", msg);
 }
 
 void setWarningMessage_f_va(u32 device, const char* file, int line, const char* msg, va_list args) {

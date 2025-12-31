@@ -2106,16 +2106,17 @@ static int daE_Kr_Execute(e_kr_class* i_this) {
             unkFloat1 = 5.0f + TREG_F(14);
         }
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if PLATFORM_GCN
+        cLib_addCalc2(&i_this->field_0x920, unkFloat1, 1.0f, 2.0f);
+#endif
+
+#if VERSION >= VERSION_WII_USA_R0
         actor->current.pos.y = actor->current.pos.y - unkFloat1;
         actor->old.pos.y = actor->old.pos.y - unkFloat1;
         i_this->mAcch.CrrPos(dComIfG_Bgsp());
         actor->current.pos.y = actor->current.pos.y + unkFloat1;
         actor->old.pos.y = actor->old.pos.y + unkFloat1;
 #else
-
-        cLib_addCalc2(&i_this->field_0x920, unkFloat1, 1.0f, 2.0f);
-
         actor->current.pos.y = actor->current.pos.y - i_this->field_0x920;
         actor->old.pos.y = actor->old.pos.y - i_this->field_0x920;
         i_this->mAcch.CrrPos(dComIfG_Bgsp());
@@ -2232,7 +2233,7 @@ static int useHeapInit(fopAc_ac_c* i_this) {
     }
 
     J3DModel* model = kr->mpMorf->getModel();
-    model->setUserArea((int)kr);
+    model->setUserArea((intptr_t)kr);
 
     for (u16 i = 0; i < model->getModelData()->getJointNum(); i++) {
         if (i != 0) {
@@ -2389,7 +2390,7 @@ static actor_method_class l_daE_Kr_Method = {
     (process_method_func)daE_Kr_Draw,
 };
 
-extern actor_process_profile_definition g_profile_E_KR = {
+actor_process_profile_definition g_profile_E_KR = {
     fpcLy_CURRENT_e,         // mLayerID
     7,                       // mListID
     fpcPi_CURRENT_e,         // mListPrio

@@ -44,9 +44,11 @@ static dCcD_SrcCyl l_cylSrc = {
         {0},
     },
     {
-        {0.0f, 0.0f, 0.0f},
-        40.0f,
-        85.0f,
+        {
+            {0.0f, 0.0f, 0.0f},
+            40.0f,
+            85.0f,
+        }
     }
 };
 
@@ -669,7 +671,7 @@ int daSpinner_c::execute() {
 
         move_angle = (mDoCPd_c::getStickAngle3D(PAD_1) + 0x10000 + dCam_getControledAngleY(dComIfGp_getCamera(dComIfGp_getPlayerCameraID(0)))) - 0x8000;
 
-#if VERSION == VERSION_SHIELD_DEBUG
+#if PLATFORM_WII || VERSION == VERSION_SHIELD_DEBUG
         if (dComIfG_getTrigB(PAD_1) && dComIfGp_getSelectItem(3) == fpcNm_ITEM_SPINNER) {
 #else
         if (dComIfG_getTrigA(PAD_1)) {
@@ -934,7 +936,7 @@ static actor_method_class l_daSpinner_Method = {
     (process_method_func)daSpinner_Draw,
 };
 
-extern actor_process_profile_definition g_profile_SPINNER = {
+actor_process_profile_definition g_profile_SPINNER = {
   fpcLy_CURRENT_e,       // mLayerID
   4,                     // mListID
   fpcPi_CURRENT_e,       // mListPrio

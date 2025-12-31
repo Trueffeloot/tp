@@ -648,7 +648,7 @@ void daItem_c::procMainBoomHitWait() {
 }
 
 void daItem_c::move_proc_call() {
-    static procFunc mode_proc[] = {&daItem_c::mode_wait, &daItem_c::mode_water};
+    static const procFunc mode_proc[] = {&daItem_c::mode_wait, &daItem_c::mode_water};
 
     if (checkFlag(FLAG_NO_MOVE_e)) {
         RotateYBase();
@@ -1159,7 +1159,7 @@ procFunc daItem_c::mFuncPtr[] = {
     &daItem_c::procMainForceGet,      NULL,
 };
 
-dCcD_SrcCyl daItem_c::m_cyl_src = {
+const dCcD_SrcCyl daItem_c::m_cyl_src = {
     {
         {0, {{0, 0, 0}, {0xFFFFFFFF, 17}, 0x59}},
         {dCcD_SE_NONE, 0, 0, 0, {0}},
@@ -1167,10 +1167,12 @@ dCcD_SrcCyl daItem_c::m_cyl_src = {
         {0},
     },
     {
-        {0.0f, 0.0f, 0.0f},
-        10.0f,
-        50.0f,
-    },
+        {
+            {0.0f, 0.0f, 0.0f},
+            10.0f,
+            50.0f,
+        },
+    }
 };
 
 void daItem_c::initSpeed(BOOL i_noTypeChk) {
@@ -1237,7 +1239,7 @@ static actor_method_class l_daItem_Method = {
     (process_method_func)daItem_Draw,
 };
 
-extern actor_process_profile_definition g_profile_ITEM = {
+actor_process_profile_definition g_profile_ITEM = {
     fpcLy_CURRENT_e,
     7,
     fpcPi_CURRENT_e,
